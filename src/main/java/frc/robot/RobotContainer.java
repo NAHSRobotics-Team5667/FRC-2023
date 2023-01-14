@@ -21,19 +21,19 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  */
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
-	private DrivetrainSubsystem drive = new DrivetrainSubsystem();
+	//private DrivetrainSubsystem drive = new DrivetrainSubsystem();
 	public static final XboxController m_controller = new XboxController(0);
-	private DrivetrainCommand drivetrainCommand = new DrivetrainCommand(drive);
+	//private DrivetrainCommand drivetrainCommand = new DrivetrainCommand(drive);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
-	public RobotContainer() {
+	//public RobotContainer() {
 		// Configure the button bindings
-		configureButtonBindings();
+		//configureButtonBindings();
 
-		drive.setDefaultCommand(drivetrainCommand);
-	}
+		//drive.setDefaultCommand(drivetrainCommand);
+	//}
 
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be
