@@ -22,19 +22,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public static final double kMaxSpeed = 5; // 3 meters per second
 	public static final double kMaxAngularSpeed = 2* Math.PI; // 1/2 rotation per second
 
-	private final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
-	private final Translation2d m_frontRightLocation = new Translation2d(0.417, 0.417);
-	private final Translation2d m_backLeftLocation = new Translation2d(-0.417, -0.417);
-	private final Translation2d m_backRightLocation = new Translation2d(-0.417, 0.417);
+	private static final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
+	private final static Translation2d m_frontRightLocation = new Translation2d(0.417, 0.417);
+	private final static Translation2d m_backLeftLocation = new Translation2d(-0.417, -0.417);
+	private final static Translation2d m_backRightLocation = new Translation2d(-0.417, 0.417);
 
-	public final SwerveModule m_frontLeft = new SwerveModule(15, 16, 0);
-	public final SwerveModule m_frontRight = new SwerveModule(9, 10, 0);
-	public final SwerveModule m_backLeft = new SwerveModule(14, 13, 0);
-	public final SwerveModule m_backRight = new SwerveModule(12, 11, 0);
+	public static SwerveModule m_frontLeft = new SwerveModule(15, 16, 0);
+	public static SwerveModule m_frontRight = new SwerveModule(9, 10, 0);
+	public static SwerveModule m_backLeft = new SwerveModule(14, 13, 0);
+	public static SwerveModule m_backRight = new SwerveModule(12, 11, 0);
 
 	private final AHRS m_gyro = new AHRS(Port.kMXP);
 
-	private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+	public static final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
 	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), null);
