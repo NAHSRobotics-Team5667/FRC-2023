@@ -4,10 +4,21 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DrivetrainCommand;
+import frc.robot.subsystems.DrivetrainAutoSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -55,4 +66,29 @@ public class RobotContainer {
 		// An ExampleCommand will run in autonomous
 		return null;
 	}
+private DrivetrainAutoSubsystem m_auto;
+	// This will load the file "FullAuto.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+// for every path in the group
+List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("FullAuto", new PathConstraints(4, 3));
+
+// This is just an example event map. It would be better to have a constant, global event map
+// in your code that will be used by all path following commands.
+HashMap<String, Command> eventMap = new HashMap<>();
+	eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+	eventMap.put("intakeDown", new IntakeDown());
+
+// Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+    m_auto::getPositionPose2d, // Pose2d supplier
+    m_auto::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+    m_auto.m_kinematics, // SwerveDriveKinematics
+    new PIDController(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+    new PIDController(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+    m_auto::pleaseGodLetThisWork, // Module states consumer used to output to the drive subsystem
+    eventMap,
+    true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+    m_auto // The drive subsystem. Used to properly set the requirements of path following commands
+);
+
+Command fullAuto = autoBuilder.fullAuto(pathGroup);
 }

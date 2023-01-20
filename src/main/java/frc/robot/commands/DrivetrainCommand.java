@@ -10,9 +10,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.DrivetrainAutoSubsystem;
 
 public class DrivetrainCommand extends CommandBase {
-	private DrivetrainSubsystem m_swerve;
+	public DrivetrainSubsystem m_swerve;
+	public static DrivetrainAutoSubsystem m_autooooooo;
 
 	// Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
 	private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
