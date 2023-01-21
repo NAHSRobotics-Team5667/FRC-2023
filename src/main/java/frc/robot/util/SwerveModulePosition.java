@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.util;
-
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.Objects;
 

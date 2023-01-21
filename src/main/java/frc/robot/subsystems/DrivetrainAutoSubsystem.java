@@ -38,7 +38,8 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 	public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), null);
+	private final SwerveModulePosition[] positions = {DrivetrainAutoSubsystem.m_frontLeft.getPosition(), DrivetrainAutoSubsystem.m_frontRight.getPosition(), DrivetrainAutoSubsystem.m_backLeft.getPosition(), DrivetrainAutoSubsystem.m_backRight.getPosition()};
+	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
 
 	private SwerveModuleState[] m_swerveModuleStates = new SwerveModuleState[] {};
 	private SwerveModulePosition[] m_swerveModuleFakeStates = new SwerveModulePosition[3];
@@ -46,7 +47,7 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 	public DrivetrainAutoSubsystem() {
 		m_gyro.reset();
 	}
-	
+
 	/**
 	 * Method to drive the robot using joystick info.
 	 *
