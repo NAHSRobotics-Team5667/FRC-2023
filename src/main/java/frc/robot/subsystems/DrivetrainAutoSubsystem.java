@@ -17,33 +17,37 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 
 /** Represents a swerve drive style drivetrain. */
 public class DrivetrainAutoSubsystem extends SubsystemBase {
-	public static final double kMaxSpeed = 5; // 3 meters per second
-	public static final double kMaxAngularSpeed = 2* Math.PI; // 1/2 rotation per second
+	public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second
+	public static final double kMaxAngularSpeed = DriveConstants.kMaxAngularSpeed; // 2 is 1/2 rotation per second
 
+	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0);
+	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontLeftTurningID, 0);
+	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kFrontLeftTurningID, 0);
+	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kFrontLeftTurningID, 0);
+	
+	private final SwerveModulePosition[] positions = {
+		DrivetrainAutoSubsystem.m_frontLeft.getPosition(), 
+		DrivetrainAutoSubsystem.m_frontRight.getPosition(), 
+		DrivetrainAutoSubsystem.m_backLeft.getPosition(), 
+		DrivetrainAutoSubsystem.m_backRight.getPosition()
+	};
+	
 	private static final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
 	private final static Translation2d m_frontRightLocation = new Translation2d(0.417, 0.417);
 	private final static Translation2d m_backLeftLocation = new Translation2d(-0.417, -0.417);
 	private final static Translation2d m_backRightLocation = new Translation2d(-0.417, 0.417);
-
-	public static SwerveModule m_frontLeft = new SwerveModule(15, 16, 0);
-	public static SwerveModule m_frontRight = new SwerveModule(9, 10, 0);
-	public static SwerveModule m_backLeft = new SwerveModule(14, 13, 0);
-	public static SwerveModule m_backRight = new SwerveModule(12, 11, 0);
+	
+	public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+		m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
 	private final AHRS m_gyro = new AHRS(Port.kMXP);
 
-	public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
-			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
-
-	private final SwerveModulePosition[] positions = {DrivetrainAutoSubsystem.m_frontLeft.getPosition(), DrivetrainAutoSubsystem.m_frontRight.getPosition(), DrivetrainAutoSubsystem.m_backLeft.getPosition(), DrivetrainAutoSubsystem.m_backRight.getPosition()};
 	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
 
-	private SwerveModuleState[] m_swerveModuleStates = new SwerveModuleState[4];
-	private SwerveModulePosition[] m_swerveModuleFakeStates = new SwerveModulePosition[4];
-	//private SwerveModulePosition m_swerveModulePositions = new SwerveModulePosition();
 	public DrivetrainAutoSubsystem() {
 		m_gyro.reset();
 	}
@@ -63,30 +67,20 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 				fieldRelative
 						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 						: new ChassisSpeeds(xSpeed, ySpeed, rot));
-		m_swerveModuleStates = swerveModuleStates;
-		 
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
 		m_frontLeft.setDesiredState(swerveModuleStates[0]);
 		m_frontRight.setDesiredState(swerveModuleStates[1]);
 		m_backLeft.setDesiredState(swerveModuleStates[2]);
 		m_backRight.setDesiredState(swerveModuleStates[3]);
 	}
+
     public void pleaseGodLetThisWork(SwerveModuleState Wheel1, SwerveModuleState Wheel2, SwerveModuleState Wheel3, SwerveModuleState Wheel4){
         m_frontLeft.setDesiredState(Wheel1);
 		m_frontRight.setDesiredState(Wheel2);
 		m_backLeft.setDesiredState(Wheel3);
 		m_backRight.setDesiredState(Wheel4);
     }
-	/*public void fakeConverter(SwerveModuleState[] param){
-		for (int i = 0; i < 4; i++) {
-		param = m_swerveModuleStates;
-		SwerveModulePosition[] output = m_swerveModuleFakeStates;
-		m_swerveModuleStates[i].speedMetersPerSecond  = m_swerveModuleFakeStates[i].distanceMeters;
-		m_swerveModuleFakeStates[i].angle = m_swerveModuleFakeStates[i].angle;
 
-		}
-
-	}*/
     public Pose2d getPositionPose2d(){
         return m_odometry.getPoseMeters();
     }
@@ -112,7 +106,6 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		//fakeConverter(m_swerveModuleStates);
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
