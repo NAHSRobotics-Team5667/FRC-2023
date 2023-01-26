@@ -13,7 +13,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.util.SwerveModulePosition;
 
 public class SwerveModule {
     private static final double kWheelRadius = 0.0508;
@@ -42,8 +41,10 @@ public class SwerveModule {
             new TrapezoidProfile.Constraints(
                     kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
+
     // Gains are for example purposes only - must be determined for your own robot!
     private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.10397, 2.1787);
+
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
     private double angleOffset = 0;
@@ -93,8 +94,8 @@ public class SwerveModule {
      *
      * @return The current position of the module.
      */
-    public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(
+    public edu.wpi.first.math.kinematics.SwerveModulePosition getPosition() {
+        return new edu.wpi.first.math.kinematics.SwerveModulePosition(
                 getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
     }
 

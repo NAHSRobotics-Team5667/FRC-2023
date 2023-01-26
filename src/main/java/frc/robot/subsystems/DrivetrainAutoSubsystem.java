@@ -38,15 +38,16 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 	public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), null);
+	private final SwerveModulePosition[] positions = {DrivetrainAutoSubsystem.m_frontLeft.getPosition(), DrivetrainAutoSubsystem.m_frontRight.getPosition(), DrivetrainAutoSubsystem.m_backLeft.getPosition(), DrivetrainAutoSubsystem.m_backRight.getPosition()};
+	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
 
-	private SwerveModuleState[] m_swerveModuleStates = new SwerveModuleState[] {};
-	private SwerveModulePosition[] m_swerveModuleFakeStates = new SwerveModulePosition[3];
+	private SwerveModuleState[] m_swerveModuleStates = new SwerveModuleState[4];
+	private SwerveModulePosition[] m_swerveModuleFakeStates = new SwerveModulePosition[4];
 	//private SwerveModulePosition m_swerveModulePositions = new SwerveModulePosition();
 	public DrivetrainAutoSubsystem() {
 		m_gyro.reset();
 	}
-	
+
 	/**
 	 * Method to drive the robot using joystick info.
 	 *
@@ -76,7 +77,7 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 		m_backLeft.setDesiredState(Wheel3);
 		m_backRight.setDesiredState(Wheel4);
     }
-	public void fakeConverter(SwerveModuleState[] param){
+	/*public void fakeConverter(SwerveModuleState[] param){
 		for (int i = 0; i < 4; i++) {
 		param = m_swerveModuleStates;
 		SwerveModulePosition[] output = m_swerveModuleFakeStates;
@@ -85,7 +86,7 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 
 		}
 
-	}
+	}*/
     public Pose2d getPositionPose2d(){
         return m_odometry.getPoseMeters();
     }
@@ -104,14 +105,14 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 	public void updateOdometry() {
 		m_odometry.update(
 				m_gyro.getRotation2d(),
-				m_swerveModuleFakeStates);
+				positions);
 	}
 
 
 
 	@Override
 	public void periodic() {
-		fakeConverter(m_swerveModuleStates);
+		//fakeConverter(m_swerveModuleStates);
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());

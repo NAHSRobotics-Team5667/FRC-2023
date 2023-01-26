@@ -4,26 +4,9 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.DrivetrainAutoSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -39,18 +22,23 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  */
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
-	// private DrivetrainSubsystem drive = new DrivetrainSubsystem();
 	public static final XboxController m_controller = new XboxController(0);
+	private DrivetrainSubsystem m_drive;
 	private DrivetrainAutoSubsystem m_auto;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
+
 	public RobotContainer() {
+		m_drive = new DrivetrainSubsystem();
+		m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
+		configureButtonBindings();
 		// This will load the file "FullAuto.path" and generate it with a max velocity
 		// of 4 m/s and a max acceleration of 3 m/s^2
 		// for every path in the group
-		List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("FullAuto", new PathConstraints(4, 3));
+		
+		/*List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("FullAuto", new PathConstraints(4, 3));
 
 		// This is just an example event map. It would be better to have a constant,
 		// global event map
@@ -100,8 +88,8 @@ public class RobotContainer {
 						// commands
 		);
 
-		Command fullAuto = autoBuilder.fullAuto(pathGroup);
-	}
+		Command fullAuto = autoBuilder.fullAuto(pathGroup);*/
+	}   
 
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be

@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -38,10 +36,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public static final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), null);
+	private final SwerveModulePosition[] positions = {DrivetrainAutoSubsystem.m_frontLeft.getPosition(), DrivetrainAutoSubsystem.m_frontRight.getPosition(), DrivetrainAutoSubsystem.m_backLeft.getPosition(), DrivetrainAutoSubsystem.m_backRight.getPosition()};
+	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
 
-	private SwerveModuleState[] m_swerveModuleStates = new SwerveModuleState[] {};
-	private SwerveModulePosition[] m_swerveModuleFakeStates = new SwerveModulePosition[3];
+	private SwerveModuleState[] m_swerveModuleStates = new SwerveModuleState[4];
+	private SwerveModulePosition[] m_swerveModuleFakeStates = new SwerveModulePosition[4];
 	//private SwerveModulePosition m_swerveModulePositions = new SwerveModulePosition();
 	public DrivetrainSubsystem() {
 		m_gyro.reset();
@@ -70,7 +69,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		m_backLeft.setDesiredState(swerveModuleStates[2]);
 		m_backRight.setDesiredState(swerveModuleStates[3]);
 	}
-	public void fakeConverter(SwerveModuleState[] param){
+	/*public void fakeConverter(SwerveModuleState[] param){
 		for (int i = 0; i < 4; i++) {
 		param = m_swerveModuleStates;
 		SwerveModulePosition[] output = m_swerveModuleFakeStates;
@@ -79,7 +78,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		}
 
-	}
+	}*/
 	public void driveVoltage(double voltage) {
 		m_frontLeft.driveVoltage(voltage);
 		m_frontRight.driveVoltage(voltage);
@@ -91,12 +90,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void updateOdometry() {
 		m_odometry.update(
 				m_gyro.getRotation2d(),
-				m_swerveModuleFakeStates);
+				positions);
 	}
 
 	@Override
 	public void periodic() {
-		fakeConverter(m_swerveModuleStates);
+		//fakeConverter(m_swerveModuleStates);
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
