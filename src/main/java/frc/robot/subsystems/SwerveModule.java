@@ -41,7 +41,10 @@ public class SwerveModule {
             new TrapezoidProfile.Constraints(
                     kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 1.95);
+
+    // Gains are for example purposes only - must be determined for your own robot!
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.10397, 2.1787);
+
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
     private double angleOffset = 0;
