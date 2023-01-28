@@ -68,7 +68,7 @@ public class SwerveModule {
         m_turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.angleOffset = angleOffset;
 
-        m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
         m_turningMotor.setSelectedSensorPosition(0);
@@ -77,7 +77,10 @@ public class SwerveModule {
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
         m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+
+    
     }
+    
 
     /**
      * Returns the current state of the module.

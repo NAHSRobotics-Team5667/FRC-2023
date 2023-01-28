@@ -31,7 +31,7 @@ public final class Constants {
         public static final double kMaxAngularSpeed = 2* Math.PI; // 1/2 rotation per second
 
         // next lines are for the Swerve Module object
-        public static final double kWheelRadius = 0.0508;
+        public static final double kWheelRadius = 0.0508; //meters
         public static final double kEncoderResolution = 2048;
 
         public static final double kDriveGearRatio = 6.54;
