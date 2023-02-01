@@ -36,6 +36,12 @@ public final class Constants {
 
         public static final double kDriveGearRatio = 6.54;
         public static final double kTurnGearRatio = 15.43;
+
+        public static final int FREncoderID = 3;
+        public static final int FLEncoderID = 2;
+        public static final int BREncoderID = 0;
+        public static final int BLEncoderID = 1;
+        
     }
     public static final class ClawConstants{
         public static final int kClawID = -1;

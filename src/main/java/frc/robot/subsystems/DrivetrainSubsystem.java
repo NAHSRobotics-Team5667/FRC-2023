@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,7 +21,10 @@ import frc.robot.Constants.DriveConstants;
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second
 	public static final double kMaxAngularSpeed = DriveConstants.kMaxAngularSpeed; // 2 is 1/2 rotation per second
-	
+	private static DutyCycleEncoder FREncoder = new DutyCycleEncoder(DriveConstants.FREncoderID);
+	private static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
+	private static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
+	private static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
 
 	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0);
 	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontLeftTurningID, 0);
@@ -101,11 +105,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
-		SmartDashboard.putNumber("FRA-Actual", m_frontRight.getTurnEncoderDistance());
-		SmartDashboard.putNumber("FLA-Actual", m_frontLeft.getTurnEncoderDistance());
-		SmartDashboard.putNumber("BRA-Actual", m_backRight.getTurnEncoderDistance());
-		SmartDashboard.putNumber("BLA-Actual", m_backLeft.getTurnEncoderDistance());
-
+		SmartDashboard.putNumber("FRA-ActualPS", m_frontRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("FLA-ActualPS", m_frontLeft.getTurnEncoderDistance());
+		SmartDashboard.putNumber("BRA-ActualPS", m_backRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("BLA-ActualPS", m_backLeft.getTurnEncoderDistance());
+		SmartDashboard.putNumber("FRA-Actual", FREncoder.getDistance());
+		SmartDashboard.putNumber("FLA-Actual", FLEncoder.getDistance());
+		SmartDashboard.putNumber("BRA-Actual", BREncoder.getDistance());
+		SmartDashboard.putNumber("BLA-Actual", BLEncoder.getDistance());
 		
 		SmartDashboard.putNumber("FRA-Setpoint", m_frontRight.getAngleSetpoint());
 		SmartDashboard.putNumber("FLA-Setpoint", m_frontLeft.getAngleSetpoint());
