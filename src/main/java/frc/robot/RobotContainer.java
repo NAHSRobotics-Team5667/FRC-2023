@@ -7,7 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
+import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainAutoSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -25,6 +27,7 @@ public class RobotContainer {
 	public static final XboxController m_controller = new XboxController(0);
 	private DrivetrainSubsystem m_drive;
 	private DrivetrainAutoSubsystem m_auto;
+	private ClawSubsystem m_claw;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -33,6 +36,9 @@ public class RobotContainer {
 	public RobotContainer() {
 		m_drive = new DrivetrainSubsystem();
 		m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
+
+		m_claw = new ClawSubsystem();
+		m_claw.setDefaultCommand(new ClawCommand(m_claw));
 		configureButtonBindings();
 		// This will load the file "FullAuto.path" and generate it with a max velocity
 		// of 4 m/s and a max acceleration of 3 m/s^2

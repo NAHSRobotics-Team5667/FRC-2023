@@ -37,6 +37,9 @@ public final class Constants {
         public static final double kDriveGearRatio = 6.54;
         public static final double kTurnGearRatio = 15.43;
     }
+    public static final class ClawConstants{
+        public static final int kClawID = -1;
+    }
 
 
 
