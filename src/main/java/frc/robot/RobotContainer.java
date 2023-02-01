@@ -33,7 +33,7 @@ public class RobotContainer {
 	public RobotContainer() {
 		m_drive = new DrivetrainSubsystem();
 		m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
-		configureButtonBindings();
+		//configureButtonBindings();
 		// This will load the file "FullAuto.path" and generate it with a max velocity
 		// of 4 m/s and a max acceleration of 3 m/s^2
 		// for every path in the group

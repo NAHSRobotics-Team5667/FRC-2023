@@ -4,28 +4,34 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
-
+import frc.robot.subsystems.SwerveModule;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
 public class DrivetrainSubsystem extends SubsystemBase {
-	public static final double kMaxSpeed = 5; // 3 meters per second
-	public static final double kMaxAngularSpeed = 2* Math.PI; // 1/2 rotation per second
-
+	public static final double kMaxSpeed = 1.5; // 3 meters per second
+	public static final double kMaxAngularSpeed =  Math.PI; // 1/2 rotation per second
+	private static DutyCycleEncoder absEncoderBR = new DutyCycleEncoder(0);
+	private static DutyCycleEncoder absEncoderBL = new DutyCycleEncoder(1);
+	private static DutyCycleEncoder absEncoderFR = new DutyCycleEncoder(2);
+	private static DutyCycleEncoder absEncoderFL = new DutyCycleEncoder(3);
 	private static final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
 	private final static Translation2d m_frontRightLocation = new Translation2d(0.417, 0.417);
 	private final static Translation2d m_backLeftLocation = new Translation2d(-0.417, -0.417);
 	private final static Translation2d m_backRightLocation = new Translation2d(-0.417, 0.417);
-
+	//private Encoder BackLeft = new Encoder(0, 1, false);
 	public static SwerveModule m_frontLeft = new SwerveModule(15, 16, 0);
 	public static SwerveModule m_frontRight = new SwerveModule(9, 10, 0);
 	public static SwerveModule m_backLeft = new SwerveModule(14, 13, 0);
@@ -68,8 +74,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		m_frontRight.setDesiredState(swerveModuleStates[1]);
 		m_backLeft.setDesiredState(swerveModuleStates[2]);
 		m_backRight.setDesiredState(swerveModuleStates[3]);
+		
 	}
-	/*public void fakeConverter(SwerveModuleState[] param){
+	public void fakeConverter(SwerveModuleState[] param){
 		for (int i = 0; i < 4; i++) {
 		param = m_swerveModuleStates;
 		SwerveModulePosition[] output = m_swerveModuleFakeStates;
@@ -78,7 +85,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		}
 
-	}*/
+	}
 	public void driveVoltage(double voltage) {
 		m_frontLeft.driveVoltage(voltage);
 		m_frontRight.driveVoltage(voltage);
@@ -95,22 +102,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		//fakeConverter(m_swerveModuleStates);
+		
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
-		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
-		SmartDashboard.putNumber("FRA-Actual", m_frontRight.getTurnEncoderDistance());
-		SmartDashboard.putNumber("FLA-Actual", m_frontLeft.getTurnEncoderDistance());
-		SmartDashboard.putNumber("BRA-Actual", m_backRight.getTurnEncoderDistance());
-		SmartDashboard.putNumber("BLA-Actual", m_backLeft.getTurnEncoderDistance());
-
-		
+		//SmartDashboard.putNumber("Abs Encoder", (absEncoder.getDistance()));
+		SmartDashboard.putNumber("FRA-Actual", absEncoderFR.getDistance());
+		SmartDashboard.putNumber("FLA-Actual", absEncoderFL.getDistance());
+		SmartDashboard.putNumber("BRA-Actual", absEncoderBR.getDistance());
+		SmartDashboard.putNumber("BLA-Actual", absEncoderBL.getDistance());
+		SmartDashboard.putNumber("FRA-ActualPS", m_frontRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("FLA-ActualPS", m_frontLeft.getTurnEncoderDistance());
+		SmartDashboard.putNumber("BRA-ActualPS", m_backRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("BLA-ActualPS", m_backLeft.getTurnEncoderDistance());
+  //Pre-swerve shuffleboard definitions
+		//SmartDashboard.putBoolean("abs encoder bool", absEncoder.isConnected());
 		SmartDashboard.putNumber("FRA-Setpoint", m_frontRight.getAngleSetpoint());
 		SmartDashboard.putNumber("FLA-Setpoint", m_frontLeft.getAngleSetpoint());
 		SmartDashboard.putNumber("BRA-Setpoint", m_backRight.getAngleSetpoint());
 		SmartDashboard.putNumber("BLA-Setpoint", m_backLeft.getAngleSetpoint());
 		
-
+/* 
 		SmartDashboard.putNumber("FRD-Actual", m_frontRight.getDriveEncoderDistance());
 		SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance());
 		SmartDashboard.putNumber("BRD-Actual", m_backRight.getDriveEncoderDistance());
@@ -120,6 +131,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("FLD-Setpoint", m_frontLeft.getDriveSetpoint());
 		SmartDashboard.putNumber("BRD-Setpoint", m_backRight.getDriveSetpoint());
 		SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());
+		*/
 		
 	}
 }

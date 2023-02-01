@@ -115,7 +115,7 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 		//fakeConverter(m_swerveModuleStates);
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
-		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
+		//SmartDashboard.putNumber("Abs Encoder, back left edition", BackLeft.getAbsolutePosition());
 		SmartDashboard.putNumber("FRA-Actual", m_frontRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("FLA-Actual", m_frontLeft.getTurnEncoderDistance());
 		SmartDashboard.putNumber("BRA-Actual", m_backRight.getTurnEncoderDistance());

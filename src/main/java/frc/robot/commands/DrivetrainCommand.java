@@ -73,6 +73,6 @@ public class DrivetrainCommand extends CommandBase {
 				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.02))
 				* DrivetrainSubsystem.kMaxAngularSpeed;
 
-		m_swerve.drive(xSpeed, ySpeed, rot, false);
+		m_swerve.drive(xSpeed, ySpeed, rot, true);
 	}
 }

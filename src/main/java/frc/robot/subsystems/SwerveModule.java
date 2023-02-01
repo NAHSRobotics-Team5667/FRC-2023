@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveModule {
     private static final double kWheelRadius = 0.0508;
@@ -21,7 +22,7 @@ public class SwerveModule {
     private static final double kDriveGearRatio = 6.54;
     private static final double kTurnGearRatio = 15.43;
 
-    private static final double kDriveEncoderConstant = (2 * kWheelRadius * Math.PI)
+    public static final double kDriveEncoderConstant = (2 * kWheelRadius * Math.PI)
             / (kEncoderResolution * kDriveGearRatio);
     private static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
@@ -31,7 +32,7 @@ public class SwerveModule {
     private final WPI_TalonFX m_driveMotor;
     private final WPI_TalonFX m_turningMotor;
 
-    private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+    private final PIDController m_drivePIDController = new PIDController(.5, 0, 0);
 
     // Gains are for example purposes only - must be determined for your own robot!
     private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
@@ -43,7 +44,7 @@ public class SwerveModule {
 
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.10397, 2.1787);
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.10397, 2.1787, .33432);
 
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
@@ -68,11 +69,11 @@ public class SwerveModule {
         m_turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.angleOffset = angleOffset;
 
-        m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-        m_turningMotor.setSelectedSensorPosition(0);
-        m_driveMotor.setSelectedSensorPosition(0);
+        //m_turningMotor.setSelectedSensorPosition(0);
+        //m_driveMotor.setSelectedSensorPosition(0);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
@@ -96,7 +97,7 @@ public class SwerveModule {
      */
     public edu.wpi.first.math.kinematics.SwerveModulePosition getPosition() {
         return new edu.wpi.first.math.kinematics.SwerveModulePosition(
-                getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
+            getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
     }
 
     /**
