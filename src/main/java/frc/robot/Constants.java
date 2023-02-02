@@ -17,4 +17,38 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final class DriveConstants {
+        public static final int kFrontLeftDriveID = 15;
+        public static final int kFrontRightDriveID = 9;
+        public static final int kBackLeftDriveID = 14;
+        public static final int kBackRightDriveID = 12;
+        public static final int kFrontLeftTurningID = 16;
+        public static final int kFrontRightTurningID = 10;
+        public static final int kBackLeftTurningID = 13;
+        public static final int kBackRightTurningID = 11;
+
+        public static final double kMaxSpeed = 5; // 3 meters per second
+        public static final double kMaxAngularSpeed = 2* Math.PI; // 1/2 rotation per second
+
+        // next lines are for the Swerve Module object
+        public static final double kWheelRadius = 0.0508; //meters
+        public static final double kEncoderResolution = 2048;
+
+        public static final double kDriveGearRatio = 6.54;
+        public static final double kTurnGearRatio = 15.43;
+
+        public static final int FREncoderID = 3;
+        public static final int FLEncoderID = 2;
+        public static final int BREncoderID = 0;
+        public static final int BLEncoderID = 1;
+        
+    }
+    public static final class ClawConstants{
+        public static final int kClawID = -1;
+    }
+
+
+
+
+
 }
