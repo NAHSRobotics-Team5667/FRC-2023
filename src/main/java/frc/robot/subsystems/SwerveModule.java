@@ -32,13 +32,12 @@ public class SwerveModule {
 
     private final WPI_TalonFX m_driveMotor;
     private final WPI_TalonFX m_turningMotor;
-    
 
     private final PIDController m_drivePIDController = new PIDController(.5, 0, 0);
 
     // Gains are for example purposes only - must be determined for your own robot!
     private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-            .9,
+            2,
             0,
             0,
             new TrapezoidProfile.Constraints(
@@ -49,7 +48,7 @@ public class SwerveModule {
     private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.10397, 2.1787, .33432);
 
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
-
+    private DutyCycleEncoder Encoder;
     private double angleOffset = 0;
 
     /**
@@ -66,15 +65,14 @@ public class SwerveModule {
     public SwerveModule(
             int driveMotorChannel,
             int turningMotorChannel,
-            DutyCycleEncoder encoder,
-            double angleOffset) {
+            double angleOffset,
+            DutyCycleEncoder Encoder) {
         m_driveMotor = new WPI_TalonFX(driveMotorChannel);
+        this.Encoder= Encoder;
         m_turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.angleOffset = angleOffset;
-        
-
-
-        //m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        this.align(this.Encoder); 
+        m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
         //m_turningMotor.setSelectedSensorPosition(0);
@@ -93,9 +91,9 @@ public class SwerveModule {
      *
      * @return The current state of the module.
      */
-    public SwerveModuleState getState(DutyCycleEncoder encoder) {
+    public SwerveModuleState getState() {
         return new SwerveModuleState(
-                getDriveEncoderDistance(), new Rotation2d(encoder.getAbsolutePosition() * 2 * Math.PI));
+                getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
     }
 
     /**
@@ -103,9 +101,20 @@ public class SwerveModule {
      *
      * @return The current position of the module.
      */
-    public edu.wpi.first.math.kinematics.SwerveModulePosition getPosition(DutyCycleEncoder encoder) {
+    public edu.wpi.first.math.kinematics.SwerveModulePosition getPosition() {
         return new edu.wpi.first.math.kinematics.SwerveModulePosition(
-            getDriveEncoderDistance(), new Rotation2d((encoder.getAbsolutePosition() - .5) * 2 * Math.PI));
+            getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
+    }
+    public void align(DutyCycleEncoder encoder) {
+        for (double i = 1; i > .1;){
+            WPI_TalonFX turn = this.m_turningMotor;
+            i = Math.abs(((encoder.getAbsolutePosition()-.5) * 2 * Math.PI) - m_turningPIDController.calculate(getBetterTurnEncoderDistance(encoder),
+            0));
+            turn.setVoltage(m_turningPIDController.calculate(getTurnEncoderDistance(),0));
+
+
+        }
+
     }
 
     /**
@@ -113,10 +122,10 @@ public class SwerveModule {
      *
      * @param desiredState Desired state with speed and angle.
      */
-    public void setDesiredState(SwerveModuleState desiredState, DutyCycleEncoder encoder) {
+    public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-                new Rotation2d(getTurnEncoderDistance(encoder)));
+                new Rotation2d(getTurnEncoderDistance()));
 
         // Calculate the drive output from the drive PID controller.
         final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
@@ -124,7 +133,7 @@ public class SwerveModule {
         final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
         // Calculate the turning motor output from the turning PID controller.
-        final double turnOutput = m_turningPIDController.calculate(getTurnEncoderDistance(encoder),
+        final double turnOutput = m_turningPIDController.calculate(getTurnEncoderDistance(),
                 state.angle.getRadians());
 
         final double turnFeedforward = 0; // m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
@@ -161,26 +170,26 @@ public class SwerveModule {
      * 
      * @return get the turn motor angle
      */
-    public double getTurnEncoderDistance(DutyCycleEncoder encoder) {
-        final long truncater = (Math.round(encoder.getAbsolutePosition() * 100))/ (100);
-        //as absolute position tends to waver consistently, this should fix that by truncating fluctuating digits
-
-        return ((truncater-.5) * 2 * Math.PI) - this.angleOffset;
+    public double getTurnEncoderDistance() {
+        return (m_turningMotor.getSelectedSensorPosition() * kTurnEncoderConstant) - this.angleOffset;
+    }
+    public double getBetterTurnEncoderDistance(DutyCycleEncoder encoder) {
+        return (encoder.getAbsolutePosition());
     }
 
     public double getAngleSetpoint() {
-        return (Math.round(m_turningPIDController.getSetpoint().position * 100))/100;
+        return m_turningPIDController.getSetpoint().position;
     }
 
     public double getDriveSetpoint() {
         return m_drivePIDController.getSetpoint();
     }
 
-    public double getTurnEncoderRaw(DutyCycleEncoder encoder) {
-        return encoder.getAbsolutePosition();
+    public double getTurnEncoderRaw() {
+        return m_turningMotor.getSelectedSensorPosition();
     }
 
-    public boolean turnAtSetpoint(DutyCycleEncoder encoder) {
-        return Math.abs(m_turningPIDController.getSetpoint().position - getTurnEncoderDistance(encoder)) < 0.1;
+    public boolean turnAtSetpoint() {
+        return Math.abs(m_turningPIDController.getSetpoint().position - getTurnEncoderDistance()) < 0.1;
     }
 }

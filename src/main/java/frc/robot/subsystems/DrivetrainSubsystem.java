@@ -21,21 +21,22 @@ import frc.robot.Constants.DriveConstants;
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second
 	public static final double kMaxAngularSpeed = DriveConstants.kMaxAngularSpeed; // 2 is 1/2 rotation per second
-	private static DutyCycleEncoder FREncoder = new DutyCycleEncoder(DriveConstants.FREncoderID);
-	private static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
-	private static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
-	private static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
+	public static DutyCycleEncoder FREncoder = new DutyCycleEncoder(DriveConstants.FREncoderID);
+	public static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
+	public static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
+	public static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
 
-	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, FLEncoder, -2.576);
-	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, FREncoder, -2.63);
-	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, BLEncoder, -2.553);
-	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, BREncoder, -1.157);
+	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0, FLEncoder);
+	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, 0, FREncoder);
+	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, 0, BLEncoder);
+	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, 0, BREncoder);
 	
+
 	private final SwerveModulePosition[] positions = {
-		DrivetrainSubsystem.m_frontLeft.getPosition(FLEncoder), 
-		DrivetrainSubsystem.m_frontRight.getPosition(FREncoder), 
-		DrivetrainSubsystem.m_backLeft.getPosition(BLEncoder), 
-		DrivetrainSubsystem.m_backRight.getPosition(BREncoder)
+		DrivetrainSubsystem.m_frontLeft.getPosition(), 
+		DrivetrainSubsystem.m_frontRight.getPosition(), 
+		DrivetrainSubsystem.m_backLeft.getPosition(), 
+		DrivetrainSubsystem.m_backRight.getPosition()
 	};
 	
 	private static final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
@@ -70,10 +71,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 						: new ChassisSpeeds(xSpeed, ySpeed, rot));
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-		m_frontLeft.setDesiredState(swerveModuleStates[0], FLEncoder);
-		m_frontRight.setDesiredState(swerveModuleStates[1], FREncoder);
-		m_backLeft.setDesiredState(swerveModuleStates[2], BLEncoder);
-		m_backRight.setDesiredState(swerveModuleStates[3], BREncoder);
+		m_frontLeft.setDesiredState(swerveModuleStates[0]);
+		m_frontRight.setDesiredState(swerveModuleStates[1]);
+		m_backLeft.setDesiredState(swerveModuleStates[2]);
+		m_backRight.setDesiredState(swerveModuleStates[3]);
+
 	}
 	/*public void fakeConverter(SwerveModuleState[] param){
 		for (int i = 0; i < 4; i++) {
@@ -105,14 +107,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
-		//SmartDashboard.putNumber("FRA-ActualPS", m_frontRight.getTurnEncoderDistance());
-		//SmartDashboard.putNumber("FLA-ActualPS", m_frontLeft.getTurnEncoderDistance());
-		//SmartDashboard.putNumber("BRA-ActualPS", m_backRight.getTurnEncoderDistance());
-		//SmartDashboard.putNumber("BLA-ActualPS", m_backLeft.getTurnEncoderDistance());
-		SmartDashboard.putNumber("FRA-Actual", (FREncoder.getAbsolutePosition()-.5)*2*Math.PI);
-		SmartDashboard.putNumber("FLA-Actual", (FLEncoder.getAbsolutePosition()-.5)*2*Math.PI);
-		SmartDashboard.putNumber("BRA-Actual", (BREncoder.getAbsolutePosition()-.5)*2*Math.PI);
-		SmartDashboard.putNumber("BLA-Actual", (BLEncoder.getAbsolutePosition()-.5)*2*Math.PI);
+		SmartDashboard.putNumber("FRA-ActualPS", m_frontRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("FLA-ActualPS", m_frontLeft.getTurnEncoderDistance());
+		SmartDashboard.putNumber("BRA-ActualPS", m_backRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("BLA-ActualPS", m_backLeft.getTurnEncoderDistance());
+		SmartDashboard.putNumber("FRA-Actual", FREncoder.getDistance());
+		SmartDashboard.putNumber("FLA-Actual", FLEncoder.getDistance());
+		SmartDashboard.putNumber("BRA-Actual", BREncoder.getDistance());
+		SmartDashboard.putNumber("BLA-Actual", BLEncoder.getDistance());
 		
 		SmartDashboard.putNumber("FRA-Setpoint", m_frontRight.getAngleSetpoint());
 		SmartDashboard.putNumber("FLA-Setpoint", m_frontLeft.getAngleSetpoint());
@@ -120,15 +122,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("BLA-Setpoint", m_backLeft.getAngleSetpoint());
 		
 
-		//SmartDashboard.putNumber("FRD-Actual", m_frontRight.getDriveEncoderDistance());
-		//SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance());
-		//SmartDashboard.putNumber("BRD-Actual", m_backRight.getDriveEncoderDistance());
-		//SmartDashboard.putNumber("BLD-Actual", m_backLeft.getDriveEncoderDistance());
+		SmartDashboard.putNumber("FRD-Actual", m_frontRight.getDriveEncoderDistance());
+		SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance());
+		SmartDashboard.putNumber("BRD-Actual", m_backRight.getDriveEncoderDistance());
+		SmartDashboard.putNumber("BLD-Actual", m_backLeft.getDriveEncoderDistance());
 
-		//SmartDashboard.putNumber("FRD-Setpoint", m_frontRight.getDriveSetpoint());
-		//SmartDashboard.putNumber("FLD-Setpoint", m_frontLeft.getDriveSetpoint());
-		//SmartDashboard.putNumber("BRD-Setpoint", m_backRight.getDriveSetpoint());
-		//SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());
+		SmartDashboard.putNumber("FRD-Setpoint", m_frontRight.getDriveSetpoint());
+		SmartDashboard.putNumber("FLD-Setpoint", m_frontLeft.getDriveSetpoint());
+		SmartDashboard.putNumber("BRD-Setpoint", m_backRight.getDriveSetpoint());
+		SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());
 		
 	}
 }
