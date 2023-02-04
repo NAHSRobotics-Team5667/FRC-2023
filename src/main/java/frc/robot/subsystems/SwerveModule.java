@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveModule {
     private static final double kWheelRadius = 0.0508;
@@ -67,20 +66,24 @@ public class SwerveModule {
             int turningMotorChannel,
             double angleOffset,
             DutyCycleEncoder Encoder) {
-        m_driveMotor = new WPI_TalonFX(driveMotorChannel);
+        this.m_driveMotor = new WPI_TalonFX(driveMotorChannel);
         this.Encoder= Encoder;
-        m_turningMotor = new WPI_TalonFX(turningMotorChannel);
+        this.m_turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.angleOffset = angleOffset;
-        this.align(this.Encoder); 
-        m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-        m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
+        this.m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        this.m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        
+        // TODO: Fix this - offsets are in constants and figure out what do do with angleoffset variable
+        this.m_turningMotor.setSelectedSensorPosition(this.Encoder.getAbsolutePosition()-angleOffset);
         //m_turningMotor.setSelectedSensorPosition(0);
         //m_driveMotor.setSelectedSensorPosition(0);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
         m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        
+
+        this.setDesiredState(new SwerveModuleState(0, new Rotation2d(0)));
 
     
     }
@@ -105,12 +108,12 @@ public class SwerveModule {
         return new edu.wpi.first.math.kinematics.SwerveModulePosition(
             getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
     }
-    public void align(DutyCycleEncoder encoder) {
-        for (double i = 1; i > .1;){
+    public void align() {
+        double i = 1;
+        while(i>.1){
             WPI_TalonFX turn = this.m_turningMotor;
-            i = Math.abs(((encoder.getAbsolutePosition()-.5) * 2 * Math.PI) - m_turningPIDController.calculate(getBetterTurnEncoderDistance(encoder),
-            0));
-            turn.setVoltage(m_turningPIDController.calculate(getTurnEncoderDistance(),0));
+            i = Math.abs(((this.Encoder.getAbsolutePosition()-.5) * 2 * Math.PI) - m_turningPIDController.calculate(getBetterTurnEncoderDistance(),0));
+            turn.setVoltage(m_turningPIDController.calculate(getBetterTurnEncoderDistance(),0));
 
 
         }
@@ -173,8 +176,8 @@ public class SwerveModule {
     public double getTurnEncoderDistance() {
         return (m_turningMotor.getSelectedSensorPosition() * kTurnEncoderConstant) - this.angleOffset;
     }
-    public double getBetterTurnEncoderDistance(DutyCycleEncoder encoder) {
-        return (encoder.getAbsolutePosition());
+    public double getBetterTurnEncoderDistance() {
+        return (this.Encoder.getAbsolutePosition());
     }
 
     public double getAngleSetpoint() {

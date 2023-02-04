@@ -26,10 +26,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
 	public static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
 
-	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0, FLEncoder);
-	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, 0, FREncoder);
-	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, 0, BLEncoder);
-	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, 0, BREncoder);
+	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, DriveConstants.FLEncoderOffset, FLEncoder);
+	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, DriveConstants.FREncoderOffset, FREncoder);
+	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, DriveConstants.BLEncoderOffset, BLEncoder);
+	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, DriveConstants.BREncoderOffset, BREncoder);
 	
 
 	private final SwerveModulePosition[] positions = {
