@@ -28,16 +28,16 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 	private static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
 	private static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
 	private static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
-	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0, FLEncoder);
-	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, 0, FREncoder);
-	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, 0, BLEncoder);
-	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, 0, BREncoder);
+	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, FLEncoder, -2.576);
+	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, FREncoder, -2.63);
+	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, BLEncoder, -2.553);
+	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, BREncoder, -1.157);
 	
 	private final SwerveModulePosition[] positions = {
-		DrivetrainAutoSubsystem.m_frontLeft.getPosition(), 
-		DrivetrainAutoSubsystem.m_frontRight.getPosition(), 
-		DrivetrainAutoSubsystem.m_backLeft.getPosition(), 
-		DrivetrainAutoSubsystem.m_backRight.getPosition()
+		DrivetrainAutoSubsystem.m_frontLeft.getPosition(FLEncoder), 
+		DrivetrainAutoSubsystem.m_frontRight.getPosition(FREncoder), 
+		DrivetrainAutoSubsystem.m_backLeft.getPosition(BLEncoder), 
+		DrivetrainAutoSubsystem.m_backRight.getPosition(BREncoder)
 	};
 	
 	private static final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
@@ -72,17 +72,17 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 						: new ChassisSpeeds(xSpeed, ySpeed, rot));
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-		m_frontLeft.setDesiredState(swerveModuleStates[0]);
-		m_frontRight.setDesiredState(swerveModuleStates[1]);
-		m_backLeft.setDesiredState(swerveModuleStates[2]);
-		m_backRight.setDesiredState(swerveModuleStates[3]);
+		m_frontLeft.setDesiredState(swerveModuleStates[0], FLEncoder);
+		m_frontRight.setDesiredState(swerveModuleStates[1], FREncoder);
+		m_backLeft.setDesiredState(swerveModuleStates[2], BLEncoder);
+		m_backRight.setDesiredState(swerveModuleStates[3], BREncoder);
 	}
 
     public void pleaseGodLetThisWork(SwerveModuleState Wheel1, SwerveModuleState Wheel2, SwerveModuleState Wheel3, SwerveModuleState Wheel4){
-        m_frontLeft.setDesiredState(Wheel1);
-		m_frontRight.setDesiredState(Wheel2);
-		m_backLeft.setDesiredState(Wheel3);
-		m_backRight.setDesiredState(Wheel4);
+        m_frontLeft.setDesiredState(Wheel1, FLEncoder);
+		m_frontRight.setDesiredState(Wheel2, FREncoder);
+		m_backLeft.setDesiredState(Wheel3, BLEncoder);
+		m_backRight.setDesiredState(Wheel4, BREncoder);
     }
 
     public Pose2d getPositionPose2d(){
@@ -111,7 +111,7 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		//public int checkBumper
-		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+		/*SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
 		//SmartDashboard.putNumber("Abs Encoder, back left edition", BackLeft.getAbsolutePosition());
 		SmartDashboard.putNumber("FRA-Actual", m_frontRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("FLA-Actual", m_frontLeft.getTurnEncoderDistance());
@@ -134,6 +134,7 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("FLD-Setpoint", m_frontLeft.getDriveSetpoint());
 		SmartDashboard.putNumber("BRD-Setpoint", m_backRight.getDriveSetpoint());
 		SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());
+		*/
 		
 	}
 }
