@@ -26,7 +26,7 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	public static final XboxController m_controller = new XboxController(0);
 	private DrivetrainSubsystem m_drive;
-	private DrivetrainAutoSubsystem m_auto;
+	//private DrivetrainAutoSubsystem m_auto;
 	private ClawSubsystem m_claw;
 
 	/**

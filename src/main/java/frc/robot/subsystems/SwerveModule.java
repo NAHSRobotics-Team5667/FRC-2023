@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveModule {
@@ -47,7 +48,7 @@ public class SwerveModule {
     private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.10397, 2.1787, .33432);
 
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
-
+    private DutyCycleEncoder Encoder;
     private double angleOffset = 0;
 
     /**
@@ -64,11 +65,13 @@ public class SwerveModule {
     public SwerveModule(
             int driveMotorChannel,
             int turningMotorChannel,
-            double angleOffset) {
+            double angleOffset,
+            DutyCycleEncoder Encoder) {
         m_driveMotor = new WPI_TalonFX(driveMotorChannel);
+        this.Encoder= Encoder;
         m_turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.angleOffset = angleOffset;
-
+        this.align(this.Encoder); 
         m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
@@ -101,6 +104,17 @@ public class SwerveModule {
     public edu.wpi.first.math.kinematics.SwerveModulePosition getPosition() {
         return new edu.wpi.first.math.kinematics.SwerveModulePosition(
             getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
+    }
+    public void align(DutyCycleEncoder encoder) {
+        for (double i = 1; i > .1;){
+            WPI_TalonFX turn = this.m_turningMotor;
+            i = Math.abs(((encoder.getAbsolutePosition()-.5) * 2 * Math.PI) - m_turningPIDController.calculate(getBetterTurnEncoderDistance(encoder),
+            0));
+            turn.setVoltage(m_turningPIDController.calculate(getTurnEncoderDistance(),0));
+
+
+        }
+
     }
 
     /**
@@ -158,6 +172,9 @@ public class SwerveModule {
      */
     public double getTurnEncoderDistance() {
         return (m_turningMotor.getSelectedSensorPosition() * kTurnEncoderConstant) - this.angleOffset;
+    }
+    public double getBetterTurnEncoderDistance(DutyCycleEncoder encoder) {
+        return (encoder.getAbsolutePosition());
     }
 
     public double getAngleSetpoint() {
