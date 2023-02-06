@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,11 +24,14 @@ import frc.robot.Constants.DriveConstants;
 public class DrivetrainAutoSubsystem extends SubsystemBase {
 	public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second
 	public static final double kMaxAngularSpeed = DriveConstants.kMaxAngularSpeed; // 2 is 1/2 rotation per second
-
-	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0);
-	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontLeftTurningID, 0);
-	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kFrontLeftTurningID, 0);
-	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kFrontLeftTurningID, 0);
+	private static DutyCycleEncoder FREncoder = new DutyCycleEncoder(DriveConstants.FREncoderID);
+	private static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
+	private static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
+	private static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
+	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0, FLEncoder);
+	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, 0, FREncoder);
+	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, 0, BLEncoder);
+	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, 0, BREncoder);
 	
 	private final SwerveModulePosition[] positions = {
 		DrivetrainAutoSubsystem.m_frontLeft.getPosition(), 
@@ -108,7 +112,7 @@ public class DrivetrainAutoSubsystem extends SubsystemBase {
 	public void periodic() {
 		//public int checkBumper
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
-		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
+		//SmartDashboard.putNumber("Abs Encoder, back left edition", BackLeft.getAbsolutePosition());
 		SmartDashboard.putNumber("FRA-Actual", m_frontRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("FLA-Actual", m_frontLeft.getTurnEncoderDistance());
 		SmartDashboard.putNumber("BRA-Actual", m_backRight.getTurnEncoderDistance());

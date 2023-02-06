@@ -10,11 +10,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.DrivetrainAutoSubsystem;
+//import frc.robot.subsystems.DrivetrainAutoSubsystem;
 
 public class DrivetrainCommand extends CommandBase {
 	public DrivetrainSubsystem m_swerve;
-	public static DrivetrainAutoSubsystem m_autooooooo;
+	//public static DrivetrainAutoSubsystem m_autooooooo;
 
 	// Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
 	private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -31,6 +31,7 @@ public class DrivetrainCommand extends CommandBase {
 	// Called when the command is initially scheduled.
 	@Override
 	public void initialize() {
+	
 	}
 
 	// Called every time the scheduler runs while the command is scheduled.
@@ -73,6 +74,6 @@ public class DrivetrainCommand extends CommandBase {
 				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.02))
 				* DrivetrainSubsystem.kMaxAngularSpeed;
 
-		m_swerve.drive(xSpeed, ySpeed, rot, false);
+		m_swerve.drive(xSpeed, ySpeed, rot, true);
 	}
 }

@@ -42,6 +42,14 @@ public final class Constants {
         public static final int BREncoderID = 0;
         public static final int BLEncoderID = 1;
         
+        //may need some tweaking
+        public static final double FREncoderOffset = -0.3114;
+        public static final double FLEncoderOffset = -0.0875;
+        public static final double BREncoderOffset = -0.0982;
+        public static final double BLEncoderOffset = -0.9133;
+
+
+
     }
     public static final class ClawConstants{
         public static final int kClawID = -1;

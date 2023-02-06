@@ -21,21 +21,22 @@ import frc.robot.Constants.DriveConstants;
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second
 	public static final double kMaxAngularSpeed = DriveConstants.kMaxAngularSpeed; // 2 is 1/2 rotation per second
-	private static DutyCycleEncoder FREncoder = new DutyCycleEncoder(DriveConstants.FREncoderID);
-	private static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
-	private static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
-	private static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
+	public static DutyCycleEncoder FREncoder = new DutyCycleEncoder(DriveConstants.FREncoderID);
+	public static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
+	public static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
+	public static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
 
-	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, 0);
-	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontLeftTurningID, 0);
-	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kFrontLeftTurningID, 0);
-	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kFrontLeftTurningID, 0);
+	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, DriveConstants.FLEncoderOffset, FLEncoder);
+	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, DriveConstants.FREncoderOffset, FREncoder);
+	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, DriveConstants.BLEncoderOffset, BLEncoder);
+	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, DriveConstants.BREncoderOffset, BREncoder);
 	
+
 	private final SwerveModulePosition[] positions = {
-		DrivetrainAutoSubsystem.m_frontLeft.getPosition(), 
-		DrivetrainAutoSubsystem.m_frontRight.getPosition(), 
-		DrivetrainAutoSubsystem.m_backLeft.getPosition(), 
-		DrivetrainAutoSubsystem.m_backRight.getPosition()
+		DrivetrainSubsystem.m_frontLeft.getPosition(), 
+		DrivetrainSubsystem.m_frontRight.getPosition(), 
+		DrivetrainSubsystem.m_backLeft.getPosition(), 
+		DrivetrainSubsystem.m_backRight.getPosition()
 	};
 	
 	private static final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
@@ -74,6 +75,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		m_frontRight.setDesiredState(swerveModuleStates[1]);
 		m_backLeft.setDesiredState(swerveModuleStates[2]);
 		m_backRight.setDesiredState(swerveModuleStates[3]);
+
 	}
 	/*public void fakeConverter(SwerveModuleState[] param){
 		for (int i = 0; i < 4; i++) {
