@@ -6,15 +6,19 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 /** Represents a swerve drive style drivetrain. */
@@ -47,8 +51,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 		m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-	private final AHRS m_gyro = new AHRS(Port.kMXP);
-
+	public final AHRS m_gyro = new AHRS(Port.kMXP);
+		
 	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
 
 	public DrivetrainSubsystem() {
@@ -87,6 +91,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 	}*/
+	public void resetPose(Rotation2d gyro, SwerveModulePosition[] positions, Pose2d m_pose){
+        // m_odometry.resetPosition(null, m_swerveModuleFakeStates, m_pose);
+        m_odometry.resetPosition(gyro, positions, m_pose);
+    }
+	public void pleaseGodLetThisWork(SwerveModuleState Wheel1, SwerveModuleState Wheel2, SwerveModuleState Wheel3, SwerveModuleState Wheel4){
+        m_frontLeft.setDesiredState(Wheel1);
+		m_frontRight.setDesiredState(Wheel2);
+		m_backLeft.setDesiredState(Wheel3);
+		m_backRight.setDesiredState(Wheel4);
+    }
+	public Pose2d getPositionPose2d(){
+        return m_odometry.getPoseMeters();
+    }
 	public void driveVoltage(double voltage) {
 		m_frontLeft.driveVoltage(voltage);
 		m_frontRight.driveVoltage(voltage);
@@ -105,18 +122,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void periodic() {
 		//fakeConverter(m_swerveModuleStates);
 		//public int checkBumper
-		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+		
+		//SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
+		SmartDashboard.putNumber("FRATICK", m_frontRight.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
+		SmartDashboard.putNumber("FLATICK", m_frontLeft.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
+		SmartDashboard.putNumber("BRATICK", m_backRight.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
+		SmartDashboard.putNumber("FRATICK", m_backLeft.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
 		SmartDashboard.putNumber("FRA-ActualPS", m_frontRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("FLA-ActualPS", m_frontLeft.getTurnEncoderDistance());
 		SmartDashboard.putNumber("BRA-ActualPS", m_backRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("BLA-ActualPS", m_backLeft.getTurnEncoderDistance());
-		SmartDashboard.putNumber("FRA-Actual", FREncoder.getDistance());
-		SmartDashboard.putNumber("FLA-Actual", FLEncoder.getDistance());
-		SmartDashboard.putNumber("BRA-Actual", BREncoder.getDistance());
-		SmartDashboard.putNumber("BLA-Actual", BLEncoder.getDistance());
+		SmartDashboard.putNumber("FRA-Actual", FREncoder.getAbsolutePosition());
+		SmartDashboard.putNumber("FLA-Actual", FLEncoder.getAbsolutePosition());
+		SmartDashboard.putNumber("BRA-Actual", BREncoder.getAbsolutePosition());
+		SmartDashboard.putNumber("BLA-Actual", BLEncoder.getAbsolutePosition());
 		
-		SmartDashboard.putNumber("FRA-Setpoint", m_frontRight.getAngleSetpoint());
+		/*SmartDashboard.putNumber("FRA-Setpoint", m_frontRight.getAngleSetpoint());
 		SmartDashboard.putNumber("FLA-Setpoint", m_frontLeft.getAngleSetpoint());
 		SmartDashboard.putNumber("BRA-Setpoint", m_backRight.getAngleSetpoint());
 		SmartDashboard.putNumber("BLA-Setpoint", m_backLeft.getAngleSetpoint());
@@ -130,7 +152,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("FRD-Setpoint", m_frontRight.getDriveSetpoint());
 		SmartDashboard.putNumber("FLD-Setpoint", m_frontLeft.getDriveSetpoint());
 		SmartDashboard.putNumber("BRD-Setpoint", m_backRight.getDriveSetpoint());
-		SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());
+		SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());*/
 		
 	}
 }

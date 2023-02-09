@@ -37,16 +37,16 @@ public final class Constants {
         public static final double kDriveGearRatio = 6.54;
         public static final double kTurnGearRatio = 15.43;
 
-        public static final int FREncoderID = 3;
-        public static final int FLEncoderID = 2;
-        public static final int BREncoderID = 0;
+        public static final int FREncoderID = 2;
+        public static final int FLEncoderID = 0;
+        public static final int BREncoderID = 3;
         public static final int BLEncoderID = 1;
         
-        //may need some tweaking
-        public static final double FREncoderOffset = -0.3114;
-        public static final double FLEncoderOffset = -0.0875;
-        public static final double BREncoderOffset = -0.0982;
-        public static final double BLEncoderOffset = -0.9133;
+        public static final double FREncoderOffset = 0.412877;
+        public static final double FLEncoderOffset = 0.4076069;
+        public static final double BREncoderOffset = .182498;
+        public static final double BLEncoderOffset = 0.406126;
+        public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
 
 

@@ -3,14 +3,15 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-
+import frc.robot.subsystems.SwerveModule;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
-//import frc.robot.subsystems.DrivetrainAutoSubsystem;
+import frc.robot.subsystems.DrivetrainAutoSubsystem;
 
 public class DrivetrainCommand extends CommandBase {
 	public DrivetrainSubsystem m_swerve;
@@ -52,7 +53,16 @@ public class DrivetrainCommand extends CommandBase {
 		return false;
 	}
 
+
 	private void joystickDrive() {
+		if (RobotContainer.m_controller.getYButtonPressed()) {
+			DrivetrainSubsystem.m_backRight.align();
+			DrivetrainSubsystem.m_backLeft.align();
+			DrivetrainSubsystem.m_frontLeft.align();
+			DrivetrainSubsystem.m_frontRight.align();
+
+			
+		}
 		// Get the x speed. We are inverting this because Xbox controllers return
 		// negative values when we push forward.
 		final double xSpeed = -m_xspeedLimiter
@@ -62,6 +72,7 @@ public class DrivetrainCommand extends CommandBase {
 		// Get the y speed or sideways/strafe speed. We are inverting this because
 		// we want a positive value when we pull to the left. Xbox controllers
 		// return positive values when you pull to the right by default.
+		
 		final double ySpeed = m_yspeedLimiter
 				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.02))
 				* DrivetrainSubsystem.kMaxSpeed;

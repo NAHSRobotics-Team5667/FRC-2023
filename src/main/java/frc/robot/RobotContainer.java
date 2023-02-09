@@ -4,9 +4,24 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -28,6 +43,7 @@ public class RobotContainer {
 	private DrivetrainSubsystem m_drive;
 	//private DrivetrainAutoSubsystem m_auto;
 	private ClawSubsystem m_claw;
+	//private DrivetrainAutoSubsystem m_auto;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -55,7 +71,7 @@ public class RobotContainer {
 		Supplier<Pose2d> poseSupplier = new Supplier<Pose2d>() {
 			@Override
 			public Pose2d get() {
-				return m_auto.getPositionPose2d();
+				return m_drive.getPositionPose2d();
 			}
 		};
 
@@ -64,14 +80,15 @@ public class RobotContainer {
 			public void accept(Pose2d pose) {
 				// TODO: MAKE THIS THE CORRECT MODULE POSITIONS
 				SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {};
-				m_auto.resetPose(pose.getRotation(), modulePositions, pose);
+				
+				m_drive.resetPose(pose.getRotation(), modulePositions, pose);
 			}
 		};
 
 		Consumer<SwerveModuleState[]> outputModuleConsumer = new Consumer<SwerveModuleState[]>() {
 			@Override
 			public void accept(SwerveModuleState[] t) {
-				m_auto.pleaseGodLetThisWork(t[0], t[1], t[2], t[3]);
+				m_drive.pleaseGodLetThisWork(t[0], t[1], t[2], t[3]);
 			}
 		};
 
@@ -81,7 +98,7 @@ public class RobotContainer {
 		SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
 				poseSupplier, // Pose2d supplier
 				resetPoseConsumer, // Pose2d consumer, used to reset odometry at the beginning of auto
-				m_auto.m_kinematics, // SwerveDriveKinematics
+				m_drive.m_kinematics, // SwerveDriveKinematics
 				new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X
 													// and Y PID controllers)
 				new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the
@@ -90,11 +107,11 @@ public class RobotContainer {
 				eventMap,
 				true, // Should the path be automatically mirrored depending on alliance color.
 						// Optional, defaults to true
-				m_auto // The drive subsystem. Used to properly set the requirements of path following
+				m_drive // The drive subsystem. Used to properly set the requirements of path following
 						// commands
-		);
+		);*/
 
-		Command fullAuto = autoBuilder.fullAuto(pathGroup);*/
+		//Command fullAuto = autoBuilder.fullAuto(pathGroup);
 	}   
 
 	/**
@@ -104,7 +121,7 @@ public class RobotContainer {
 	 * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
 	 * it to a {@link
 	 * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-	 */
+	 */ 
 	private void configureButtonBindings() {
 	}
 

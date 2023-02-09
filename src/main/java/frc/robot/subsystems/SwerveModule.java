@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import frc.robot.Constants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -24,7 +24,7 @@ public class SwerveModule {
 
     public static final double kDriveEncoderConstant = (2 * kWheelRadius * Math.PI)
             / (kEncoderResolution * kDriveGearRatio);
-    private static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
+    
 
     private static final double kModuleMaxAngularVelocity = DrivetrainSubsystem.kMaxAngularSpeed;
     private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
@@ -32,11 +32,11 @@ public class SwerveModule {
     private final WPI_TalonFX m_driveMotor;
     private final WPI_TalonFX m_turningMotor;
 
-    private final PIDController m_drivePIDController = new PIDController(.5, 0, 0);
+    private final PIDController m_drivePIDController = new PIDController(.6, 0, 0);
 
     // Gains are for example purposes only - must be determined for your own robot!
     private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-            2,
+            3,
             0,
             0,
             new TrapezoidProfile.Constraints(
@@ -48,7 +48,7 @@ public class SwerveModule {
 
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
     private DutyCycleEncoder Encoder;
-    private double angleOffset = 0;
+   // private double angleOffset = 0;
 
     /**
      * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -69,12 +69,21 @@ public class SwerveModule {
         this.m_driveMotor = new WPI_TalonFX(driveMotorChannel);
         this.Encoder= Encoder;
         this.m_turningMotor = new WPI_TalonFX(turningMotorChannel);
-        this.angleOffset = angleOffset;
         this.m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         this.m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        
+        this.m_turningMotor.setSelectedSensorPosition(((this.Encoder.getAbsolutePosition()-angleOffset)*15.43*2048));
         // TODO: Fix this - offsets are in constants and figure out what do do with angleoffset variable
-        this.m_turningMotor.setSelectedSensorPosition(this.Encoder.getAbsolutePosition()-angleOffset);
+        
+            
+           // if (Encoder.getAbsolutePosition()-angleOffset < 0) {
+            
+        
+           
+             //   m_turningMotor.setSelectedSensorPosition((15.43*2048)-((this.Encoder.getAbsolutePosition()-angleOffset)*15.43*2048));
+            //}
+           
+        
+        
         //m_turningMotor.setSelectedSensorPosition(0);
         //m_driveMotor.setSelectedSensorPosition(0);
 
@@ -108,17 +117,13 @@ public class SwerveModule {
         return new edu.wpi.first.math.kinematics.SwerveModulePosition(
             getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
     }
+    private double angleOffset = this.angleOffset;
     public void align() {
-        double i = 1;
-        while(i>.1){
-            WPI_TalonFX turn = this.m_turningMotor;
-            i = Math.abs(((this.Encoder.getAbsolutePosition()-.5) * 2 * Math.PI) - m_turningPIDController.calculate(getBetterTurnEncoderDistance(),0));
-            turn.setVoltage(m_turningPIDController.calculate(getBetterTurnEncoderDistance(),0));
-
+        this.m_turningMotor.setSelectedSensorPosition(((this.Encoder.getAbsolutePosition()-angleOffset)*15.43*2048));
 
         }
 
-    }
+    
 
     /**
      * Sets the desired state for the module.
@@ -174,7 +179,7 @@ public class SwerveModule {
      * @return get the turn motor angle
      */
     public double getTurnEncoderDistance() {
-        return (m_turningMotor.getSelectedSensorPosition() * kTurnEncoderConstant) - this.angleOffset;
+        return (m_turningMotor.getSelectedSensorPosition() * Constants.DriveConstants.kTurnEncoderConstant);
     }
     public double getBetterTurnEncoderDistance() {
         return (this.Encoder.getAbsolutePosition());
