@@ -14,7 +14,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.DrivetrainAutoSubsystem;
 
 public class DrivetrainCommand extends CommandBase {
-	public DrivetrainSubsystem m_swerve;
+	public DrivetrainSubsystem m_swerve = new DrivetrainSubsystem();
 	//public static DrivetrainAutoSubsystem m_autooooooo;
 
 	// Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -24,6 +24,7 @@ public class DrivetrainCommand extends CommandBase {
 
 	/** Creates a new DrivetrainCommand. */
 	public DrivetrainCommand(DrivetrainSubsystem drive) {
+		m_swerve.m_gyro.reset();
 		// Use addRequirements() here to declare subsystem dependencies.
 		addRequirements(drive);
 		this.m_swerve = drive;

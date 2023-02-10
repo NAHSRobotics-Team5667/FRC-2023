@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Timer;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -117,34 +119,36 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				m_gyro.getRotation2d(),
 				positions);
 	}
+	
 
 	@Override
 	public void periodic() {
 		//fakeConverter(m_swerveModuleStates);
 		//public int checkBumper
 		
-		//SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+		SmartDashboard.putNumber("absolute encoder heckin value", m_frontRight.trueEncoderOffset);
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
-		SmartDashboard.putNumber("FRATICK", m_frontRight.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
-		SmartDashboard.putNumber("FLATICK", m_frontLeft.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
-		SmartDashboard.putNumber("BRATICK", m_backRight.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
-		SmartDashboard.putNumber("FRATICK", m_backLeft.getTurnEncoderDistance()/Constants.DriveConstants.kTurnEncoderConstant);
+		SmartDashboard.putString("State angle", m_frontRight.getState().angle.toString());
+		SmartDashboard.putNumber("FRATICK", m_frontRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("FLATICK", m_frontLeft.getTurnEncoderDistance());
+		SmartDashboard.putNumber("BRATICK", m_backRight.getTurnEncoderDistance());
+		SmartDashboard.putNumber("FRATICK", m_backLeft.getTurnEncoderDistance());
 		SmartDashboard.putNumber("FRA-ActualPS", m_frontRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("FLA-ActualPS", m_frontLeft.getTurnEncoderDistance());
 		SmartDashboard.putNumber("BRA-ActualPS", m_backRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("BLA-ActualPS", m_backLeft.getTurnEncoderDistance());
-		SmartDashboard.putNumber("FRA-Actual", FREncoder.getAbsolutePosition());
-		SmartDashboard.putNumber("FLA-Actual", FLEncoder.getAbsolutePosition());
-		SmartDashboard.putNumber("BRA-Actual", BREncoder.getAbsolutePosition());
-		SmartDashboard.putNumber("BLA-Actual", BLEncoder.getAbsolutePosition());
+		SmartDashboard.putNumber("FRA-Actual", (FREncoder.getAbsolutePosition()-m_frontRight.angleOffset)*2*Math.PI);
+		SmartDashboard.putNumber("FLA-Actual", (FLEncoder.getAbsolutePosition()-m_frontLeft.angleOffset)*2*Math.PI);
+		SmartDashboard.putNumber("BRA-Actual", (BREncoder.getAbsolutePosition()-m_backRight.angleOffset)*2*Math.PI);
+		SmartDashboard.putNumber("BLA-Actual", (BLEncoder.getAbsolutePosition()-m_backLeft.angleOffset)*2*Math.PI);
 		
-		/*SmartDashboard.putNumber("FRA-Setpoint", m_frontRight.getAngleSetpoint());
+		SmartDashboard.putNumber("FRA-Setpoint", m_frontRight.getAngleSetpoint());
 		SmartDashboard.putNumber("FLA-Setpoint", m_frontLeft.getAngleSetpoint());
 		SmartDashboard.putNumber("BRA-Setpoint", m_backRight.getAngleSetpoint());
 		SmartDashboard.putNumber("BLA-Setpoint", m_backLeft.getAngleSetpoint());
 		
-
-		SmartDashboard.putNumber("FRD-Actual", m_frontRight.getDriveEncoderDistance());
+/* 		SmartDashboard.putNumber("FRD-Actual", m_frontRight.getDriveEncoderDistance());
 		SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance());
 		SmartDashboard.putNumber("BRD-Actual", m_backRight.getDriveEncoderDistance());
 		SmartDashboard.putNumber("BLD-Actual", m_backLeft.getDriveEncoderDistance());
