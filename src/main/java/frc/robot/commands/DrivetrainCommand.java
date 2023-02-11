@@ -3,15 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.SwerveModule;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.DrivetrainAutoSubsystem;
 
 public class DrivetrainCommand extends CommandBase {
 	public DrivetrainSubsystem m_swerve = new DrivetrainSubsystem();
@@ -24,7 +20,7 @@ public class DrivetrainCommand extends CommandBase {
 
 	/** Creates a new DrivetrainCommand. */
 	public DrivetrainCommand(DrivetrainSubsystem drive) {
-		m_swerve.m_gyro.reset();
+		m_swerve.m_gyro.calibrate();
 		// Use addRequirements() here to declare subsystem dependencies.
 		addRequirements(drive);
 		this.m_swerve = drive;
@@ -64,10 +60,14 @@ public class DrivetrainCommand extends CommandBase {
 
 			
 		}
+		if (RobotContainer.m_controller.getXButtonPressed()) {
+			m_swerve.resetGyro();
+		}
+
 		// Get the x speed. We are inverting this because Xbox controllers return
 		// negative values when we push forward.
 		final double xSpeed = -m_xspeedLimiter
-				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.02))
+				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.05))
 				* DrivetrainSubsystem.kMaxSpeed;
 
 		// Get the y speed or sideways/strafe speed. We are inverting this because
@@ -75,7 +75,7 @@ public class DrivetrainCommand extends CommandBase {
 		// return positive values when you pull to the right by default.
 		
 		final double ySpeed = m_yspeedLimiter
-				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.02))
+				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.05))
 				* DrivetrainSubsystem.kMaxSpeed;
 
 		// Get the rate of angular rotation. We are inverting this because we want a
@@ -83,7 +83,7 @@ public class DrivetrainCommand extends CommandBase {
 		// mathematics). Xbox controllers return positive values when you pull to
 		// the right by default.
 		final double rot = -m_rotLimiter
-				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.02))
+				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.05))
 				* DrivetrainSubsystem.kMaxAngularSpeed;
 
 		m_swerve.drive(xSpeed, ySpeed, rot, true);

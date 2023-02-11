@@ -36,7 +36,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, DriveConstants.FREncoderOffset, FREncoder);
 	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, DriveConstants.BLEncoderOffset, BLEncoder);
 	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, DriveConstants.BREncoderOffset, BREncoder);
-	
+	public static Rotation2d gyroOffset;
 
 	private final SwerveModulePosition[] positions = {
 		DrivetrainSubsystem.m_frontLeft.getPosition(), 
@@ -58,7 +58,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
 
 	public DrivetrainSubsystem() {
-		m_gyro.reset();
+		this.resetGyro();
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 		var swerveModuleStates = m_kinematics.toSwerveModuleStates(
 				fieldRelative
-						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, this.getGyro())
 						: new ChassisSpeeds(xSpeed, ySpeed, rot));
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
 		m_frontLeft.setDesiredState(swerveModuleStates[0]);
@@ -93,9 +93,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 	}*/
-	public void resetPose(Rotation2d gyro, SwerveModulePosition[] positions, Pose2d m_pose){
+	public void resetPose(SwerveModulePosition[] positions, Pose2d m_pose){
         // m_odometry.resetPosition(null, m_swerveModuleFakeStates, m_pose);
-        m_odometry.resetPosition(gyro, positions, m_pose);
+        m_odometry.resetPosition(this.getGyro(), positions, m_pose);
     }
 	public void pleaseGodLetThisWork(SwerveModuleState Wheel1, SwerveModuleState Wheel2, SwerveModuleState Wheel3, SwerveModuleState Wheel4){
         m_frontLeft.setDesiredState(Wheel1);
@@ -116,10 +116,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	/** Updates the field relative position of the robot. */
 	public void updateOdometry() {
 		m_odometry.update(
-				m_gyro.getRotation2d(),
+				this.getGyro(),
 				positions);
 	}
-	
+	public Rotation2d getGyro() {
+		return(this.m_gyro.getRotation2d().minus(gyroOffset));
+	}
+
+	public void resetGyro() {
+		gyroOffset = m_gyro.getRotation2d();
+
+	}
 
 	@Override
 	public void periodic() {
@@ -127,6 +134,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//public int checkBumper
 		
 		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+		SmartDashboard.putString("GyroFake", this.getGyro().toString());
 		SmartDashboard.putNumber("absolute encoder heckin value", m_frontRight.trueEncoderOffset);
 		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
 		SmartDashboard.putString("State angle", m_frontRight.getState().angle.toString());
@@ -159,4 +167,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());*/
 		
 	}
+
 }
