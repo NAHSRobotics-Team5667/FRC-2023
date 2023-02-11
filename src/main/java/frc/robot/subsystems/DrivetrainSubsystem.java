@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.Timer;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,7 +18,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 /** Represents a swerve drive style drivetrain. */
@@ -38,7 +35,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, DriveConstants.BREncoderOffset, BREncoder);
 	public static Rotation2d gyroOffset;
 
-	private final SwerveModulePosition[] positions = {
+	public final static SwerveModulePosition[] positions = {
 		DrivetrainSubsystem.m_frontLeft.getPosition(), 
 		DrivetrainSubsystem.m_frontRight.getPosition(), 
 		DrivetrainSubsystem.m_backLeft.getPosition(), 
@@ -55,10 +52,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public final AHRS m_gyro = new AHRS(Port.kMXP);
 		
-	public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
+	public final SwerveDriveOdometry m_odometry;
 
 	public DrivetrainSubsystem() {
 		this.resetGyro();
+	
+		this.m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
 	}
 	
 	/**

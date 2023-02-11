@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.Constants;
 import edu.wpi.first.math.controller.PIDController;
@@ -75,8 +76,12 @@ public class SwerveModule {
              //   trueEncoderOffset = 1 + trueEncoderOffset;
             //}
         }
+    
         this.m_driveMotor = new WPI_TalonFX(driveMotorChannel);
         this.m_turningMotor = new WPI_TalonFX(turningMotorChannel);
+
+        this.m_turningMotor.setNeutralMode(NeutralMode.Brake);
+        this.m_driveMotor.setNeutralMode(NeutralMode.Brake);
         this.m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         this.m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         //this.m_turningMotor.setSelectedSensorPosition(((this.Encoder.getAbsolutePosition()-angleOffset)*15.43*2048));
@@ -102,7 +107,7 @@ public class SwerveModule {
 
         double trueEncoderOffset = this.Encoder.getAbsolutePosition()-angleOffset;
         //this.align();
-    
+        
     }
     
 

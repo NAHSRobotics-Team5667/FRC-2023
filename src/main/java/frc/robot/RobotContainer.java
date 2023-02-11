@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.DrivetrainAutoSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -48,7 +47,7 @@ public class RobotContainer {
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
-
+	private Command fullAuto;
 	public RobotContainer() {
 		m_drive = new DrivetrainSubsystem();
 		m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
@@ -60,7 +59,7 @@ public class RobotContainer {
 		// of 4 m/s and a max acceleration of 3 m/s^2
 		// for every path in the group
 		
-		/*List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("FullAuto", new PathConstraints(4, 3));
+		PathPlannerTrajectory pathGroup = PathPlanner.loadPath("Die", new PathConstraints(.02, .02));
 
 		// This is just an example event map. It would be better to have a constant,
 		// global event map
@@ -78,10 +77,7 @@ public class RobotContainer {
 		Consumer<Pose2d> resetPoseConsumer = new Consumer<Pose2d>() {
 			@Override
 			public void accept(Pose2d pose) {
-				// TODO: MAKE THIS THE CORRECT MODULE POSITIONS
-				SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {};
-				
-				m_drive.resetPose(pose.getRotation(), modulePositions, pose);
+				m_drive.resetPose(DrivetrainSubsystem.positions, pose);
 			}
 		};
 
@@ -109,11 +105,11 @@ public class RobotContainer {
 						// Optional, defaults to true
 				m_drive // The drive subsystem. Used to properly set the requirements of path following
 						// commands
-		);*/
+		);
 
-		//Command fullAuto = autoBuilder.fullAuto(pathGroup);
+		this.fullAuto = autoBuilder.fullAuto(pathGroup);
 	}   
-
+	
 	/**
 	 * Use this method to define your button->command mappings. Buttons can be
 	 * created by
@@ -132,6 +128,6 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// An ExampleCommand will run in autonomous
-		return null;
+		return this.fullAuto;
 	}
 }
