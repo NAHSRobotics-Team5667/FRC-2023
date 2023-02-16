@@ -59,7 +59,7 @@ public class RobotContainer {
 		// of 4 m/s and a max acceleration of 3 m/s^2
 		// for every path in the group
 		
-		PathPlannerTrajectory pathGroup = PathPlanner.loadPath("Die", new PathConstraints(.02, .02));
+		PathPlannerTrajectory pathGroup = PathPlanner.loadPath("Die", new PathConstraints(.5, .02));
 
 		// This is just an example event map. It would be better to have a constant,
 		// global event map
@@ -70,7 +70,9 @@ public class RobotContainer {
 		Supplier<Pose2d> poseSupplier = new Supplier<Pose2d>() {
 			@Override
 			public Pose2d get() {
+				
 				return m_drive.getPositionPose2d();
+
 			}
 		};
 

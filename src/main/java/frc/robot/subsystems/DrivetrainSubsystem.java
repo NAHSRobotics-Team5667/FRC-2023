@@ -28,26 +28,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public static DutyCycleEncoder FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID);
 	public static DutyCycleEncoder BREncoder = new DutyCycleEncoder(DriveConstants.BREncoderID);
 	public static DutyCycleEncoder BLEncoder = new DutyCycleEncoder(DriveConstants.BLEncoderID);
-
+	public Pose2d m_pose = new Pose2d();
 	public static SwerveModule m_frontLeft = new SwerveModule(DriveConstants.kFrontLeftDriveID, DriveConstants.kFrontLeftTurningID, DriveConstants.FLEncoderOffset, FLEncoder);
 	public static SwerveModule m_frontRight = new SwerveModule(DriveConstants.kFrontRightDriveID, DriveConstants.kFrontRightTurningID, DriveConstants.FREncoderOffset, FREncoder);
 	public static SwerveModule m_backLeft = new SwerveModule(DriveConstants.kBackLeftDriveID, DriveConstants.kBackLeftTurningID, DriveConstants.BLEncoderOffset, BLEncoder);
 	public static SwerveModule m_backRight = new SwerveModule(DriveConstants.kBackRightDriveID, DriveConstants.kBackRightTurningID, DriveConstants.BREncoderOffset, BREncoder);
 	public static Rotation2d gyroOffset;
 
-	public final static SwerveModulePosition[] positions = {
+	public static SwerveModulePosition[] positions = {
 		DrivetrainSubsystem.m_frontLeft.getPosition(), 
 		DrivetrainSubsystem.m_frontRight.getPosition(), 
 		DrivetrainSubsystem.m_backLeft.getPosition(), 
 		DrivetrainSubsystem.m_backRight.getPosition()
 	};
+		
+	//private Translation2d m_center = new Translation2d(0, 0);
+	private Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
+	private Translation2d m_frontRightLocation = new Translation2d(0.417, 0.417);
+	private Translation2d m_backLeftLocation = new Translation2d(-0.417, -0.417);
+	private Translation2d m_backRightLocation = new Translation2d(-0.417, 0.417);
 	
-	private static final Translation2d m_frontLeftLocation = new Translation2d(0.417, -0.417);
-	private final static Translation2d m_frontRightLocation = new Translation2d(0.417, 0.417);
-	private final static Translation2d m_backLeftLocation = new Translation2d(-0.417, -0.417);
-	private final static Translation2d m_backRightLocation = new Translation2d(-0.417, 0.417);
-	
-	public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+	public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 		m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
 	public final AHRS m_gyro = new AHRS(Port.kMXP);
@@ -57,7 +58,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public DrivetrainSubsystem() {
 		this.resetGyro();
 	
-		this.m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions);
+		this.m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions, m_pose);
 	}
 	
 	/**
@@ -103,6 +104,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		m_backRight.setDesiredState(Wheel4);
     }
 	public Pose2d getPositionPose2d(){
+		
+		//m_center.getX() + current
         return m_odometry.getPoseMeters();
     }
 	public void driveVoltage(double voltage) {
@@ -113,11 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	/** Updates the field relative position of the robot. */
-	public void updateOdometry() {
-		m_odometry.update(
-				this.getGyro(),
-				positions);
-	}
+	
 	public Rotation2d getGyro() {
 		return(this.m_gyro.getRotation2d().minus(gyroOffset));
 	}
@@ -131,11 +130,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void periodic() {
 		//fakeConverter(m_swerveModuleStates);
 		//public int checkBumper
-		
-		SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+		Rotation2d gyroAngle = getGyro();
+		m_pose = m_odometry.update(gyroAngle, new SwerveModulePosition[]{
+			DrivetrainSubsystem.m_frontLeft.getPosition(), 
+			DrivetrainSubsystem.m_frontRight.getPosition(), 
+			DrivetrainSubsystem.m_backLeft.getPosition(), 
+			DrivetrainSubsystem.m_backRight.getPosition()
+		});
+		SmartDashboard.putString("Gyro", m_frontLeftLocation.toString());
 		SmartDashboard.putString("GyroFake", this.getGyro().toString());
-		SmartDashboard.putNumber("absolute encoder heckin value", m_frontRight.trueEncoderOffset);
-		//SmartDashboard.putNumber("Abs Encoder", m_backRight.getAbsoluteEncoder());
+		//SmartDashboard.putNumber("absolute encoder heckin value", m_frontRight.trueEncoderOffset);
+		SmartDashboard.putString("hecking auto", this.m_pose.toString());
 		SmartDashboard.putString("State angle", m_frontRight.getState().angle.toString());
 		SmartDashboard.putNumber("FRATICK", m_frontRight.getTurnEncoderDistance());
 		SmartDashboard.putNumber("FLATICK", m_frontLeft.getTurnEncoderDistance());
@@ -155,8 +160,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("BRA-Setpoint", m_backRight.getAngleSetpoint());
 		SmartDashboard.putNumber("BLA-Setpoint", m_backLeft.getAngleSetpoint());
 		
-/* 		SmartDashboard.putNumber("FRD-Actual", m_frontRight.getDriveEncoderDistance());
-		SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance());
+ 		SmartDashboard.putNumber("FRD-Actual", m_frontRight.getDriveEncoderDistance());
+		/*SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance());
 		SmartDashboard.putNumber("BRD-Actual", m_backRight.getDriveEncoderDistance());
 		SmartDashboard.putNumber("BLD-Actual", m_backLeft.getDriveEncoderDistance());
 
@@ -166,5 +171,4 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("BLD-Setpoint", m_backLeft.getDriveSetpoint());*/
 		
 	}
-
 }

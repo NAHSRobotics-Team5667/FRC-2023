@@ -67,7 +67,7 @@ public class DrivetrainCommand extends CommandBase {
 		// Get the x speed. We are inverting this because Xbox controllers return
 		// negative values when we push forward.
 		final double xSpeed = -m_xspeedLimiter
-				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.05))
+				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.02))
 				* DrivetrainSubsystem.kMaxSpeed;
 
 		// Get the y speed or sideways/strafe speed. We are inverting this because
@@ -75,7 +75,7 @@ public class DrivetrainCommand extends CommandBase {
 		// return positive values when you pull to the right by default.
 		
 		final double ySpeed = m_yspeedLimiter
-				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.05))
+				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.02))
 				* DrivetrainSubsystem.kMaxSpeed;
 
 		// Get the rate of angular rotation. We are inverting this because we want a
@@ -83,7 +83,7 @@ public class DrivetrainCommand extends CommandBase {
 		// mathematics). Xbox controllers return positive values when you pull to
 		// the right by default.
 		final double rot = -m_rotLimiter
-				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.05))
+				.calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.02))
 				* DrivetrainSubsystem.kMaxAngularSpeed;
 
 		m_swerve.drive(xSpeed, ySpeed, rot, true);

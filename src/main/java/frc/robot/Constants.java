@@ -27,7 +27,7 @@ public final class Constants {
         public static final int kBackLeftTurningID = 13;
         public static final int kBackRightTurningID = 11;
 
-        public static final double kMaxSpeed = 5; // 3 meters per second
+        public static final double kMaxSpeed = 2; // 3 meters per second
         public static final double kMaxAngularSpeed = 2* Math.PI; // 1/2 rotation per second
 
         // next lines are for the Swerve Module object

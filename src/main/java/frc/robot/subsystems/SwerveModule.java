@@ -86,7 +86,7 @@ public class SwerveModule {
         this.m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         //this.m_turningMotor.setSelectedSensorPosition(((this.Encoder.getAbsolutePosition()-angleOffset)*15.43*2048));
         // TODO: Fix this - offsets are in constants and figure out what do do with angleoffset variable
-        m_turningPIDController.setTolerance(.1, 0);
+        m_turningPIDController.setTolerance(0, 0);
             
            // if (Encoder.getAbsolutePosition()-angleOffset < 0) {
             
