@@ -52,7 +52,12 @@ public final class Constants {
 
     }
     public static final class ClawConstants{
-        public static final int kClawID = -1; 
+        public static final int kClawID = -1;
+    }
+    public static final class SlideConstants{
+        public static final int kLSlideID = -1;
+        public static final int kRSlideID = -1;
+        public static final int kTiltID = -1;
     }
 
 }
