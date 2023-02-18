@@ -27,12 +27,11 @@ public class ClawCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    claw.setIntake(0);
     if(RobotContainer.m_controller.getAButtonPressed()){
       claw.setIntake(.2);
-    }else{
-      claw.setIntake(0);
     }
-    if(RobotContainer.m_controller.getXButtonPressed()){
+    if(RobotContainer.m_controller.getBButtonPressed()){
       claw.setIntake(-.2);
     }
   }

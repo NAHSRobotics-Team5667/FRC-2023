@@ -27,8 +27,8 @@ public final class Constants {
         public static final int kBackLeftTurningID = 13;
         public static final int kBackRightTurningID = 11;
 
-        public static final double kMaxSpeed = 2; // 3 meters per second
-        public static final double kMaxAngularSpeed = 2* Math.PI; // 1/2 rotation per second
+        public static final double kMaxSpeed = 2; // should be 5 meters per second, 2 rn so ian keeps his ankles
+        public static final double kMaxAngularSpeed = 2*Math.PI; // is currently 1, will be 1/2 eventually (don't change)
 
         // next lines are for the Swerve Module object
         public static final double kWheelRadius = 0.0508; //meters
@@ -52,11 +52,7 @@ public final class Constants {
 
     }
     public static final class ClawConstants{
-        public static final int kClawID = -1;
+        public static final int kClawID = -1; 
     }
-
-
-
-
 
 }

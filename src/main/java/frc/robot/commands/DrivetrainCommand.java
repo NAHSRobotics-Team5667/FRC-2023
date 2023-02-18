@@ -11,7 +11,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class DrivetrainCommand extends CommandBase {
 	public DrivetrainSubsystem m_swerve = new DrivetrainSubsystem();
-	//public static DrivetrainAutoSubsystem m_autooooooo;
 
 	// Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
 	private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -52,14 +51,7 @@ public class DrivetrainCommand extends CommandBase {
 
 
 	private void joystickDrive() {
-		if (RobotContainer.m_controller.getYButtonPressed()) {
-			DrivetrainSubsystem.m_backRight.align();
-			DrivetrainSubsystem.m_backLeft.align();
-			DrivetrainSubsystem.m_frontLeft.align();
-			DrivetrainSubsystem.m_frontRight.align();
-
-			
-		}
+		
 		if (RobotContainer.m_controller.getXButtonPressed()) {
 			m_swerve.resetGyro();
 		}

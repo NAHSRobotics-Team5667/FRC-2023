@@ -38,11 +38,10 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  */
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
-	public static final XboxController m_controller = new XboxController(0);
-	private DrivetrainSubsystem m_drive;
-	//private DrivetrainAutoSubsystem m_auto;
-	private ClawSubsystem m_claw;
-	//private DrivetrainAutoSubsystem m_auto;
+	public static final XboxController m_controller = new XboxController(0); // creates xboxController object
+	private DrivetrainSubsystem m_drive; // declares dt subsystem
+	private ClawSubsystem m_claw; // declares claw subsystem
+
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -55,11 +54,12 @@ public class RobotContainer {
 		m_claw = new ClawSubsystem();
 		m_claw.setDefaultCommand(new ClawCommand(m_claw));
 		configureButtonBindings();
+		
+		
 		// This will load the file "FullAuto.path" and generate it with a max velocity
 		// of 4 m/s and a max acceleration of 3 m/s^2
 		// for every path in the group
-		
-		PathPlannerTrajectory pathGroup = PathPlanner.loadPath("Die", new PathConstraints(.5, .02));
+		PathPlannerTrajectory pathGroup = PathPlanner.loadPath("Die", new PathConstraints(2, .5));
 
 		// This is just an example event map. It would be better to have a constant,
 		// global event map
@@ -80,6 +80,7 @@ public class RobotContainer {
 			@Override
 			public void accept(Pose2d pose) {
 				m_drive.resetPose(DrivetrainSubsystem.positions, pose);
+				
 			}
 		};
 
@@ -97,7 +98,7 @@ public class RobotContainer {
 				poseSupplier, // Pose2d supplier
 				resetPoseConsumer, // Pose2d consumer, used to reset odometry at the beginning of auto
 				m_drive.m_kinematics, // SwerveDriveKinematics
-				new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X
+				new PIDConstants(8, 05, .7), // PID constants to correct for translation error (used to create the X
 													// and Y PID controllers)
 				new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the
 													// rotation controller)
