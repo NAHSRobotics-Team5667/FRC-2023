@@ -12,26 +12,25 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ClawSubsystem extends SubsystemBase {
-  private WPI_TalonFX m_claw; //intake motor
+    private WPI_TalonFX m_claw; // intake motor
 
-  /** Creates a new IntakeSubsystem. */
-  public ClawSubsystem() {
-    m_claw = new WPI_TalonFX(Constants.ClawConstants.kClawID);
-    m_claw.setNeutralMode(NeutralMode.Brake);
-  }
+    /** Creates a new IntakeSubsystem. */
+    public ClawSubsystem() {
+        m_claw = new WPI_TalonFX(Constants.ClawConstants.kClawID);
+        m_claw.setNeutralMode(NeutralMode.Brake);
+    }
 
-  /**
-   * Purpose: To rotate motor
-   * @param percentOutput: Percent of output using Motor Controller
-   */
-  public void setIntake(double percentOutput){
-    m_claw.set(ControlMode.PercentOutput, percentOutput);
-  }
-  
-  
+    /**
+     * Purpose: To rotate motor
+     * 
+     * @param percentOutput: Percent of output using Motor Controller
+     */
+    public void setIntake(double percentOutput) {
+        m_claw.set(ControlMode.PercentOutput, percentOutput);
+    }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
 }
