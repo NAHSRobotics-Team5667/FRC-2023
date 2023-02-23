@@ -39,7 +39,8 @@ public class RobotContainer {
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     private ClawSubsystem m_claw; // declares claw subsystem
-
+    public static double pEditor = 0;
+    public static double dEditor = 0;
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -52,6 +53,7 @@ public class RobotContainer {
         m_claw = new ClawSubsystem();
         m_claw.setDefaultCommand(new ClawCommand(m_claw));
         configureButtonBindings();
+
 
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
@@ -94,7 +96,7 @@ public class RobotContainer {
                 poseSupplier, // Pose2d supplier
                 resetPoseConsumer, // Pose2d consumer, used to reset odometry at the beginning of auto
                 m_drive.m_kinematics, // SwerveDriveKinematics
-                new PIDConstants(12.2, 0, .7), // PID constants to correct for translation error (used to create the X
+                new PIDConstants(12.2 + pEditor, 0, .7 + dEditor), // PID constants to correct for translation error (used to create the X
                                                // and Y PID controllers)
                 new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the
                                                  // rotation controller)
@@ -118,6 +120,22 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        if (m_controller.getAButtonPressed()){
+            pEditor += .1;
+        
+        }
+        if (m_controller.getXButtonPressed()){
+            pEditor -= .1;
+    
+        }
+        if (m_controller.getYButtonPressed()){
+            dEditor += .1;
+        }
+        if (m_controller.getBButtonPressed()){
+            dEditor -= .1;
+        }
+
+
     }
 
     /**

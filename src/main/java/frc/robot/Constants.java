@@ -58,6 +58,7 @@ public final class Constants {
         public static final int kLSlideID = -1;
         public static final int kRSlideID = -1;
         public static final int kTiltID = -1;
+        public static final int kSlideConstant = -1; //TODO: Find gear ratio
     }
 
 }

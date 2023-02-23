@@ -50,6 +50,7 @@ public class SlideSubsystem extends SubsystemBase {
         return (Math.abs(getLeftPosition()-getRightPosition()) < .01);
     }
     public double getSlideOutput(){
+        return 0; //TODO              
 
     }
 

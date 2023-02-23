@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 /** Represents a swerve drive style drivetrain. */
@@ -44,7 +45,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         DrivetrainSubsystem.m_backRight.getPosition()
     };
     private Translation2d // Create the locations of the wheels
-        m_frontLeftLocation = new Translation2d(0.417, -0.417),
+        m_frontLeftLocation = new Translation2d(0.417, -0.417), //TODO: Get actual wheel positions
         m_frontRightLocation = new Translation2d(0.417, 0.417),
         m_backLeftLocation = new Translation2d(-0.417, -0.417),
         m_backRightLocation = new Translation2d(-0.417, 0.417);
@@ -154,10 +155,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putString("hecking auto", this.m_pose.toString());
         SmartDashboard.putString("State angle", m_frontRight.getState().angle.toString());
         /*
-        SmartDashboard.putNumber("FRATICK", m_frontRight.getTurnEncoderDistance());
-        SmartDashboard.putNumber("FLATICK", m_frontLeft.getTurnEncoderDistance());
-        SmartDashboard.putNumber("BRATICK", m_backRight.getTurnEncoderDistance());
-        SmartDashboard.putNumber("FRATICK", m_backLeft.getTurnEncoderDistance());
         SmartDashboard.putNumber("FRA-ActualPS",
         m_frontRight.getTurnEncoderDistance());
         SmartDashboard.putNumber("FLA-ActualPS",
@@ -180,7 +177,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("BRA-Setpoint", m_backRight.getAngleSetpoint());
         SmartDashboard.putNumber("BLA-Setpoint", m_backLeft.getAngleSetpoint());
          */
-
+        SmartDashboard.putNumber("P-value", RobotContainer.pEditor + 12.2);
+        SmartDashboard.putNumber("D-valie", RobotContainer.dEditor + .7);
         SmartDashboard.putNumber("FRD-Actual",
             m_frontRight.getDriveEncoderDistance() - m_frontRight.getDriveSetpoint());
         SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance() - m_frontLeft.getDriveSetpoint());
