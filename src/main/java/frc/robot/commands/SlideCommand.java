@@ -7,10 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SlideSubsystem;
+
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.XboxController;
 
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
+    public double bumperPos = 0;
+    public static double[] Setpoints = { 
+        0,
+        0,
+        0,
+        0
+        // these will be the heights of the slide at different points. The height will be set as Setpoints[bumperPos]
+        
+    };
 
     /** Creates a new SlideCommand. */
     public SlideCommand(SlideSubsystem slide) {
@@ -29,7 +41,10 @@ public class SlideCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        //
+        
+        
+       
+
     }
     public void joystickControl() {
         double bumperPos = 0;
@@ -55,7 +70,7 @@ public class SlideCommand extends CommandBase {
         if (RobotContainer.m_controller.getXButton()){
             bumperPos = 3;
         }
-        
+
 
         
     }
@@ -64,8 +79,9 @@ public class SlideCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         // make or call a function to set slide to zero sets slide back to zero
+        bumperPos = 0;
         slide.setSlide(0);
-        slide.setTilt(0);
+        slide.setTilt(0); 
     }
 
     // Returns true when the command should end.
