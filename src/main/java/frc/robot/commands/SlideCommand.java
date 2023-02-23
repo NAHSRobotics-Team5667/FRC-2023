@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.SlideSubsystem;
+import edu.wpi.first.wpilibj.XboxController;
 
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
@@ -28,6 +30,34 @@ public class SlideCommand extends CommandBase {
     @Override
     public void execute() {
         //
+    }
+    public void joystickControl() {
+        double bumperPos = 0;
+        if (RobotContainer.m_controller.getLeftBumperPressed()) {
+            if (bumperPos == 3){
+                bumperPos= 3;
+            }
+            else{
+                bumperPos++;
+            }
+        }
+        if (RobotContainer.m_controller.getRightBumperPressed()) {
+            if (bumperPos == 0){
+                bumperPos= 0;
+            }
+            else{
+                bumperPos =- 1;
+            }
+        }
+        if (RobotContainer.m_controller.getYButton()) {
+            bumperPos = 0;
+        }
+        if (RobotContainer.m_controller.getXButton()){
+            bumperPos = 3;
+        }
+        
+
+        
     }
 
     // Called once the command ends or is interrupted.
