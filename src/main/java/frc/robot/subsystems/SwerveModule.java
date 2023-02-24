@@ -33,11 +33,11 @@ public class SwerveModule {
             kModuleMaxAngularVelocity,
             kModuleMaxAngularAcceleration));
 
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.10397, 2.1787, .33432);
-   // double trueEncoderOffset = 100;
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.17543, 2.0821, .21355);
+    double trueEncoderOffset = 100;
 
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0); // TODO: do something idk
-    private DutyCycleEncoder Encoder;
+    DutyCycleEncoder Encoder;
     double angleOffset = 0;
 
     /**
@@ -59,10 +59,10 @@ public class SwerveModule {
 
         this.Encoder = Encoder;
         this.angleOffset = angleOffset;
-      /*   if (trueEncoderOffset > 1) {
+         if (trueEncoderOffset > 1) {
             trueEncoderOffset = this.Encoder.getAbsolutePosition() - angleOffset;
         }
-*/
+
         this.m_driveMotor = new WPI_TalonFX(driveMotorChannel);
         this.m_turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.m_turningMotor.setNeutralMode(NeutralMode.Brake);
@@ -155,7 +155,7 @@ public class SwerveModule {
      */
     public double getTurnEncoderDistance() {
         // return ((this.Encoder.getDistance()- angleOffset)*2*Math.PI);
-        return (m_turningMotor.getSelectedSensorPosition() * DriveConstants.kTurnEncoderConstant)-/*  (trueEncoderOffset * 2 * Math.PI)*/;
+        return (m_turningMotor.getSelectedSensorPosition() * DriveConstants.kTurnEncoderConstant)-  (trueEncoderOffset * 2 * Math.PI);
     }
     public double getBetterTurnEncoderDistance() {
         return (this.Encoder.getAbsolutePosition());

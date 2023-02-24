@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,7 +17,7 @@ public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide, m_tilt;
     private PIDController controllerRight, controllerLeft = new PIDController(.5, 0, 0);
     private PIDController controllerTilt = new PIDController(.5, 0, 0);
-
+    // maybe add a feed forward? May be unnecessary though
     /** Creates a new SlideSubsystem. */
     public SlideSubsystem() {
         m_leftSlide = new WPI_TalonFX(Constants.SlideConstants.kLSlideID);
@@ -57,12 +58,15 @@ public class SlideSubsystem extends SubsystemBase {
 
     }
 
+
+
     // make a function that gets the number of ticks
     // make a functon that set motor to number of ticks
     // make a function that designates levels for game
     // try to optimize
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("Balance", isLeftAndRightBalanced());
         // This method will be called once per scheduler run
     }
 }

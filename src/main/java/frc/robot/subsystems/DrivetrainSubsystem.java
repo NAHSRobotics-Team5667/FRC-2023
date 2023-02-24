@@ -45,12 +45,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         DrivetrainSubsystem.m_backRight.getPosition()
     };
     private Translation2d // Create the locations of the wheels
-        m_frontLeftLocation = new Translation2d(0.306, -0.257), //TODO: Get actual wheel positions
+        m_frontLeftLocation = new Translation2d(0.257, -0.306), //TODO: Get actual wheel positions
         //0.306
         //0.257
-        m_frontRightLocation = new Translation2d(0.306, 0.257),
-        m_backLeftLocation = new Translation2d(-0.306, -0.257),
-        m_backRightLocation = new Translation2d(-0.306, 0.257);
+        m_frontRightLocation = new Translation2d(0.257, 0.306),
+        m_backLeftLocation = new Translation2d(-0.257, -0.306),
+        m_backRightLocation = new Translation2d(-0.257, 0.306);
 
     public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -151,8 +151,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DrivetrainSubsystem.m_backLeft.getPosition(),
             DrivetrainSubsystem.m_backRight.getPosition()
         });
-        SmartDashboard.putString("Gyro", m_frontRight.getPosition().toString());
+      //  SmartDashboard.putString("Gyro", .getGyro().toString());
         SmartDashboard.putString("GyroFake", this.getGyro().toString());
+        SmartDashboard.putNumber("FRA ABS", m_frontRight.Encoder.getAbsolutePosition());
+        SmartDashboard.putNumber("FLA ABS", m_frontLeft.Encoder.getAbsolutePosition());
+        SmartDashboard.putNumber("BRA ABS", m_backRight.Encoder.getAbsolutePosition());
+        SmartDashboard.putNumber("BLA ABS", m_backLeft.Encoder.getAbsolutePosition());
         // SmartDashboard.putNumber("absolute encoder heckin value",
         // m_frontRight.trueEncoderOffset);
         SmartDashboard.putString("hecking auto", this.m_pose.toString());
