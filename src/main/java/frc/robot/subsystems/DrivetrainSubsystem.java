@@ -45,10 +45,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         DrivetrainSubsystem.m_backRight.getPosition()
     };
     private Translation2d // Create the locations of the wheels
-        m_frontLeftLocation = new Translation2d(0.417, -0.417), //TODO: Get actual wheel positions
-        m_frontRightLocation = new Translation2d(0.417, 0.417),
-        m_backLeftLocation = new Translation2d(-0.417, -0.417),
-        m_backRightLocation = new Translation2d(-0.417, 0.417);
+        m_frontLeftLocation = new Translation2d(0.306, -0.257), //TODO: Get actual wheel positions
+        //0.306
+        //0.257
+        m_frontRightLocation = new Translation2d(0.306, 0.257),
+        m_backLeftLocation = new Translation2d(-0.306, -0.257),
+        m_backRightLocation = new Translation2d(-0.306, 0.257);
 
     public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -59,6 +61,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public final SwerveDriveOdometry m_odometry;
 
     // *Constructor for DrivetrainSubsystem - I 'ardly know 'er! */
+    //dammit liam i didnt laugh
     public DrivetrainSubsystem() {
         m_gyro.calibrate(); // this probably isn't necessary but idk
         this.resetGyro(); // this however, is necessary ish

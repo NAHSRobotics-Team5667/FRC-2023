@@ -21,12 +21,15 @@ public class SlideSubsystem extends SubsystemBase {
     public SlideSubsystem() {
         m_leftSlide = new WPI_TalonFX(Constants.SlideConstants.kLSlideID);
         m_leftSlide.setNeutralMode(NeutralMode.Brake);
+        m_leftSlide.setSelectedSensorPosition(0);
 
         m_rightSlide = new WPI_TalonFX(Constants.SlideConstants.kRSlideID);
         m_rightSlide.setNeutralMode(NeutralMode.Brake);
+        m_rightSlide.setSelectedSensorPosition(0);
 
         m_tilt = new WPI_TalonFX(Constants.SlideConstants.kTiltID);
         m_tilt.setNeutralMode(NeutralMode.Brake); //DO NOT CHANGE FROM BRAKE
+        m_tilt.setSelectedSensorPosition(0);
     }
 
     public void setSlide(double percentOutput) {

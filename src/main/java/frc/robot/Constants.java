@@ -19,13 +19,13 @@ package frc.robot;
 public final class Constants {
     public static final class DriveConstants {
         public static final int kFrontLeftDriveID = 15;
-        public static final int kFrontRightDriveID = 9;
-        public static final int kBackLeftDriveID = 14;
-        public static final int kBackRightDriveID = 12;
+        public static final int kFrontRightDriveID = 14;
+        public static final int kBackLeftDriveID = 12;
+        public static final int kBackRightDriveID = 9;
         public static final int kFrontLeftTurningID = 16;
-        public static final int kFrontRightTurningID = 10;
-        public static final int kBackLeftTurningID = 13;
-        public static final int kBackRightTurningID = 11;
+        public static final int kFrontRightTurningID = 13;
+        public static final int kBackLeftTurningID = 11 ;
+        public static final int kBackRightTurningID = 10;
 
         public static final double kMaxSpeed = 2; // should be 5 meters per second, 2 rn so ian keeps his ankles
         public static final double kMaxAngularSpeed = 2 * Math.PI; // is currently 1, will be 1/2 eventually (don't change)

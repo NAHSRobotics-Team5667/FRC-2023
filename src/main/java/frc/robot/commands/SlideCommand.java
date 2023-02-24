@@ -9,7 +9,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.SlideSubsystem;
 
 import java.util.ArrayList;
-
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class SlideCommand extends CommandBase {
@@ -41,7 +41,7 @@ public class SlideCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        
+
         
        
 
