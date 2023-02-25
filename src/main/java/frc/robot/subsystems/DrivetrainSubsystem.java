@@ -184,8 +184,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("BRA-Setpoint", m_backRight.getAngleSetpoint());
         SmartDashboard.putNumber("BLA-Setpoint", m_backLeft.getAngleSetpoint());
          */
-        SmartDashboard.putNumber("P-value", RobotContainer.pEditor + 12.2);
-        SmartDashboard.putNumber("D-valie", RobotContainer.dEditor + .7);
+        SmartDashboard.putNumber("P-value", RobotContainer.pEditor + 5);
+        SmartDashboard.putNumber("D-value", RobotContainer.dEditor + .7);
         SmartDashboard.putNumber("FRD-Actual",
             m_frontRight.getDriveEncoderDistance() - m_frontRight.getDriveSetpoint());
         SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance() - m_frontLeft.getDriveSetpoint());
