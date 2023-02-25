@@ -81,16 +81,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        var swerveModuleStates = m_kinematics.toSwerveModuleStates(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, this.getGyro())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-        m_frontLeft.setDesiredState(swerveModuleStates[0]);
-        m_frontRight.setDesiredState(swerveModuleStates[1]);
-        m_backLeft.setDesiredState(swerveModuleStates[2]);
-        m_backRight.setDesiredState(swerveModuleStates[3]);
-
+        if (xSpeed != 0 || ySpeed != 0 || rot != 0) {
+            var swerveModuleStates = m_kinematics.toSwerveModuleStates(
+                fieldRelative
+                    ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, this.getGyro())
+                    : new ChassisSpeeds(xSpeed, ySpeed, rot));
+            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+            m_frontLeft.setDesiredState(swerveModuleStates[0]);
+            m_frontRight.setDesiredState(swerveModuleStates[1]);
+            m_backLeft.setDesiredState(swerveModuleStates[2]);
+            m_backRight.setDesiredState(swerveModuleStates[3]);
+        }
+        else{
+            m_frontLeft.driveVoltage(0);
+            m_backRight.driveVoltage(0);
+            m_backLeft.driveVoltage(0);
+            m_frontRight.driveVoltage(0);
+            
+            
+        }
+      
     }
 
     /*
@@ -153,6 +163,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         });
       //  SmartDashboard.putString("Gyro", .getGyro().toString());
         SmartDashboard.putString("GyroFake", this.getGyro().toString());
+        SmartDashboard.putNumber("FR Pose", m_frontRight.getTurnEncoderDistance());
+        SmartDashboard.putNumber("BR Pose", m_backRight.getTurnEncoderDistance());
+        SmartDashboard.putNumber("FL Pose", m_frontLeft.getTurnEncoderDistance());
+        SmartDashboard.putNumber("BL Pose", m_backLeft.getTurnEncoderDistance());
         SmartDashboard.putNumber("FRA ABS", m_frontRight.Encoder.getAbsolutePosition());
         SmartDashboard.putNumber("FLA ABS", m_frontLeft.Encoder.getAbsolutePosition());
         SmartDashboard.putNumber("BRA ABS", m_backRight.Encoder.getAbsolutePosition());

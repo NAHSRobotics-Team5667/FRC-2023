@@ -44,7 +44,7 @@ public final class Constants {
         public static final int kBackLeftTurningID = 11 ;
         public static final int kBackRightTurningID = 10;
 
-        public static final double kMaxSpeed = 2; // should be 5 meters per second, 2 rn so ian keeps his ankles
+        public static final double kMaxSpeed = 5; // should be 5 meters per second, 2 rn so ian keeps his ankles
         public static final double kMaxAngularSpeed = Math.PI; // is currently 1, will be 1/2 eventually (don't change)
 
         // next lines are for the Swerve Module object
@@ -59,10 +59,10 @@ public final class Constants {
         public static final int BREncoderID = 1;
         public static final int BLEncoderID = 2;
 
-        public static final double BLEncoderOffset = 0.4344;
-        public static final double FLEncoderOffset = 0.4076069;
-        public static final double BREncoderOffset = .6681;
-        public static final double FREncoderOffset = 0.906126;
+        public static final double BLEncoderOffset = 0.4364;
+        public static final double FLEncoderOffset = 0.4026069;
+        public static final double BREncoderOffset = .6598;
+        public static final double FREncoderOffset = 0.910126;
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
     }
