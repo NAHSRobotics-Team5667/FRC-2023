@@ -113,7 +113,7 @@ public class SwerveModule {
             new Rotation2d(getTurnEncoderDistance()));
 
         // Calculate the drive output from the drive PID controller.
-        final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
+       
 
         final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
@@ -122,9 +122,10 @@ public class SwerveModule {
             state.angle.getRadians());
 
         final double turnFeedforward = 0; // m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
-
-        m_driveMotor.setVoltage(driveOutput + driveFeedforward);
         m_turningMotor.setVoltage(turnOutput + turnFeedforward);
+        final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
+        m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+       
     }
 
     public void driveVoltage(double voltage) {

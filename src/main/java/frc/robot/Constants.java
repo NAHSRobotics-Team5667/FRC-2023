@@ -59,17 +59,10 @@ public final class Constants {
         public static final int BREncoderID = 1;
         public static final int BLEncoderID = 2;
 
-<<<<<<< HEAD
         public static final double BLEncoderOffset = 0.4364;
         public static final double FLEncoderOffset = 0.4026069;
         public static final double BREncoderOffset = .6598;
         public static final double FREncoderOffset = 0.910126;
-=======
-        public static final double BLEncoderOffset = 0.4344;
-        public static final double FLEncoderOffset = 0.4076069;
-        public static final double BREncoderOffset = 0.6681;
-        public static final double FREncoderOffset = 0.906126;
->>>>>>> 367a03948eadaf8a7751672fa97ee17fd8491483
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
     }
