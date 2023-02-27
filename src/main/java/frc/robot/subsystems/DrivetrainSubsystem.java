@@ -144,6 +144,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return (this.m_gyro.getRotation2d().minus(gyroOffset));
     }
 
+    public double getHeading() {
+        return m_gyro.getAngle();
+    }
+
     /**
      * Sets the offset used in
      * {@link frc.robot.subsystems.DrivetrainSubsystem#getGyro()}
@@ -163,6 +167,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         });
       //  SmartDashboard.putString("Gyro", .getGyro().toString());
         SmartDashboard.putString("GyroFake", this.getGyro().toString());
+        SmartDashboard.putNumber("Gyro Angle", this.getHeading());
+        SmartDashboard.putString("Gyro Offset", this.gyroOffset.toString());
         SmartDashboard.putNumber("FR Pose", m_frontRight.getTurnEncoderDistance());
         SmartDashboard.putNumber("BR Pose", m_backRight.getTurnEncoderDistance());
         SmartDashboard.putNumber("FL Pose", m_frontLeft.getTurnEncoderDistance());
