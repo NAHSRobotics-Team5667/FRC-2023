@@ -28,7 +28,7 @@ public class SwerveModule {
     private final PIDController m_drivePIDController = new PIDController(.6, 0, 0);
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(4,0,0,
+    private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(8,0,0,
         new TrapezoidProfile.Constraints(
             kModuleMaxAngularVelocity,
             kModuleMaxAngularAcceleration));
@@ -140,6 +140,10 @@ public class SwerveModule {
      */
     public double getDriveEncoderRate() {
         return m_driveMotor.getSelectedSensorVelocity() * kDriveEncoderConstant * 10;
+    }
+
+    public double getDriveEncoderRaw() {
+        return m_driveMotor.getSelectedSensorPosition();
     }
 
     /**

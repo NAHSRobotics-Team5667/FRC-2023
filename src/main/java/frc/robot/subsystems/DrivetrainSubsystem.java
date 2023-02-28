@@ -97,9 +97,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_backRight.driveVoltage(0);
             m_backLeft.driveVoltage(0);
             m_frontRight.driveVoltage(0);
-            
-            
         }
+
+        // var swerveModuleStates = m_kinematics.toSwerveModuleStates(
+        //         fieldRelative
+        //             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, this.getGyro())
+        //             : new ChassisSpeeds(xSpeed, ySpeed, rot));
+        //     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+        //     m_frontLeft.setDesiredState(swerveModuleStates[0]);
+        //     m_frontRight.setDesiredState(swerveModuleStates[1]);
+        //     m_backLeft.setDesiredState(swerveModuleStates[2]);
+        //     m_backRight.setDesiredState(swerveModuleStates[3]);
       
     }
 
@@ -165,6 +173,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DrivetrainSubsystem.m_backLeft.getPosition(),
             DrivetrainSubsystem.m_backRight.getPosition()
         });
+        SmartDashboard.putNumber("FL Raw Encoder", m_frontLeft.getTurnEncoderRaw());
+        SmartDashboard.putNumber("FR Raw Encoder", m_frontRight.getTurnEncoderRaw());
+        SmartDashboard.putNumber("BL Raw Encoder", m_backLeft.getTurnEncoderRaw());
+        SmartDashboard.putNumber("BR Raw Encoder", m_backRight.getTurnEncoderRaw());
+
+        SmartDashboard.putNumber("FL Motor Angle", m_frontLeft.getTurnEncoderDistance());
+        SmartDashboard.putNumber("FL Abs Angle", m_frontLeft.getBetterTurnEncoderDistance());
+
+        SmartDashboard.putNumber("FL Turn Setpoint", m_frontLeft.getAngleSetpoint());
+        SmartDashboard.putNumber("FR Turn Setpoint", m_frontRight.getAngleSetpoint());
+        SmartDashboard.putNumber("BL Turn Setpoint", m_backLeft.getAngleSetpoint());
+        SmartDashboard.putNumber("BR Turn Setpoint", m_backRight.getAngleSetpoint());
       //  SmartDashboard.putString("Gyro", .getGyro().toString());
         SmartDashboard.putString("GyroFake", this.getGyro().toString());
         SmartDashboard.putNumber("Gyro Angle", this.getHeading());
