@@ -45,7 +45,29 @@ public final class Constants {
         public static final int kBackRightTurningID = 10;
 
         public static final double kMaxSpeed = 2; // should be 5 meters per second, 2 rn so ian keeps his ankles
-        public static final double kMaxAngularSpeed = Math.PI; // is currently 1, will be 1/2 eventually (don't change)
+
+        public static final double kMaxAngularSpeed = 2 * Math.PI; // is currently 1, will be 1/2 eventually (don't change)
+        public static final double kMaxAngularAcceleration = 10 * Math.PI;
+
+        public static final double kTurnKp = 7;
+        public static final double kTurnKi = 12;
+        public static final double kTurnKd = 0.1;
+
+        public static final double kFLTurnKp = 7;
+        public static final double kFLTurnKi = 10;
+        public static final double kFLTurnKd = 0;
+
+        public static final double kFRTurnKp = 7;
+        public static final double kFRTurnKi = 10;
+        public static final double kFRTurnKd = 0;
+
+        public static final double kBLTurnKp = 7;
+        public static final double kBLTurnKi = 10;
+        public static final double kBLTurnKd = 0;
+
+        public static final double kBRTurnKp = 7;
+        public static final double kBRTurnKi = 10;
+        public static final double kBRTurnKd = 0;
 
         // next lines are for the Swerve Module object
         public static final double kWheelRadius = 0.0508; // meters
@@ -59,10 +81,10 @@ public final class Constants {
         public static final int BREncoderID = 1;
         public static final int BLEncoderID = 2;
 
-        public static final double BLEncoderOffset = 0.437;
-        public static final double FLEncoderOffset = 0.403;
-        public static final double BREncoderOffset = 0.664;
-        public static final double FREncoderOffset = 0.905;
+        public static final double BLEncoderOffset = 0.938;
+        public static final double FLEncoderOffset = 0.9;
+        public static final double BREncoderOffset = 0.167;
+        public static final double FREncoderOffset = 0.405;
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
     }

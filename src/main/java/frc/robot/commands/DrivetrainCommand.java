@@ -63,24 +63,34 @@ public class DrivetrainCommand extends CommandBase {
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
         
-        final double xSpeed = -m_xspeedLimiter
+        double xSpeed = m_xspeedLimiter
             .calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1))
+            * DrivetrainSubsystem.kMaxSpeed;
+
+        xSpeed = MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1)
             * DrivetrainSubsystem.kMaxSpeed;
         
         // Get the y speed or sideways/strafe speed. We are inverting this because
         // we want a positive value when we pull to the left. Xbox controller
         // return positive values when you pull to the right by default.
 
-        final double ySpeed = m_yspeedLimiter
-            .calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.15))
+        double ySpeed = m_yspeedLimiter
+            .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.15))
+            * DrivetrainSubsystem.kMaxSpeed;
+
+        ySpeed = MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.15)
             * DrivetrainSubsystem.kMaxSpeed;
 
         // Get the rate of angular rotation. We are inverting this because we want a
         // positive value when we pull to the left (remember, CCW is positive in
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
-        final double rot = m_rotLimiter
-            .calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.1))
+
+        double rot = m_rotLimiter
+            .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getRightX(), 0.15))
+            * DrivetrainSubsystem.kMaxAngularSpeed;
+
+        rot = MathUtil.applyDeadband(-RobotContainer.m_controller.getRightX(), 0.15)
             * DrivetrainSubsystem.kMaxAngularSpeed;
 
         SmartDashboard.putNumber("xSpeed", xSpeed);
