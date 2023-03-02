@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
@@ -34,12 +36,12 @@ public class SwerveModule {
 
     private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.17543, 2.0821, .21355);
     double trueEncoderOffset = 100;
-
+    double trueEncoderOffsetTest = 0;
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0); // TODO: do something idk
     DutyCycleEncoder Encoder;
     double angleOffset = 0;
 
-    private final LinearFilter filter = LinearFilter.movingAverage(5); // average over last 5 samples
+    private final LinearFilter filter = LinearFilter.movingAverage(10000); // average over last 5 samples
 
     /**
      * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -97,6 +99,7 @@ public class SwerveModule {
         if (trueEncoderOffset > 1) {
             trueEncoderOffset = this.Encoder.getAbsolutePosition() - angleOffset;
         }
+        
 
         // m_turningPIDController = new ProfiledPIDController(turnKp, turnKi, turnKd,
         // new TrapezoidProfile.Constraints(
@@ -157,9 +160,11 @@ public class SwerveModule {
      */
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
+        // SwerveModuleState state = SwerveModuleState.optimize(desiredState,
+        //     new Rotation2d(getTurnEncoderDistance()));
+
         SwerveModuleState state = SwerveModuleState.optimize(desiredState,
             new Rotation2d(getTurnEncoderDistance()));
-
         // Calculate the drive output from the drive PID controller.
        
 
@@ -174,6 +179,8 @@ public class SwerveModule {
         final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
         // double driveOutput = 0;
         m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+
+        m_turningPIDController.getPositionError();
        
     }
 
@@ -214,13 +221,18 @@ public class SwerveModule {
      * @return get the turn motor angle
      */
     public double getTurnEncoderDistance() {
+        trueEncoderOffsetTest = this.Encoder.getAbsolutePosition() - angleOffset;
         // return ((this.Encoder.getDistance()- angleOffset)*2*Math.PI);
         return (m_turningMotor.getSelectedSensorPosition() * DriveConstants.kTurnEncoderConstant)-  (trueEncoderOffset * 2 * Math.PI);
     }
 
 
-    public double getAbsTurnEncoderDistance() {
+    public double getAbsTurnEncoder() {
         return filter.calculate(this.Encoder.getAbsolutePosition() - angleOffset);
+    }
+
+    public double getAbsTurnEncoderRadians() {
+        return getAbsTurnEncoder() * 2 * Math.PI;
     }
 
     // public double getAngleSetpoint() {

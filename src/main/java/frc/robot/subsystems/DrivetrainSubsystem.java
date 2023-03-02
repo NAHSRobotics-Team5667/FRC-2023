@@ -45,61 +45,73 @@ public class DrivetrainSubsystem extends SubsystemBase {
     GenericEntry pFL = driveTab.add("FL P", DriveConstants.kTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(0, 0)
         .getEntry();
 
     GenericEntry iFL = driveTab.add("FL I", DriveConstants.kTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(1, 0)
         .getEntry();
 
     GenericEntry dFL = driveTab.add("FL D", DriveConstants.kTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(2, 0)
         .getEntry();
 
     GenericEntry pFR = driveTab.add("FR P", DriveConstants.kTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(0, 1)
         .getEntry();
 
     GenericEntry iFR = driveTab.add("FR I", DriveConstants.kTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(1, 1)
         .getEntry();
 
     GenericEntry dFR = driveTab.add("FR D", DriveConstants.kTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(2, 1)
         .getEntry();
     
     GenericEntry pBL = driveTab.add("BL P", DriveConstants.kTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(0, 2)
         .getEntry();
 
     GenericEntry iBL = driveTab.add("BL I", DriveConstants.kTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(1, 2)
         .getEntry();
 
     GenericEntry dBL = driveTab.add("BL D", DriveConstants.kTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(2, 2)
         .getEntry();
 
     GenericEntry pBR = driveTab.add("BR P", DriveConstants.kTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(0, 3)
         .getEntry();
 
     GenericEntry iBR = driveTab.add("BR I", DriveConstants.kTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(1, 3)
         .getEntry();
 
     GenericEntry dBR = driveTab.add("BR D", DriveConstants.kTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
+        .withPosition(2, 3)
         .getEntry();
 
     public static SwerveModule // Create the Swerve Modules
@@ -282,19 +294,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //     SmartDashboard.putString("GyroFake", this.getGyro().toString());
     //     SmartDashboard.putNumber("Gyro Angle", this.getHeading());
     //     SmartDashboard.putString("Gyro Offset", this.gyroOffset.toString());
-    //     SmartDashboard.putNumber("FR Pose", m_frontRight.getTurnEncoderDistance());
-    //     SmartDashboard.putNumber("BR Pose", m_backRight.getTurnEncoderDistance());
-    //     SmartDashboard.putNumber("FL Pose", m_frontLeft.getTurnEncoderDistance());
-    //     SmartDashboard.putNumber("BL Pose", m_backLeft.getTurnEncoderDistance());
-        SmartDashboard.putNumber("FR ABS", m_frontRight.getAbsTurnEncoderDistance());
-        SmartDashboard.putNumber("FL ABS", m_frontLeft.getAbsTurnEncoderDistance());
-        SmartDashboard.putNumber("BR ABS", m_backRight.getAbsTurnEncoderDistance());
-        SmartDashboard.putNumber("BL ABS", m_backLeft.getAbsTurnEncoderDistance());
+        SmartDashboard.putNumber("testy boiFL", (m_frontLeft.trueEncoderOffset-m_frontLeft.trueEncoderOffsetTest));
+        SmartDashboard.putNumber("testy boiFR", (m_frontRight.trueEncoderOffset-m_frontRight.trueEncoderOffsetTest));
+        SmartDashboard.putNumber("testy boiBL", (m_backLeft.trueEncoderOffset-m_backLeft.trueEncoderOffsetTest));
+        SmartDashboard.putNumber("testy boiBR", (m_backRight.trueEncoderOffset-m_backRight.trueEncoderOffsetTest));
+        SmartDashboard.putNumber("FR Pose", m_frontRight.getTurnEncoderDistance()/2 * Math.PI);
+        SmartDashboard.putNumber("BR Pose", m_backRight.getTurnEncoderDistance()/2 * Math.PI);
+        SmartDashboard.putNumber("FL Pose", m_frontLeft.getTurnEncoderDistance()/2 * Math.PI);
+        SmartDashboard.putNumber("BL Pose", m_backLeft.getTurnEncoderDistance()/2 * Math.PI);
+        SmartDashboard.putNumber("FR ABS", m_frontRight.getAbsTurnEncoder());
+        SmartDashboard.putNumber("FL ABS", m_frontLeft.getAbsTurnEncoder());
+        SmartDashboard.putNumber("BR ABS", m_backRight.getAbsTurnEncoder());
+        SmartDashboard.putNumber("BL ABS", m_backLeft.getAbsTurnEncoder());
 
         SmartDashboard.putNumber("BR Abs Position Error", m_backRight.getTurningPID().getPositionError());
         SmartDashboard.putNumber("FR Abs Position Error", m_frontRight.getTurningPID().getPositionError());
         SmartDashboard.putNumber("BL Abs Position Error", m_backLeft.getTurningPID().getPositionError());
         SmartDashboard.putNumber("FL Abs Position Error", m_frontLeft.getTurningPID().getPositionError());
+
+        SmartDashboard.putNumber("FL Error + Encoder", m_frontLeft.getTurnEncoderDistance() + m_frontLeft.getTurningPID().getPositionError());
+        SmartDashboard.putNumber("FR Error + Encoder", m_frontRight.getTurnEncoderDistance() + m_frontRight.getTurningPID().getPositionError());
+        SmartDashboard.putNumber("BL Error + Encoder", m_backLeft.getTurnEncoderDistance() + m_backLeft.getTurningPID().getPositionError());
+        SmartDashboard.putNumber("BR Error + Encoder", m_backRight.getTurnEncoderDistance() + m_backRight.getTurningPID().getPositionError());
         // SmartDashboard.putNumber("absolute encoder heckin value",
         // m_frontRight.trueEncoderOffset);
 

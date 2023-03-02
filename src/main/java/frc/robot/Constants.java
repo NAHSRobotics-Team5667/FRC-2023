@@ -51,7 +51,7 @@ public final class Constants {
 
         public static final double kTurnKp = 7;
         public static final double kTurnKi = 12;
-        public static final double kTurnKd = 0.1;
+        public static final double kTurnKd = 0;
 
         public static final double kFLTurnKp = 7;
         public static final double kFLTurnKi = 10;
