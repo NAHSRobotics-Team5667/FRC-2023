@@ -6,10 +6,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,7 +23,7 @@ public class SwerveModule {
 
     private static final double kModuleMaxAngularVelocity = DriveConstants.kMaxAngularSpeed;
     private static final double kModuleMaxAngularAcceleration = DriveConstants.kMaxAngularAcceleration; // radians per second squared
-
+   
     private final WPI_TalonFX m_driveMotor, m_turningMotor;
 
     private final PIDController m_drivePIDController = new PIDController(.6, 0, 0);
@@ -37,11 +35,15 @@ public class SwerveModule {
     private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.17543, 2.0821, .21355);
     double trueEncoderOffset = 100;
     double trueEncoderOffsetTest = 0;
-    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0); // TODO: do something idk
+    double[] averageOffsetBoi;
+    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398); // TODO: do something idk
     DutyCycleEncoder Encoder;
     double angleOffset = 0;
 
     private final LinearFilter filter = LinearFilter.movingAverage(10000); // average over last 5 samples
+
+    private double sampleCounter = 0;
+    private double m_encoderSampleSum = 0;
 
     /**
      * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -70,6 +72,7 @@ public class SwerveModule {
             DriveConstants.kTurnKd);
 
     }
+   
 
     /**
      * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -174,11 +177,12 @@ public class SwerveModule {
         final double turnOutput = m_turningPIDController.calculate(getTurnEncoderDistance(),
             state.angle.getRadians());
 
-        final double turnFeedforward = 0; // m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+        final double turnFeedforward = m_turnFeedforward.calculate(state.angle.getRadians());
+
         m_turningMotor.setVoltage(turnOutput + turnFeedforward);
         final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
         // double driveOutput = 0;
-        m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+        // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
 
         m_turningPIDController.getPositionError();
        
@@ -194,6 +198,7 @@ public class SwerveModule {
         m_driveMotor.setVoltage(voltage);
         m_turningMotor.setVoltage(voltage);
     }
+
 
     /**
      * Get the drive motor encoder's rate
@@ -221,14 +226,18 @@ public class SwerveModule {
      * @return get the turn motor angle
      */
     public double getTurnEncoderDistance() {
+        
         trueEncoderOffsetTest = this.Encoder.getAbsolutePosition() - angleOffset;
+    
+        
         // return ((this.Encoder.getDistance()- angleOffset)*2*Math.PI);
         return (m_turningMotor.getSelectedSensorPosition() * DriveConstants.kTurnEncoderConstant)-  (trueEncoderOffset * 2 * Math.PI);
     }
 
 
     public double getAbsTurnEncoder() {
-        return filter.calculate(this.Encoder.getAbsolutePosition() - angleOffset);
+        // return filter.calculate(this.Encoder.getAbsolutePosition() - angleOffset);
+        return this.Encoder.getAbsolutePosition() - angleOffset;
     }
 
     public double getAbsTurnEncoderRadians() {
@@ -257,5 +266,18 @@ public class SwerveModule {
 
     public boolean turnAtSetpoint() {
         return Math.abs(m_turningPIDController.getSetpoint() - getTurnEncoderDistance()) < 0.1;
+    }
+
+    public void collectEncoderSample() {
+        if (sampleCounter < 50.0) {
+            m_encoderSampleSum += getAbsTurnEncoder();
+            sampleCounter++;
+        } else if (sampleCounter == 50) {
+            trueEncoderOffset = m_encoderSampleSum / sampleCounter;
+        }
+    }
+
+    public double getOffset() {
+        return trueEncoderOffset;
     }
 }

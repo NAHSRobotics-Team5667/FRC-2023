@@ -4,7 +4,8 @@
     "NetworkTables Settings": {
       "serverTeam": "5667"
     },
-    "mode": "Client (NT4)",
+    "mode": "Client (NT3)",
+    "port4": 5810,
     "serverTeam": "5667"
   }
 }
