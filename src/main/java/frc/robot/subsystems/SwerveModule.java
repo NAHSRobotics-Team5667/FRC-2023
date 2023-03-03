@@ -182,7 +182,7 @@ public class SwerveModule {
         m_turningMotor.setVoltage(turnOutput + turnFeedforward);
         final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
         // double driveOutput = 0;
-        // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+        m_driveMotor.setVoltage(driveOutput + driveFeedforward);
 
         m_turningPIDController.getPositionError();
        

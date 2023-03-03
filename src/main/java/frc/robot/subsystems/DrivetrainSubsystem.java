@@ -300,7 +300,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //     SmartDashboard.putNumber("FR Turn Setpoint", m_frontRight.getAngleSetpoint());
     //     SmartDashboard.putNumber("BL Turn Setpoint", m_backLeft.getAngleSetpoint());
     //     SmartDashboard.putNumber("BR Turn Setpoint", m_backRight.getAngleSetpoint());
-    //   //  SmartDashboard.putString("Gyro", .getGyro().toString());
+         SmartDashboard.putString("Gyro", getGyro().toString());
     //     SmartDashboard.putString("GyroFake", this.getGyro().toString());
     //     SmartDashboard.putNumber("Gyro Angle", this.getHeading());
     //     SmartDashboard.putString("Gyro Offset", this.gyroOffset.toString());
