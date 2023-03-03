@@ -64,10 +64,10 @@ public class DrivetrainCommand extends CommandBase {
         // negative values when we push forward.
         
         double xSpeed = m_xspeedLimiter
-            .calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1))
+            .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))
             * DrivetrainSubsystem.kMaxSpeed;
 
-        xSpeed = MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1)
+        xSpeed = MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1)
             * DrivetrainSubsystem.kMaxSpeed;
         
         // Get the y speed or sideways/strafe speed. We are inverting this because
@@ -75,10 +75,10 @@ public class DrivetrainCommand extends CommandBase {
         // return positive values when you pull to the right by default.
 
         double ySpeed = m_yspeedLimiter
-            .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.15))
+            .calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.15))
             * DrivetrainSubsystem.kMaxSpeed;
 
-        ySpeed = MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.15)
+        ySpeed = MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.15)
             * DrivetrainSubsystem.kMaxSpeed;
 
         // Get the rate of angular rotation. We are inverting this because we want a
@@ -87,10 +87,10 @@ public class DrivetrainCommand extends CommandBase {
         // the right by default.
 
         double rot = m_rotLimiter
-            .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getRightX(), 0.15))
+            .calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.15))
             * DrivetrainSubsystem.kMaxAngularSpeed;
 
-        rot = MathUtil.applyDeadband(-RobotContainer.m_controller.getRightX(), 0.15)
+        rot = MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.15)
             * DrivetrainSubsystem.kMaxAngularSpeed;
 
         SmartDashboard.putNumber("xSpeed", xSpeed);
