@@ -42,73 +42,73 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // PID Tuning from Shuffleboard
     ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
 
-    GenericEntry pFL = driveTab.add("FL P", DriveConstants.kTurnKp)
+    GenericEntry pFL = driveTab.add("FL P", DriveConstants.kFLTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(0, 0)
         .getEntry();
 
-    GenericEntry iFL = driveTab.add("FL I", DriveConstants.kTurnKi)
+    GenericEntry iFL = driveTab.add("FL I", DriveConstants.kFLTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(1, 0)
         .getEntry();
 
-    GenericEntry dFL = driveTab.add("FL D", DriveConstants.kTurnKd)
+    GenericEntry dFL = driveTab.add("FL D", DriveConstants.kFLTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(2, 0)
         .getEntry();
 
-    GenericEntry pFR = driveTab.add("FR P", DriveConstants.kTurnKp)
+    GenericEntry pFR = driveTab.add("FR P", DriveConstants.kFRTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(0, 1)
         .getEntry();
 
-    GenericEntry iFR = driveTab.add("FR I", DriveConstants.kTurnKi)
+    GenericEntry iFR = driveTab.add("FR I", DriveConstants.kFRTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(1, 1)
         .getEntry();
 
-    GenericEntry dFR = driveTab.add("FR D", DriveConstants.kTurnKd)
+    GenericEntry dFR = driveTab.add("FR D", DriveConstants.kFRTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(2, 1)
         .getEntry();
     
-    GenericEntry pBL = driveTab.add("BL P", DriveConstants.kTurnKp)
+    GenericEntry pBL = driveTab.add("BL P", DriveConstants.kBLTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(0, 2)
         .getEntry();
 
-    GenericEntry iBL = driveTab.add("BL I", DriveConstants.kTurnKi)
+    GenericEntry iBL = driveTab.add("BL I", DriveConstants.kBLTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(1, 2)
         .getEntry();
 
-    GenericEntry dBL = driveTab.add("BL D", DriveConstants.kTurnKd)
+    GenericEntry dBL = driveTab.add("BL D", DriveConstants.kBLTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(2, 2)
         .getEntry();
 
-    GenericEntry pBR = driveTab.add("BR P", DriveConstants.kTurnKp)
+    GenericEntry pBR = driveTab.add("BR P", DriveConstants.kBRTurnKp)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(0, 3)
         .getEntry();
 
-    GenericEntry iBR = driveTab.add("BR I", DriveConstants.kTurnKi)
+    GenericEntry iBR = driveTab.add("BR I", DriveConstants.kBRTurnKi)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(1, 3)
         .getEntry();
 
-    GenericEntry dBR = driveTab.add("BR D", DriveConstants.kTurnKd)
+    GenericEntry dBR = driveTab.add("BR D", DriveConstants.kBRTurnKd)
         .withWidget(BuiltInWidgets.kTextView)
         .withProperties(Map.of("min", 0, "max", 10))
         .withPosition(2, 3)
@@ -265,22 +265,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DrivetrainSubsystem.m_backRight.getPosition()
         });
 
-        m_frontLeft.updateTurnPID(
-            pFL.getDouble(DriveConstants.kTurnKp), 
-            dFL.getDouble(DriveConstants.kTurnKi), 
-            dFL.getDouble(DriveConstants.kTurnKd));
-        m_frontRight.updateTurnPID(
-            pFR.getDouble(DriveConstants.kTurnKp), 
-            dFR.getDouble(DriveConstants.kTurnKi), 
-            dFR.getDouble(DriveConstants.kTurnKd));
-        m_backLeft.updateTurnPID(
-            pBL.getDouble(DriveConstants.kTurnKp), 
-            dBL.getDouble(DriveConstants.kTurnKi), 
-            dBL.getDouble(DriveConstants.kTurnKd));
-        m_backRight.updateTurnPID(
-            pBR.getDouble(DriveConstants.kTurnKp), 
-            dBR.getDouble(DriveConstants.kTurnKi), 
-            dBR.getDouble(DriveConstants.kTurnKd));
+        // m_frontLeft.updateTurnPID(
+        //     pFL.getDouble(DriveConstants.kFLTurnKp), 
+        //     dFL.getDouble(DriveConstants.kFLTurnKi), 
+        //     dFL.getDouble(DriveConstants.kFLTurnKd));
+        // m_frontRight.updateTurnPID(
+        //     pFR.getDouble(DriveConstants.kFRTurnKp), 
+        //     dFR.getDouble(DriveConstants.kFRTurnKi), 
+        //     dFR.getDouble(DriveConstants.kFRTurnKd));
+        // m_backLeft.updateTurnPID(
+        //     pBL.getDouble(DriveConstants.kBLTurnKp), 
+        //     dBL.getDouble(DriveConstants.kBLTurnKi), 
+        //     dBL.getDouble(DriveConstants.kBLTurnKd));
+        // m_backRight.updateTurnPID(
+        //     pBR.getDouble(DriveConstants.kBRTurnKp), 
+        //     dBR.getDouble(DriveConstants.kBRTurnKi), 
+        //     dBR.getDouble(DriveConstants.kBRTurnKd));
 
         m_frontLeft.collectEncoderSample();
         m_frontRight.collectEncoderSample();
