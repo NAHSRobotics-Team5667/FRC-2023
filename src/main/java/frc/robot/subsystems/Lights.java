@@ -7,12 +7,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Lights extends SubsystemBase {
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
-    private int m_rainbowFirstPixelHue = 0;
+    private int rainbowFirstPixelHue = 0;
+    private int cylon_center = 0;
     public Lights() {
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
         this.m_led = new AddressableLED(LightConstants.kLEDPort);
-        
         // Reuse buffer
         // Default to a length of 60, start empty output
         // Length is expensive to set, so only set it once, then just update data
@@ -40,23 +40,27 @@ public class Lights extends SubsystemBase {
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
             // Calculate the hue - hue is easier for rainbows because the color
             // shape is a circle so only one value needs to precess
-            final var hue = (this.m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+            final var hue = (this.rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
             // Set the value
             this.m_ledBuffer.setHSV(i, hue, 255, 128);
         }
         // Increase by to make the rainbow "move"
-        this.m_rainbowFirstPixelHue += 3;
+        this.rainbowFirstPixelHue += 3;
         // Check bounds
-        this.m_rainbowFirstPixelHue %= 180;
+        this.rainbowFirstPixelHue %= 180;
     }
 
     private void cylon() {
-        int center = 0;
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            this.m_ledBuffer.setHSV(i, 0, 1, 250 - (Math.abs(center-i) * 80));
+            int v = 250 - (Math.abs(this.cylon_center-i) * 50);
+            if (v<0) {
+                v = 0;
+            }
+            this.m_ledBuffer.setHSV(i, 0, 255, v);
             
         }
-        center++;
+        this.cylon_center++;
+        cylon_center = cylon_center % this.m_ledBuffer.getLength();
     }
     
     @Override
