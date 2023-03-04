@@ -17,7 +17,7 @@ public class Vision {
   private Optional<EstimatedRobotPose> currentFieldPose;
 
   public Vision() {
-    camera = new PhotonCamera("PhotonVisionCamera");
+    camera = new PhotonCamera("USB Camera 0");
     poseEstimator = new PhotonPoseEstimator(VisionConstants.tagLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera, VisionConstants.robotToCamera);
     currentFieldPose = Optional.empty();
   }

@@ -158,7 +158,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
     public final AHRS m_gyro = new AHRS(Port.kMXP);
-    public Rotation2d gyroOffset = m_gyro.getRotation2d();
+    public double gyroOffset = m_gyro.getAngle();
     public Pose2d m_pose = new Pose2d(0, 0, getGyro());
     public final SwerveDriveOdometry m_odometry;
 
@@ -240,7 +240,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     /** Returns the rotation relative to the last resetGyro() called */
     public Rotation2d getGyro() {
-        return (this.m_gyro.getRotation2d().minus(gyroOffset));
+        Rotation2d gyro = new Rotation2d((this.m_gyro.getAngle() - gyroOffset)*(Math.PI)/180);
+        return gyro;
     }
 
     public double getHeading() {
@@ -252,7 +253,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * {@link frc.robot.subsystems.DrivetrainSubsystem#getGyro()}
      */
     public void resetGyro() {
-        gyroOffset = m_gyro.getRotation2d();
+        gyroOffset = m_gyro.getAngle();
     }
 
     @Override
@@ -301,6 +302,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //     SmartDashboard.putNumber("BL Turn Setpoint", m_backLeft.getAngleSetpoint());
     //     SmartDashboard.putNumber("BR Turn Setpoint", m_backRight.getAngleSetpoint());
          SmartDashboard.putString("Gyro", getGyro().toString());
+         SmartDashboard.putNumber("normal gyro", getHeading());
     //     SmartDashboard.putString("GyroFake", this.getGyro().toString());
     //     SmartDashboard.putNumber("Gyro Angle", this.getHeading());
     //     SmartDashboard.putString("Gyro Offset", this.gyroOffset.toString());
@@ -334,7 +336,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("absolute encoder heckin value",
         // m_frontRight.trueEncoderOffset);
 
-        // SmartDashboard.putString("hecking auto", this.m_pose.toString());
+        SmartDashboard.putString("hecking auto", this.m_pose.toString());
         // SmartDashboard.putString("State angle", m_frontRight.getState().angle.toString());
 
         /*
