@@ -49,11 +49,20 @@ public class Lights extends SubsystemBase {
         // Check bounds
         this.m_rainbowFirstPixelHue %= 180;
     }
-    
+
+    private void cylon() {
+        int center = 0;
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+            this.m_ledBuffer.setHSV(i, 0, 1, 250 - (Math.abs(center-i) * 80));
+            
+        }
+        center++;
+    }
     
     @Override
     public void periodic() {
-        rainbow();
+        //rainbow();
+        cylon();
         this.m_led.setData(m_ledBuffer);
     }
 }
