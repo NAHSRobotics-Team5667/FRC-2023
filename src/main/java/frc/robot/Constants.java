@@ -60,4 +60,8 @@ public final class Constants {
         public static final int kTiltID = -1;
     }
 
+    public static final class LightConstants {
+        public static final int kLEDPort = 9;
+    }
+
 }

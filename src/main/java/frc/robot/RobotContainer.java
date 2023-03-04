@@ -24,6 +24,7 @@ import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Lights;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,6 +41,9 @@ public class RobotContainer {
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     private ClawSubsystem m_claw; // declares claw subsystem
 
+    @SuppressWarnings("unused") // because ocd (makes VScode not underline with yellow)
+    private Lights lightstrip;
+    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -53,6 +57,8 @@ public class RobotContainer {
         m_claw.setDefaultCommand(new ClawCommand(m_claw));
         configureButtonBindings();
 
+
+        lightstrip = new Lights();
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
