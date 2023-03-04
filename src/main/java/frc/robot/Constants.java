@@ -150,4 +150,8 @@ public final class Constants {
         public static final double minTargetArea = 10;
     }
 
+    public static final class LightConstants {
+        public static final int kLEDPort = 9;
+    }
+
 }
