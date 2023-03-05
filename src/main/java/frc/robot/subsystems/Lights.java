@@ -23,12 +23,17 @@ public class Lights extends SubsystemBase {
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
-
     }
-
+    
+    /**
+    * Sets the color of all LEDs to the specified RGB color
+    * @param R Red value (0-255)
+    * @param G Green value (0-255)
+    * @param B Blue value (0-255)
+    */
     public void setSolidRGB(int R, int G, int B) {
         for (var i = 0; i < this.m_ledBuffer.getLength(); i++) {
-            // Sets the specified LED to the RGB values for red
+            // Sets the specified LED to the RGB values
             this.m_ledBuffer.setRGB(i, R, G, B);
         }
     }
@@ -42,12 +47,11 @@ public class Lights extends SubsystemBase {
      * https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#creating-a-rainbow-effect
      */
     public void rainbow(double speed_multiplier) {
-        // For every pixel
-        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            final var hue = (this.rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+        final var length = m_ledBuffer.getLength();
+        for (var i = 0; i < length; i++) {
+            final var hue = (this.rainbowFirstPixelHue + (i * 180 / length)) % 180;
             this.m_ledBuffer.setHSV(i, hue, 255, 128);
         }
-        // Increase by to make the rainbow "move"
         this.rainbowFirstPixelHue += 1 * speed_multiplier;
         this.rainbowFirstPixelHue %= 180;
     }
