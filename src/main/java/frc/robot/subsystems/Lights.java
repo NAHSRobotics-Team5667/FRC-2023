@@ -7,10 +7,11 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
+
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
-    private Robot robot;
-    public Lights(Robot robot) {
+
+    public Lights() {
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
         this.m_led = new AddressableLED(LightConstants.kLEDPort);
@@ -41,15 +42,23 @@ public class Lights extends SubsystemBase {
      * This is also the example code from the documentation:
      * https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#creating-a-rainbow-effect
      */
-    public void rainbow() {
+    public void rainbow(double speed_multiplier) {
         // For every pixel
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
             final var hue = (this.rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
             this.m_ledBuffer.setHSV(i, hue, 255, 128);
         }
         // Increase by to make the rainbow "move"
-        this.rainbowFirstPixelHue += 3;
+        this.rainbowFirstPixelHue += 1 * speed_multiplier;
         this.rainbowFirstPixelHue %= 180;
+    }
+
+    /**
+     * Calls the rainbow function with the default speed of 3. Use
+     * {@link #rainbow(double)} for more control.
+     */
+    public void rainbow() {
+        this.rainbow(3);
     }
 
     private int cylon_center = 0;
@@ -80,19 +89,35 @@ public class Lights extends SubsystemBase {
     }
 
     /**
-     * Calls the cylon function with default values for your convenience.
-     * Use {@link #cylon(int, int, double)} for more control
+     * Calls the cylon function with default values for your convenience. Use
+     * {@link #cylon(int, int, double)} for more control.
      */
     public void cylon() {
         this.cylon(0, 255, 1);
     }
 
+    public enum period {
+        AUTO, TELEOP, DISABLED
+    }
+    private period currentPeriod = Lights.period.DISABLED;
+    public Lights.period getPeriod() {
+        return currentPeriod;
+    }
+        public void setPeriod(Lights.period p) {
+        currentPeriod = p;
+    }
+
     @Override
     public void periodic() {
-        System.out.println(this.robot.getPeriod()); // TODO: test and remove this. I'm done for the night
 
-        // rainbow();
-        cylon();
+        if (this.getPeriod() == period.DISABLED) {
+            rainbow();
+        } else {
+            cylon();
+        }
+
+        
         this.m_led.setData(m_ledBuffer);
     }
+    
 }

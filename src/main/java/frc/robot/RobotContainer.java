@@ -36,13 +36,14 @@ import frc.robot.subsystems.Lights;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     private ClawSubsystem m_claw; // declares claw subsystem
 
     @SuppressWarnings("unused") // because ocd (makes VScode not underline with yellow)
-    private Lights lightstrip;
+    public Lights lightstrip;
     
     public static double pEditor = 0;
     public static double dEditor = 0;
@@ -62,7 +63,7 @@ public class RobotContainer {
         configureButtonBindings();
 
 
-        lightstrip = new Lights(robot);
+        lightstrip = new Lights();
 
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
