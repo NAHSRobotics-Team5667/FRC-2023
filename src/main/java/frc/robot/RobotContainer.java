@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -36,10 +35,12 @@ import frc.robot.subsystems.Lights;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
+    
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
     private DrivetrainSubsystem m_drive; // declares dt subsystem
+
+    @SuppressWarnings("unused")
     private ClawSubsystem m_claw; // declares claw subsystem
 
     @SuppressWarnings("unused") // because ocd (makes VScode not underline with yellow)
@@ -73,6 +74,7 @@ public class RobotContainer {
         // This is just an example event map. It would be better to have a constant,
         // global event map
         // in your code that will be used by all path following commands.
+        @SuppressWarnings({"unchecked","rawtypes"})
         HashMap<String, Command> eventMap = new HashMap();
 
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));

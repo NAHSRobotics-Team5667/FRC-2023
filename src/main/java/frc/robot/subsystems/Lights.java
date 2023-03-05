@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import frc.robot.Robot;
 import frc.robot.Constants.LightConstants;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
