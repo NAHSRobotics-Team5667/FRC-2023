@@ -1,4 +1,6 @@
 package frc.robot.subsystems;
+
+import frc.robot.Robot;
 import frc.robot.Constants.LightConstants;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -7,9 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Lights extends SubsystemBase {
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
-    private int rainbowFirstPixelHue = 0;
-    private int cylon_center = 0;
-    public Lights() {
+    private Robot robot;
+    public Lights(Robot robot) {
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
         this.m_led = new AddressableLED(LightConstants.kLEDPort);
@@ -22,50 +23,75 @@ public class Lights extends SubsystemBase {
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
-        
-    } 
-    public void setSolidRGB(int R, int G, int B){
+
+    }
+
+    public void setSolidRGB(int R, int G, int B) {
         for (var i = 0; i < this.m_ledBuffer.getLength(); i++) {
             // Sets the specified LED to the RGB values for red
             this.m_ledBuffer.setRGB(i, R, G, B);
         }
     }
 
-    /*
-     * Creates a rainbow using the LEDs (must be called periodically for cool effect)
-     * This is also the example code from the documentation: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#creating-a-rainbow-effect
+    private int rainbowFirstPixelHue = 0;
+
+    /**
+     * Creates a rainbow using the LEDs (must be called periodically for cool
+     * effect)
+     * This is also the example code from the documentation:
+     * https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#creating-a-rainbow-effect
      */
-    private void rainbow() {
+    public void rainbow() {
         // For every pixel
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            // Calculate the hue - hue is easier for rainbows because the color
-            // shape is a circle so only one value needs to precess
             final var hue = (this.rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
-            // Set the value
             this.m_ledBuffer.setHSV(i, hue, 255, 128);
         }
         // Increase by to make the rainbow "move"
         this.rainbowFirstPixelHue += 3;
-        // Check bounds
         this.rainbowFirstPixelHue %= 180;
     }
 
-    private void cylon() {
+    private int cylon_center = 0;
+    private double cylon_velocity = 1;
+
+    /**
+     * Creates a cylon effect using the LEDs (must be called periodically for the
+     * effect).
+     * 
+     * @param hue              The hue of the cylon from [0-180]
+     * @param saturation       The saturation of the cylon from [0-255]
+     * @param speed_multiplier The speed multiplier of the cylon
+     */
+    public void cylon(int hue, int saturation, double speed_multiplier) {
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            int v = 250 - (Math.abs(this.cylon_center-i) * 50);
-            if (v<0) {
-                v = 0;
+            int value = 250 - (Math.abs(this.cylon_center - i) * 50);
+            if (value < 0) {
+                value = 0;
             }
-            this.m_ledBuffer.setHSV(i, 0, 255, v);
-            
+            this.m_ledBuffer.setHSV(i, hue, saturation, value);
         }
-        this.cylon_center++;
-        cylon_center = cylon_center % this.m_ledBuffer.getLength();
+
+        this.cylon_center += cylon_velocity;
+        if (this.cylon_center >= this.m_ledBuffer.getLength() || this.cylon_center < 0) {
+            this.cylon_velocity *= -1;
+        } // makes the cylon go back and forth
+
     }
-    
+
+    /**
+     * Calls the cylon function with default values for your convenience.
+     * Use {@link #cylon(int, int, double)} for more control
+     */
+    public void cylon() {
+        this.cylon(0, 255, 1);
+    }
+
     @Override
     public void periodic() {
-        //rainbow();
+        System.out.println(this.robot.getPeriod()); // TODO: test and remove this. I'm done for the night
+
+        // rainbow();
         cylon();
         this.m_led.setData(m_ledBuffer);
     }

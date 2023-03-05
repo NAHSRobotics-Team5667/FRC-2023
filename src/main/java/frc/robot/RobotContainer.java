@@ -46,13 +46,14 @@ public class RobotContainer {
     
     public static double pEditor = 0;
     public static double dEditor = 0;
-    
+    public Robot robot;
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     private Command fullAuto;
 
-    public RobotContainer() {
+    public RobotContainer(Robot robot) {
+        this.robot = robot;
         m_drive = new DrivetrainSubsystem();
         m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
         //removing everything that isnt the drive train for now to make troubleshooting easier
@@ -61,7 +62,7 @@ public class RobotContainer {
         configureButtonBindings();
 
 
-        lightstrip = new Lights();
+        lightstrip = new Lights(robot);
 
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
