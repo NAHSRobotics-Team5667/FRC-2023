@@ -53,12 +53,15 @@ public class RobotContainer {
        // m_claw = new ClawSubsystem();
         //m_claw.setDefaultCommand(new ClawCommand(m_claw));
         configureButtonBindings();
+        
+        
 
 
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
-        PathPlannerTrajectory pathGroup = PathPlanner.loadPath("Basic Test", new PathConstraints(1, 5));
+        PathPlannerTrajectory pathGroup = PathPlanner.loadPath("New Path", new PathConstraints(5
+, 5));
 
         // This is just an example event map. It would be better to have a constant,
         // global event map
@@ -96,13 +99,13 @@ public class RobotContainer {
                 poseSupplier, // Pose2d supplier
                 resetPoseConsumer, // Pose2d consumer, used to reset odometry at the beginning of auto
                 m_drive.m_kinematics, // SwerveDriveKinematics
-                new PIDConstants(1.8197, 0, 0), // PID constants to correct for translation error (used to create the X
+                new PIDConstants(2.7109,0 ,0), // PID constants to correct for translation error (used to create the X
                                                // and Y PID controllers)
                 new PIDConstants(7, 12, 0.1), // PID constants to correct for rotation error (used to create the
                                                  // rotation controller)
                 outputModuleConsumer, // Module states consumer used to output to the drive subsystem
                 eventMap,
-                true, // Should the path be automatically mirrored depending on alliance color.
+                false, // Should the path be automatically mirrored depending on alliance color.
                       // Optional, defaults to true
                 m_drive // The drive subsystem. Used to properly set the requirements of path following
                         // commands
@@ -146,5 +149,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         return this.fullAuto;
+        
     }
 }

@@ -26,13 +26,13 @@ public class SwerveModule {
    
     private final WPI_TalonFX m_driveMotor, m_turningMotor;
 
-    private final PIDController m_drivePIDController = new PIDController(.6, 0, 0);
+    private final PIDController m_drivePIDController = new PIDController(.031576, 0, 0);
 
     // Gains are for example purposes only - must be determined for your own robot!
     // public final ProfiledPIDController m_turningPIDController;
     public final PIDController m_turningPIDController;
 
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.17543, 2.0821, .21355);
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.096682, 2.2041, .54385);
     double trueEncoderOffset = 100;
     double trueEncoderOffsetTest = 0;
     double[] averageOffsetBoi;
@@ -154,6 +154,9 @@ public class SwerveModule {
     public PIDController getTurningPID() {
         return this.m_turningPIDController;
     }
+    public PIDController getDrivePID() {
+        return this.m_drivePIDController;
+    }
 
 
     /**
@@ -223,7 +226,7 @@ public class SwerveModule {
     }
 
     /**
-     * @return get the turn motor angle
+     * @return get the turn motor angle   
      */
     public double getTurnEncoderDistance() {
         
@@ -280,4 +283,6 @@ public class SwerveModule {
     public double getOffset() {
         return trueEncoderOffset;
     }
+
+   
 }
