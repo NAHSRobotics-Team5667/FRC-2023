@@ -15,8 +15,12 @@ import frc.robot.Constants;
 
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide, m_tilt;
-    private PIDController controllerRight, controllerLeft = new PIDController(.5, 0, 0);
-    private PIDController controllerTilt = new PIDController(.5, 0, 0);
+
+    @SuppressWarnings("unused")
+    private PIDController 
+        controllerRight, controllerLeft = new PIDController(.5, 0, 0),
+        controllerTilt = new PIDController(.5, 0, 0);
+        
     // maybe add a feed forward? May be unnecessary though
     /** Creates a new SlideSubsystem. */
     public SlideSubsystem() {

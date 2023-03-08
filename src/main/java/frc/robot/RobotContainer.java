@@ -20,10 +20,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Lights;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,18 +35,27 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
     private DrivetrainSubsystem m_drive; // declares dt subsystem
+
+    @SuppressWarnings("unused")
     private ClawSubsystem m_claw; // declares claw subsystem
+
+    @SuppressWarnings("unused") // because ocd (makes VScode not underline with yellow)
+    public Lights lightstrip;
+    
     public static double pEditor = 0;
     public static double dEditor = 0;
+    public Robot robot;
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     private Command fullAuto;
 
-    public RobotContainer() {
+    public RobotContainer(Robot robot) {
+        this.robot = robot;
         m_drive = new DrivetrainSubsystem();
         m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
         //removing everything that isnt the drive train for now to make troubleshooting easier
@@ -57,6 +66,8 @@ public class RobotContainer {
         
 
 
+        lightstrip = new Lights();
+
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
@@ -66,6 +77,7 @@ public class RobotContainer {
         // This is just an example event map. It would be better to have a constant,
         // global event map
         // in your code that will be used by all path following commands.
+        @SuppressWarnings({"unchecked","rawtypes"})
         HashMap<String, Command> eventMap = new HashMap();
 
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));

@@ -8,7 +8,6 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
 
 public class Vision {

@@ -12,17 +12,17 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
     public static final double kDriveEncoderConstant = (2 * DriveConstants.kWheelRadius * Math.PI)
             / (DriveConstants.kEncoderResolution * DriveConstants.kDriveGearRatio);
-
-    private static final double kModuleMaxAngularVelocity = DriveConstants.kMaxAngularSpeed;
-    private static final double kModuleMaxAngularAcceleration = DriveConstants.kMaxAngularAcceleration; // radians per second squared
+            
+    @SuppressWarnings("unused")
+    private static final double
+            kModuleMaxAngularVelocity = DriveConstants.kMaxAngularSpeed,
+            kModuleMaxAngularAcceleration = DriveConstants.kMaxAngularAcceleration; // radians per second squared
    
     private final WPI_TalonFX m_driveMotor, m_turningMotor;
 
@@ -36,10 +36,12 @@ public class SwerveModule {
     double trueEncoderOffset = 100;
     double trueEncoderOffsetTest = 0;
     double[] averageOffsetBoi;
+    @SuppressWarnings("unused")
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398); // TODO: do something idk
     DutyCycleEncoder Encoder;
     double angleOffset = 0;
 
+    @SuppressWarnings("unused")
     private final LinearFilter filter = LinearFilter.movingAverage(10000); // average over last 5 samples
 
     private double sampleCounter = 0;
