@@ -26,8 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-
 /** Represents a swerve drive style drivetrain. */
 public class DrivetrainSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second
@@ -147,21 +145,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DrivetrainSubsystem.m_backRight.getPosition()
     };
     private Translation2d // Create the locations of the wheels
-<<<<<<< HEAD
-        m_backLeftLocation = new Translation2d(-0.257, 0.306), //TODO: Get actual wheel positions
-        //0.306
-        //0.257
-        m_backRightLocation = new Translation2d(0.257, 0.306),
-        m_frontLeftLocation = new Translation2d(-0.257, -0.306),
-        m_frontRightLocation = new Translation2d(0.257, -0.306);
-=======
             m_frontLeftLocation = new Translation2d(0.257, -0.306), // TODO: Get actual wheel positions
             // 0.306
             // 0.257
             m_frontRightLocation = new Translation2d(0.257, 0.306),
             m_backLeftLocation = new Translation2d(-0.257, -0.306),
             m_backRightLocation = new Translation2d(-0.257, 0.306);
->>>>>>> 6ac69ff1e3c80376ac5fedce9c4883706e21f415
 
     public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -310,29 +299,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("FL Abs Angle",
         // m_frontLeft.getBetterTurnEncoderDistance());
 
-<<<<<<< HEAD
-    //     SmartDashboard.putNumber("FL Turn Setpoint", m_frontLeft.getAngleSetpoint());
-    //     SmartDashboard.putNumber("FR Turn Setpoint", m_frontRight.getAngleSetpoint());
-    //     SmartDashboard.putNumber("BL Turn Setpoint", m_backLeft.getAngleSetpoint());
-    //     SmartDashboard.putNumber("BR Turn Setpoint", m_backRight.getAngleSetpoint());
-         SmartDashboard.putString("Gyro", getGyro().toString());
-         SmartDashboard.putNumber("normal gyro", getHeading());
-    //     SmartDashboard.putString("GyroFake", this.getGyro().toString());
-    //     SmartDashboard.putNumber("Gyro Angle", this.getHeading());
-    //     SmartDashboard.putString("Gyro Offset", this.gyroOffset.toString());
-        // SmartDashboard.putNumber("testy boiFL", (m_frontLeft.trueEncoderOffset));
-        // SmartDashboard.putNumber("testy boiFR", (m_frontRight.trueEncoderOffset));
-        // SmartDashboard.putNumber("testy boiBL", (m_backLeft.trueEncoderOffset));
-        // SmartDashboard.putNumber("testy boiBR", (m_backRight.trueEncoderOffset));
-        // SmartDashboard.putNumber("FR Pose", m_frontRight.getTurnEncoderDistance());
-        // SmartDashboard.putNumber("BR Pose", m_backRight.getTurnEncoderDistance());
-        // SmartDashboard.putNumber("FL Pose", m_frontLeft.getTurnEncoderDistance());
-        // SmartDashboard.putNumber("BL Pose", m_backLeft.getTurnEncoderDistance());
-         SmartDashboard.putNumber("FR ABS", m_frontRight.Encoder.getAbsolutePosition());
-         SmartDashboard.putNumber("FL ABS", m_frontLeft.Encoder.getAbsolutePosition());
-         SmartDashboard.putNumber("BR ABS", m_backRight.Encoder.getAbsolutePosition());
-         SmartDashboard.putNumber("BL ABS", m_backLeft.Encoder.getAbsolutePosition());
-=======
         // SmartDashboard.putNumber("FL Turn Setpoint", m_frontLeft.getAngleSetpoint());
         // SmartDashboard.putNumber("FR Turn Setpoint",
         // m_frontRight.getAngleSetpoint());
@@ -355,7 +321,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("FL ABS", m_frontLeft.getAbsTurnEncoder());
         SmartDashboard.putNumber("BR ABS", m_backRight.getAbsTurnEncoder());
         SmartDashboard.putNumber("BL ABS", m_backLeft.getAbsTurnEncoder());
->>>>>>> 6ac69ff1e3c80376ac5fedce9c4883706e21f415
 
         // SmartDashboard.putNumber("FR Offset", m_frontRight.getOffset());
         // SmartDashboard.putNumber("FL Offset", m_frontLeft.getOffset());
@@ -367,17 +332,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("BL Abs Position Error", m_backLeft.getTurningPID().getPositionError());
         // SmartDashboard.putNumber("FL Abs Position Error", m_frontLeft.getTurningPID().getPositionError());
 
-<<<<<<< HEAD
-        // SmartDashboard.putNumber("FL Error + Encoder", m_frontLeft.getTurnEncoderDistance() + m_frontLeft.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("FR Error + Encoder", m_frontRight.getTurnEncoderDistance() + m_frontRight.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("BL Error + Encoder", m_backLeft.getTurnEncoderDistance() + m_backLeft.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("BR Error + Encoder", m_backRight.getTurnEncoderDistance() + m_backRight.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("absolute encoder heckin value",
-        // m_frontRight.trueEncoderOffset);
-
-        SmartDashboard.putString("hecking auto", this.getPositionPose2d().toString());
-        // SmartDashboard.putString("State angle", m_frontRight.getState().angle.toString());
-=======
         SmartDashboard.putNumber("FL Error + Encoder",
                 m_frontLeft.getTurnEncoderDistance() + m_frontLeft.getTurningPID().getPositionError());
         SmartDashboard.putNumber("FR Error + Encoder",
@@ -392,7 +346,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putString("hecking auto", this.m_pose.toString());
         // SmartDashboard.putString("State angle",
         // m_frontRight.getState().angle.toString());
->>>>>>> 6ac69ff1e3c80376ac5fedce9c4883706e21f415
 
         /*
         SmartDashboard.putNumber("FRA-ActualPS",
@@ -420,19 +373,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("P-value", RobotContainer.pEditor + 5);
         // SmartDashboard.putNumber("D-value", RobotContainer.dEditor + .7);
         SmartDashboard.putNumber("FRD-Actual",
-<<<<<<< HEAD
-           m_frontRight.getDriveEncoderRaw());
-        SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderRaw());
-        SmartDashboard.putNumber("BRD-Actual", m_backRight.getDriveEncoderRaw());
-        SmartDashboard.putNumber("BLD-Actual", m_backLeft.getDriveEncoderRaw());
-              
-=======
                 m_frontRight.getDriveEncoderDistance() - m_frontRight.getDriveSetpoint());
         SmartDashboard.putNumber("FLD-Actual", m_frontLeft.getDriveEncoderDistance() - m_frontLeft.getDriveSetpoint());
         SmartDashboard.putNumber("BRD-Actual", m_backRight.getDriveEncoderDistance() - m_backRight.getDriveSetpoint());
         SmartDashboard.putNumber("BLD-Actual", m_backLeft.getDriveEncoderDistance() - m_backLeft.getDriveSetpoint());
 
->>>>>>> 6ac69ff1e3c80376ac5fedce9c4883706e21f415
         /*
         SmartDashboard.putNumber("FRD-Setpoint", m_frontRight.getDriveSetpoint());
         SmartDashboard.putNumber("FLD-Setpoint", m_frontLeft.getDriveSetpoint());

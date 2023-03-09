@@ -43,12 +43,12 @@ public class RobotContainer {
     @SuppressWarnings("unused")
     private ClawSubsystem m_claw; // declares claw subsystem
 
-    @SuppressWarnings("unused") // because ocd (makes VScode not underline with yellow)
+     //deal with it liam
     public Lights lightstrip;
     
     public static double pEditor = 0;
     public static double dEditor = 0;
-    public Robot robot;
+    public Robot robot; //uh i dont think we need this -benjamin
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -59,6 +59,7 @@ public class RobotContainer {
         m_drive = new DrivetrainSubsystem();
         m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
         //removing everything that isnt the drive train for now to make troubleshooting easier
+        //why are we insantiating the robot in robot container? doesnt the hierarchy go from robot to robot container?
        // m_claw = new ClawSubsystem();
         //m_claw.setDefaultCommand(new ClawCommand(m_claw));
         configureButtonBindings();
