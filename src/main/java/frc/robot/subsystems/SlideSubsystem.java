@@ -5,16 +5,23 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide, m_tilt;
+    
+    
+    private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0,0,0);
+   
+
 
     @SuppressWarnings("unused")
     private PIDController 
@@ -35,6 +42,18 @@ public class SlideSubsystem extends SubsystemBase {
         m_tilt = new WPI_TalonFX(Constants.SlideConstants.kTiltID);
         m_tilt.setNeutralMode(NeutralMode.Brake); //DO NOT CHANGE FROM BRAKE
         m_tilt.setSelectedSensorPosition(0);
+
+        m_leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    }
+    public double getDriveRate(){
+        return m_leftSlide.getSelectedSensorVelocity();
+    }
+    public void moveSlide(double desiredState){
+        double currentPosition = getLeftPosition();
+        double output = controllerLeft.calculate(currentPosition, desiredState);
+        double slideFeedForward = m_slideFeedForward.calculate(getDriveRate());
+        m_leftSlide.setVoltage(output + slideFeedForward);
+
     }
 
     public void setSlide(double percentOutput) {
@@ -57,6 +76,7 @@ public class SlideSubsystem extends SubsystemBase {
     public boolean isLeftAndRightBalanced(){
         return (Math.abs(getLeftPosition()-getRightPosition()) < .01);
     }
+    
     public double getSlideOutput(){
         return 0; //TODO              
 

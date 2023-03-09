@@ -10,7 +10,7 @@ import frc.robot.subsystems.SlideSubsystem;
 
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
-    public double bumperPos = 0;
+    public int bumperPos = 0;
     public static double[] Setpoints = { 
         0,
         0,
@@ -37,6 +37,7 @@ public class SlideCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        slide.moveSlide(Setpoints[bumperPos]);
 
         
        
