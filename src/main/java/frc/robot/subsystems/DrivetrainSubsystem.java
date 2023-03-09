@@ -26,8 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-
 /** Represents a swerve drive style drivetrain. */
 public class DrivetrainSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second

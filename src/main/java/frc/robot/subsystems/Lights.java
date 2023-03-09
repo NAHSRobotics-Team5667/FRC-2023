@@ -9,8 +9,10 @@ public class Lights extends SubsystemBase {
 
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
+    public Light_Scheduler scheduler;
 
     public Lights() {
+        scheduler = new Light_Scheduler();
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
         this.m_led = new AddressableLED(LightConstants.kLEDPort);
@@ -20,17 +22,20 @@ public class Lights extends SubsystemBase {
         this.m_ledBuffer = new AddressableLEDBuffer(150);
         this.m_led.setLength(m_ledBuffer.getLength());
         this.setSolidRGB(0, 255, 0);
+
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
+
     }
-    
+
     /**
-    * Sets the color of all LEDs to the specified RGB color
-    * @param R Red value (0-255)
-    * @param G Green value (0-255)
-    * @param B Blue value (0-255)
-    */
+     * Sets the color of all LEDs to the specified RGB color
+     * 
+     * @param R Red value (0-255)
+     * @param G Green value (0-255)
+     * @param B Blue value (0-255)
+     */
     public void setSolidRGB(int R, int G, int B) {
         for (var i = 0; i < this.m_ledBuffer.getLength(); i++) {
             // Sets the specified LED to the RGB values
@@ -91,36 +96,102 @@ public class Lights extends SubsystemBase {
 
     }
 
-    /**
-     * Calls the cylon function with default values for your convenience. Use
-     * {@link #cylon(int, int, double)} for more control.
-     */
-    public void cylon() {
-        this.cylon(0, 255, 1);
-    }
-
     public enum period {
         AUTO, TELEOP, DISABLED
     }
+
     private period currentPeriod = Lights.period.DISABLED;
+
     public Lights.period getPeriod() {
         return currentPeriod;
     }
-        public void setPeriod(Lights.period p) {
+
+    public void setPeriod(Lights.period p) {
         currentPeriod = p;
+    }
+
+    @FunctionalInterface
+    public static interface LightEffect {
+        void apply();
+    }
+
+    /**
+     * This is the Light Scheduler. It handles the scheduling of light effects.
+     * Each stage of the game has a defualt light effect, and this class allows for
+     * reactive light effects with the setLightEffect method.
+     */
+
+    public class Light_Scheduler {
+        LightEffect current_effect;
+        double time_left = 0; // in seconds
+        boolean periodic;
+        LightEffect default_disabled,
+                defualt_teleop,
+                defualt_auto;
+
+        public Light_Scheduler() {
+            this.setDefaultLightEffect();
+            this.default_disabled = () -> {
+                Lights.this.cylon(0, 255, 1);
+            };
+            this.defualt_teleop = () -> {
+                Lights.this.rainbow(3);
+            };
+            this.defualt_auto = () -> {
+                Lights.this.rainbow(1);
+            };
+        }
+
+        /**
+         * Sets the light effect to the specified effect for the specified duration.
+         * @param effect The light effect to be applied. see the default effects in {@link #Light_Scheduler} for an example of how to do this.
+         * @param duration The duration of the light effect in seconds.
+         * @param periodic Whether or not the light effect should be applied periodically.
+         */
+        public void setLightEffect(LightEffect effect, double duration, boolean periodic) {
+            this.current_effect = effect;
+            this.time_left = duration;
+            this.periodic = periodic;
+            this.applyLightEffect();
+        }
+
+        private void applyLightEffect() {
+            current_effect.apply();
+        }
+
+        /** Sets the default light effect for the current period */
+        public void setDefaultLightEffect() {
+            period period = Lights.this.getPeriod();
+            switch (period) {
+                case DISABLED:
+                    this.setLightEffect(default_disabled, 0, true);
+                    break;
+                case AUTO:
+                    this.setLightEffect(defualt_auto, 0, true);
+                    break;
+                case TELEOP:
+                    this.setLightEffect(defualt_teleop, 0, true);
+                    break;
+            }
+        }
+
+        /** Method to be executed from the parent classes periodic function */
+        public void periodic() {
+            if (this.periodic) {
+                this.applyLightEffect();
+            }
+            if (this.time_left > 0) {
+                this.time_left -= 0.02; // 0.02 seconds is usually the period of the periodic function
+            } else {
+                this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect for the current period.
+            }
+        }
     }
 
     @Override
     public void periodic() {
+        this.scheduler.periodic();
 
-        if (this.getPeriod() == period.DISABLED) {
-            rainbow();
-        } else {
-            cylon();
-        }
-
-        
         this.m_led.setData(m_ledBuffer);
     }
-    
 }
