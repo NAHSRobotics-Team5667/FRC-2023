@@ -4,8 +4,12 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClawSubsystem;
+
+import java.util.concurrent.TimeUnit;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ClawCommand extends CommandBase {
@@ -27,12 +31,32 @@ public class ClawCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        claw.setIntake(0);
-        if (RobotContainer.m_controller.getAButtonPressed()) {
-            claw.setIntake(.2);
+        if (RobotContainer.m_controller.getAButton()) {
+            while(claw.getMotorOutputVoltage() < Constants.ClawConstants.kVoltageLimit){
+                 claw.setIntake(.2);
+                 try {
+                    TimeUnit.SECONDS.sleep(4);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+        } else {
+            claw.setIntake(0);
         }
-        if (RobotContainer.m_controller.getBButtonPressed()) {
-            claw.setIntake(-.2);
+        if (RobotContainer.m_controller.getBButton()) {
+            while(claw.getMotorOutputVoltage() > Constants.ClawConstants.kVoltageLimit){
+                claw.setIntake(.2);
+                try {
+                    TimeUnit.SECONDS.sleep(4);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+           }
+        } else{
+            claw.setIntake(0);
         }
     }
 

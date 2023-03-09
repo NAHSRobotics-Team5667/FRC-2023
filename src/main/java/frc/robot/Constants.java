@@ -8,10 +8,16 @@ import java.util.List;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.util.Units;
 
 
@@ -90,17 +96,18 @@ public final class Constants {
         public static final int BREncoderID = 1;
         public static final int BLEncoderID = 2;
 
-        public static final double BLEncoderOffset = 0.43267 + .75;
-        public static final double FLEncoderOffset = 0.40751 + .75;
-        public static final double BREncoderOffset = 0.66494 + .75;
-
-        public static final double FREncoderOffset = 0.90833 + .75;
+        public static final double BLEncoderOffset = 0.43267 -.25;
+        public static final double FLEncoderOffset = 0.40751 -.25;
+        public static final double BREncoderOffset = 0.66494 -.25;
+        public static final double FREncoderOffset = 0.90833 -.25;
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
     }
 
     public static final class ClawConstants {
         public static final int kClawID = -1;
+
+        public static final int kVoltageLimit = -1;//TODO Find the limit it reaches before and after getting a game piece
     } 
 
     public static final class SlideConstants {
@@ -108,6 +115,16 @@ public final class Constants {
         public static final int kRSlideID = -1;
         public static final int kTiltID = -1;
         public static final int kSlideConstant = -1; //TODO: Find gear ratio
+
+        public static final int leftSlideEncoderId = -1;
+        public static final int rightSlideEncoderId = -1;
+        public static final int rightEncoderOffset =-1;
+        public static final int leftEncoderOffset = -1;
+
+        public static final int levelZeroHeight = -1;
+        public static final int levelOneHeight = -1;
+        public static final int levelTwoHeight = -1;
+        public static final int levelThreeHeight = -1;
     }
     
 //Have to add mirrored trajectories if alliance is switched

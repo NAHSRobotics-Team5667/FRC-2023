@@ -8,11 +8,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ClawSubsystem extends SubsystemBase {
     private WPI_TalonFX m_claw; // intake motor
+    
 
     /** Creates a new IntakeSubsystem. */
     public ClawSubsystem() {
@@ -22,15 +24,27 @@ public class ClawSubsystem extends SubsystemBase {
 
     /**
      * Purpose: To rotate motor
-     * 
+     *  
      * @param percentOutput: Percent of output using Motor Controller
      */
     public void setIntake(double percentOutput) {
         m_claw.set(ControlMode.PercentOutput, percentOutput);
     }
+    /**
+     * Purpose: To return current motor output voltage to use as de facto sensor
+     * @return: Current motor voltage 
+     */
+    public double getMotorOutputVoltage(){
+        return m_claw.getMotorOutputVoltage();
+    }
+
+    
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("ClawVoltage", m_claw.getMotorOutputVoltage());
+        SmartDashboard.putNumber("ClawTempurature", m_claw.getTemperature());
+
         // This method will be called once per scheduler run
     }
 }
