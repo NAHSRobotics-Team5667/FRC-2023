@@ -12,7 +12,6 @@ public class Lights extends SubsystemBase {
     public Light_Scheduler scheduler;
 
     public Lights() {
-        scheduler = new Light_Scheduler();
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
         this.m_led = new AddressableLED(LightConstants.kLEDPort);
@@ -22,11 +21,11 @@ public class Lights extends SubsystemBase {
         this.m_ledBuffer = new AddressableLEDBuffer(150);
         this.m_led.setLength(m_ledBuffer.getLength());
         this.setSolidRGB(0, 255, 0);
-
+        
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
-
+        scheduler = new Light_Scheduler();
     }
 
     /**
@@ -130,7 +129,6 @@ public class Lights extends SubsystemBase {
                 defualt_auto;
 
         public Light_Scheduler() {
-            this.setDefaultLightEffect();
             this.default_disabled = () -> {
                 Lights.this.cylon(0, 255, 1);
             };
@@ -140,6 +138,7 @@ public class Lights extends SubsystemBase {
             this.defualt_auto = () -> {
                 Lights.this.rainbow(1);
             };
+            this.setDefaultLightEffect();
         }
 
         /**
