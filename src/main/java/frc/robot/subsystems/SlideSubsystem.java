@@ -48,7 +48,7 @@ public class SlideSubsystem extends SubsystemBase {
     public double getDriveRate(){
         return m_leftSlide.getSelectedSensorVelocity();
     }
-    public void moveSlide(double desiredState){
+    public void    moveSlide(double desiredState){
         double currentPosition = getLeftPosition();
         double output = controllerLeft.calculate(currentPosition, desiredState);
         double slideFeedForward = m_slideFeedForward.calculate(getDriveRate());

@@ -257,6 +257,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         gyroOffset = m_gyro.getAngle();
     }
 
+    public SwerveModulePosition[] getPosition(){
+        return positions;
+    }
+
     @Override
     public void periodic() {
         Rotation2d gyroAngle = getGyro();
