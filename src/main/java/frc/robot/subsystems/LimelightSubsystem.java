@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Limelight extends SubsystemBase {
-  /** Creates a new Limelight. */
-  public Limelight() {}
+public class LimelightSubsystem extends SubsystemBase {
+  /** Creates a new LimelightSubsystem. */
+  public LimelightSubsystem() {}
 
   @Override
   public void periodic() {
