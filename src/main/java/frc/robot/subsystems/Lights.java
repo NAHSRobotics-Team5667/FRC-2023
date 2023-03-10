@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants.LightConstants;
 
-import java.lang.reflect.Array;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,6 +11,7 @@ public class Lights extends SubsystemBase {
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
     public Light_Scheduler scheduler;
+    private LightEffect[] tests;
 
     public Lights() {
         // PWM port 9
@@ -28,6 +27,13 @@ public class Lights extends SubsystemBase {
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
+        this.tests = new LightEffect[] { 
+            () -> {this.flashingRGB(255, 0, 0, 1);},
+            () -> {this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
+            () -> {this.rainbow(1);}, 
+            () -> {this.cylon(60, 255, 1);} 
+        };
+
         scheduler = new Light_Scheduler();
     }
 
@@ -49,10 +55,12 @@ public class Lights extends SubsystemBase {
 
     /**
      * Flashes the LEDs between on and off. Should be called periodically
-     * @param R Red value (0-255)
-     * @param G Green value (0-255)
-     * @param B Blue value (0-255)
-     * @param speedMultiplier The speed of the flashing. A multiplier of 1 makes it 2 seconds a cycle.
+     * 
+     * @param R               Red value (0-255)
+     * @param G               Green value (0-255)
+     * @param B               Blue value (0-255)
+     * @param speedMultiplier The speed of the flashing. A multiplier of 1 makes it
+     *                        2 seconds a cycle.
      */
     public void flashingRGB(int R, int G, int B, double speedMultiplier) {
         double interval = 100 * speedMultiplier; // if multiplier is 1: 2 seconds a cycle aka 1 second on 1 second off.
@@ -83,14 +91,6 @@ public class Lights extends SubsystemBase {
         this.rainbowHueValue %= 180;
     }
 
-    /**
-     * Calls the rainbow function with the default speed of 3. Use
-     * {@link #rainbow(double)} for more control.
-     */
-    public void rainbow() {
-        this.rainbow(3);
-    }
-
     private int cylon_center = 0;
     private double cylon_velocity = 1;
 
@@ -119,22 +119,22 @@ public class Lights extends SubsystemBase {
     }
 
     private int carnival_index = 0;
+
     public void carnival(int[][] colors, double speed_multiplier, int segment_length) {
         int current_color_index = 0;
         for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-            m_ledBuffer.setRGB((i+carnival_index)%m_ledBuffer.getLength(), colors[current_color_index][0], colors[current_color_index][1], colors[current_color_index][2]);
+            m_ledBuffer.setRGB((i + carnival_index) % m_ledBuffer.getLength(), colors[current_color_index][0],
+                    colors[current_color_index][1], colors[current_color_index][2]);
             if (i % segment_length == 0) {
                 current_color_index++;
                 current_color_index %= colors.length;
             }
         }
-            
-        
+
     }
 
-
     public enum period {
-        AUTO, TELEOP, DISABLED
+        AUTO, TELEOP, DISABLED, TEST, SIMULATION
     }
 
     private period currentPeriod = Lights.period.DISABLED;
@@ -165,6 +165,7 @@ public class Lights extends SubsystemBase {
         LightEffect default_disabled,
                 defualt_teleop,
                 defualt_auto;
+        private int test_index = 0;
 
         public Light_Scheduler() {
             this.default_disabled = () -> {
@@ -211,6 +212,11 @@ public class Lights extends SubsystemBase {
                     break;
                 case TELEOP:
                     this.setLightEffect(defualt_teleop, 0, true);
+                    break;
+                case TEST:
+                    this.setLightEffect(tests[test_index], 5, true);
+                    break;
+                case SIMULATION:
                     break;
             }
         }
