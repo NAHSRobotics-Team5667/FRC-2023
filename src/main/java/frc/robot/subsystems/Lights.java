@@ -215,6 +215,7 @@ public class Lights extends SubsystemBase {
                     break;
                 case TEST:
                     this.setLightEffect(tests[test_index], 5, true);
+                    test_index++; test_index %= tests.length;
                     break;
                 case SIMULATION:
                     break;
