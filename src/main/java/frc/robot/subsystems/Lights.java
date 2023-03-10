@@ -21,7 +21,7 @@ public class Lights extends SubsystemBase {
         this.m_ledBuffer = new AddressableLEDBuffer(150);
         this.m_led.setLength(m_ledBuffer.getLength());
         this.setSolidRGB(0, 255, 0);
-        
+
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
@@ -42,7 +42,27 @@ public class Lights extends SubsystemBase {
         }
     }
 
-    private int rainbowFirstPixelHue = 0;
+    private int flashTimer = 0;
+
+    /**
+     * Flashes the LEDs between on and off. Should be called periodically
+     * @param R Red value (0-255)
+     * @param G Green value (0-255)
+     * @param B Blue value (0-255)
+     * @param speedMultiplier The speed of the flashing. A multiplier of 1 makes it 2 seconds a cycle.
+     */
+    public void flashingRGB(int R, int G, int B, double speedMultiplier) {
+        double interval = 100 * speedMultiplier; // if multiplier is 1: 2 seconds a cycle aka 1 second on 1 second off.
+        if (flashTimer < interval / 2) {
+            setSolidRGB(R, G, B);
+        } else {
+            setSolidRGB(0, 0, 0);
+        }
+        flashTimer++;
+        flashTimer %= interval;
+    }
+
+    private int rainbowHueValue = 0;
 
     /**
      * Creates a rainbow using the LEDs (must be called periodically for cool
@@ -53,11 +73,11 @@ public class Lights extends SubsystemBase {
     public void rainbow(double speed_multiplier) {
         final var length = m_ledBuffer.getLength();
         for (var i = 0; i < length; i++) {
-            final var hue = (this.rainbowFirstPixelHue + (i * 180 / length)) % 180;
+            final var hue = (this.rainbowHueValue + (i * 180 / length)) % 180;
             this.m_ledBuffer.setHSV(i, hue, 255, 128);
         }
-        this.rainbowFirstPixelHue += 1 * speed_multiplier;
-        this.rainbowFirstPixelHue %= 180;
+        this.rainbowHueValue += 1 * speed_multiplier;
+        this.rainbowHueValue %= 180;
     }
 
     /**
@@ -143,9 +163,12 @@ public class Lights extends SubsystemBase {
 
         /**
          * Sets the light effect to the specified effect for the specified duration.
-         * @param effect The light effect to be applied. see the default effects in {@link #Light_Scheduler} for an example of how to do this.
+         * 
+         * @param effect   The light effect to be applied. see the default effects in
+         *                 {@link #Light_Scheduler} for an example of how to do this.
          * @param duration The duration of the light effect in seconds.
-         * @param periodic Whether or not the light effect should be applied periodically.
+         * @param periodic Whether or not the light effect should be applied
+         *                 periodically.
          */
         public void setLightEffect(LightEffect effect, double duration, boolean periodic) {
             this.current_effect = effect;
@@ -182,7 +205,8 @@ public class Lights extends SubsystemBase {
             if (this.time_left > 0) {
                 this.time_left -= 0.02; // 0.02 seconds is usually the period of the periodic function
             } else {
-                this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect for the current period.
+                this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect
+                                              // for the current period.
             }
         }
     }
