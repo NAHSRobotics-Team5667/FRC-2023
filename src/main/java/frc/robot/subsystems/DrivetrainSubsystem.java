@@ -30,7 +30,6 @@ import frc.robot.Constants.DriveConstants;
 public class DrivetrainSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = DriveConstants.kMaxSpeed; // 5 is 3 meters per second
     public static final double kMaxAngularSpeed = DriveConstants.kMaxAngularSpeed; // 2 is 1/2 rotation per second
-
     public static DutyCycleEncoder // Create the encoders
             FREncoder = new DutyCycleEncoder(DriveConstants.FREncoderID),
             FLEncoder = new DutyCycleEncoder(DriveConstants.FLEncoderID),
@@ -224,13 +223,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_backRight.setDesiredState(Wheel4);
     }
 
-    public Pose2d getPositionPose2d() {
 
-        // m_center.getX() + current
-        Pose2d preset = m_odometry.getPoseMeters();
-       // Pose2d xSwitcher = new Pose2d( -preset.getX(), preset.getY(), preset.getRotation());
-        return preset;
-    }
 
     public void driveVoltage(double voltage) {
         m_frontLeft.driveVoltage(voltage);

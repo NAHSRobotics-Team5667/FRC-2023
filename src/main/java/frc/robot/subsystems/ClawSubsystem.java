@@ -11,10 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.CurrentSpikeCounter;
 
 public class ClawSubsystem extends SubsystemBase {
     private WPI_TalonFX m_claw; // intake motor
-    
+    private CurrentSpikeCounter spikeCounter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,Constants.SlideConstants.CurrentDeadband);
 
     /** Creates a new IntakeSubsystem. */
     public ClawSubsystem() {
@@ -36,6 +37,10 @@ public class ClawSubsystem extends SubsystemBase {
      */
     public double getMotorOutputVoltage(){
         return m_claw.getMotorOutputVoltage();
+    }
+    public boolean isPieceIntaken(){
+        return spikeCounter.update(m_claw.getStatorCurrent(), false); 
+
     }
 
     

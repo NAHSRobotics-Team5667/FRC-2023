@@ -11,14 +11,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide, m_tilt;
-    
-    
+    private DutyCycleEncoder absEncoderHeight = new DutyCycleEncoder(Constants.SlideConstants.EncoderId);
+    private double trueHeightOffset = absEncoderHeight.getAbsolutePosition() - Constants.SlideConstants.EncoderOffset;
     private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0,0,0);
    
 
@@ -49,10 +50,13 @@ public class SlideSubsystem extends SubsystemBase {
         return m_leftSlide.getSelectedSensorVelocity();
     }
     public void    moveSlide(double desiredState){
-        double currentPosition = getLeftPosition();
-        double output = controllerLeft.calculate(currentPosition, desiredState);
+        double currentLeftPosition = getLeftPosition();
+        double outputLeft = controllerLeft.calculate(currentLeftPosition, desiredState);
         double slideFeedForward = m_slideFeedForward.calculate(getDriveRate());
-        m_leftSlide.setVoltage(output + slideFeedForward);
+        m_leftSlide.setVoltage(outputLeft + slideFeedForward);
+        double currentRightPosition = getRightPosition();
+        double outputRight = controllerLeft.calculate(currentRightPosition, desiredState);
+        m_leftSlide.setVoltage(outputRight + slideFeedForward);
 
     }
 
@@ -66,11 +70,11 @@ public class SlideSubsystem extends SubsystemBase {
         m_tilt.set(ControlMode.PercentOutput, percentOutput);
     }
     public double getLeftPosition(){
-        return m_leftSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant;
+        return (m_leftSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
 
     }
     public double getRightPosition(){
-        return m_rightSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant;
+        return (m_rightSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
 
     }
     public boolean isLeftAndRightBalanced(){

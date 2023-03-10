@@ -24,6 +24,8 @@ import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.LimelightSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,7 +47,8 @@ public class RobotContainer {
 
      //deal with it liam
     public Lights lightstrip;
-    
+    public LimelightSubsystem Limelight;
+    public PoseEstimator poseEstimate;
     public static double pEditor = 0;
     public static double dEditor = 0;
     public Robot robot; //uh i dont think we need this -benjamin
@@ -58,6 +61,8 @@ public class RobotContainer {
         this.robot = robot;
         m_drive = new DrivetrainSubsystem();
         m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
+        poseEstimate = new PoseEstimator(null, m_drive);
+        Limelight = new LimelightSubsystem();
         //removing everything that isnt the drive train for now to make troubleshooting easier
         //why are we insantiating the robot in robot container? doesnt the hierarchy go from robot to robot container?
        // m_claw = new ClawSubsystem();
@@ -86,7 +91,7 @@ public class RobotContainer {
         Supplier<Pose2d> poseSupplier = new Supplier<Pose2d>() {
             @Override
             public Pose2d get() {
-                return m_drive.getPositionPose2d();
+                return poseEstimate.getCurrentPose();
             }
         };
 

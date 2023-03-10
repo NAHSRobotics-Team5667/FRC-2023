@@ -110,10 +110,10 @@ public final class Constants {
         public static final int kTiltID = -1;
         public static final int kSlideConstant = -1; //TODO: Find gear ratio
 
-        public static final int leftSlideEncoderId = -1;
-        public static final int rightSlideEncoderId = -1;
-        public static final int rightEncoderOffset =-1;
-        public static final int leftEncoderOffset = -1;
+        public static final int EncoderId = -1;
+        public static final int EncoderOffset = -1;
+        public static final double CurrentThreshold = -1;
+        public static final double CurrentDeadband = -1;
 
         public static final int levelZeroHeight = -1;
         public static final int levelOneHeight = -1;
