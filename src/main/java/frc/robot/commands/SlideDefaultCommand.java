@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SlideSubsystem;
 
-public class SlideCommand extends CommandBase {
+public class SlideDefaultCommand extends CommandBase {
     private SlideSubsystem slide;
     public int bumperPos = 0;
     public static double[] Setpoints = { 
@@ -21,7 +21,7 @@ public class SlideCommand extends CommandBase {
     };
 
     /** Creates a new SlideCommand. */
-    public SlideCommand(SlideSubsystem slide) {
+    public SlideDefaultCommand(SlideSubsystem slide) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         addRequirements(slide);

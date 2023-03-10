@@ -8,6 +8,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.util.PoleFinder;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 public class Align extends CommandBase {
   public LimelightSubsystem m_limelight;
@@ -15,6 +24,7 @@ public class Align extends CommandBase {
   public Align(LimelightSubsystem m_Limelight) {
    
     this.m_limelight = m_Limelight;
+    PoleFinder poleFinder = new PoleFinder();
     // Use addRequirements() here to declare subsystem dependencies.
    
 
@@ -31,12 +41,15 @@ public class Align extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute(){
-    if (RobotContainer.m_controller.getYButtonPressed() == true) {
-      if (m_limelight.hasValidTarget()){
-        if (m_limelight.getArea())
-      }
+    PathPlannerTrajectory poleLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), new PathPoint(new Translation2d(PoleFinder.getNearestPole().getX(), PoleFinder.getNearestPole().getY())), PoleFinder.getNearestPole().getRotation())
 
-    }
+
+    // if (RobotContainer.m_controller.getYButtonPressed() == true) {
+    //   if (m_limelight.hasValidTarget()){
+    //     if (m_limelight.getArea())
+    //   }
+
+    // }
  }
 
   // Called once the command ends or is interrupted.

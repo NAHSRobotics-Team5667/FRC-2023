@@ -14,8 +14,8 @@ import frc.robot.Constants;
 import frc.robot.util.CurrentSpikeCounter;
 
 public class ClawSubsystem extends SubsystemBase {
-    private WPI_TalonFX m_claw; // intake motor
-    private CurrentSpikeCounter spikeCounter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,Constants.SlideConstants.CurrentDeadband);
+    private static WPI_TalonFX m_claw; // intake motor
+    private static CurrentSpikeCounter spikeCounter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,Constants.SlideConstants.CurrentDeadband);
 
     /** Creates a new IntakeSubsystem. */
     public ClawSubsystem() {
@@ -28,7 +28,7 @@ public class ClawSubsystem extends SubsystemBase {
      *  
      * @param percentOutput: Percent of output using Motor Controller
      */
-    public void setIntake(double percentOutput) {
+    public static void setIntake(double percentOutput) {
         m_claw.set(ControlMode.PercentOutput, percentOutput);
     }
     /**
@@ -38,7 +38,7 @@ public class ClawSubsystem extends SubsystemBase {
     public double getMotorOutputVoltage(){
         return m_claw.getMotorOutputVoltage();
     }
-    public boolean isPieceIntaken(){
+    public static boolean isPieceIntaken(){
         return spikeCounter.update(m_claw.getStatorCurrent(), false); 
 
     }

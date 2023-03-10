@@ -8,7 +8,9 @@ import java.util.List;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -97,6 +99,31 @@ public final class Constants {
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
     }
+    public static final class FieldConstants{
+        public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
+        public static final Pose2d[] REDPOLES_POSE2DS = { new Pose2d(0,0, REDANGLE_ROTATION2D), 
+        new Pose2d(0,0, REDANGLE_ROTATION2D), 
+        new Pose2d(0,0, REDANGLE_ROTATION2D),
+        new Pose2d(0,0, REDANGLE_ROTATION2D),
+        new Pose2d(0,0, REDANGLE_ROTATION2D),
+        new Pose2d(0,0, REDANGLE_ROTATION2D),
+        new Pose2d(0,0, REDANGLE_ROTATION2D),
+        new Pose2d(0,0, REDANGLE_ROTATION2D),
+        new Pose2d(0,0, REDANGLE_ROTATION2D)};
+        public static final Rotation2d BLUE_ROTATION2D = new Rotation2d(0);
+        public static final Pose2d[] BLUEPOLES_POSE2DS = { new Pose2d(0,0, BLUE_ROTATION2D), 
+            new Pose2d(0,0, BLUE_ROTATION2D), 
+            new Pose2d(0,0, BLUE_ROTATION2D),
+            new Pose2d(0,0,BLUE_ROTATION2D),
+            new Pose2d(0,0, BLUE_ROTATION2D),
+            new Pose2d(0,0, BLUE_ROTATION2D),
+            new Pose2d(0,0, BLUE_ROTATION2D),
+            new Pose2d(0,0, BLUE_ROTATION2D),
+            new Pose2d(0,0, BLUE_ROTATION2D)};
+       
+
+
+    }
 
     public static final class ClawConstants {
         public static final int kClawID = -1;
@@ -154,6 +181,7 @@ public final class Constants {
         public static final int camResolutionWidth = 1280;
         public static final int camResolutionHeight = 720;
         public static final double minTargetArea = 10;
+
     }
 
     public static final class LightConstants {

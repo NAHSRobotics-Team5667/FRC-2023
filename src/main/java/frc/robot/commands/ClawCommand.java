@@ -31,35 +31,9 @@ public class ClawCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (RobotContainer.m_controller.getAButton()) {
-            while(claw.getMotorOutputVoltage() < Constants.ClawConstants.kVoltageLimit){
-                 claw.setIntake(.2);
-                 try {
-                    TimeUnit.SECONDS.sleep(4);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
-        } else {
-            claw.setIntake(0);
-        }
-        if (RobotContainer.m_controller.getBButton()) {
-            while(claw.getMotorOutputVoltage() > Constants.ClawConstants.kVoltageLimit){
-                claw.setIntake(.2);
-                try {
-                    TimeUnit.SECONDS.sleep(4);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-           }
-        } else{
-            claw.setIntake(0);
-        }
+        claw.setIntake(.1);
+   
     }
-
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {

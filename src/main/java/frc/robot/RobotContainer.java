@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.commands.ClawIntakeAndOuttakeCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -48,9 +49,10 @@ public class RobotContainer {
      //deal with it liam
     public Lights lightstrip;
     public LimelightSubsystem Limelight;
-    public PoseEstimator poseEstimate;
+    public static PoseEstimator poseEstimate;
     public static double pEditor = 0;
     public static double dEditor = 0;
+    public double intakeToggle = 0;
     public Robot robot; //uh i dont think we need this -benjamin
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -142,18 +144,9 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         if (m_controller.getAButtonPressed()){
-            pEditor += .1;
-        
-        }
-        if (m_controller.getXButtonPressed()){
-            pEditor -= .1;
-    
-        }
-        if (m_controller.getYButtonPressed()){
-            dEditor += .1;
-        }
-        if (m_controller.getBButtonPressed()){
-            dEditor -= .1;
+            m_claw.run((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
+            intakeToggle++;        
+
         }
 
 
