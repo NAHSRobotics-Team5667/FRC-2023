@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants.LightConstants;
+
+import java.lang.reflect.Array;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -114,6 +117,21 @@ public class Lights extends SubsystemBase {
         } // makes the cylon go back and forth
 
     }
+
+    private int carnival_index = 0;
+    public void carnival(int[][] colors, double speed_multiplier, int segment_length) {
+        int current_color_index = 0;
+        for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            m_ledBuffer.setRGB((i+carnival_index)%m_ledBuffer.getLength(), colors[current_color_index][0], colors[current_color_index][1], colors[current_color_index][2]);
+            if (i % segment_length == 0) {
+                current_color_index++;
+                current_color_index %= colors.length;
+            }
+        }
+            
+        
+    }
+
 
     public enum period {
         AUTO, TELEOP, DISABLED
