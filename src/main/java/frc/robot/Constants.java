@@ -181,7 +181,7 @@ public final class Constants {
         public static final int camResolutionWidth = 1280;
         public static final int camResolutionHeight = 720;
         public static final double minTargetArea = 10;
-
+        public static final String kCameraName = "USB Camera 0";
     }
 
     public static final class LightConstants {

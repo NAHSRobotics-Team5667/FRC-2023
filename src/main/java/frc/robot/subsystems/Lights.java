@@ -4,6 +4,8 @@ import frc.robot.Constants.LightConstants;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
@@ -27,12 +29,7 @@ public class Lights extends SubsystemBase {
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
-        this.tests = new LightEffect[] { 
-            () -> {this.flashingRGB(255, 0, 0, 1);},
-            () -> {this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
-            () -> {this.rainbow(1);}, 
-            () -> {this.cylon(60, 255, 1);} 
-        };
+
 
         scheduler = new Light_Scheduler();
     }
@@ -51,26 +48,21 @@ public class Lights extends SubsystemBase {
         }
     }
 
-    private int flashTimer = 0;
-
+    private boolean flashing = false;
     /**
-     * Flashes the LEDs between on and off. Should be called periodically
+     * Flashes the LEDs between on and off. Should be called periodically. Speed is meant to be controlled by the scheduler
      * 
      * @param R               Red value (0-255)
      * @param G               Green value (0-255)
      * @param B               Blue value (0-255)
-     * @param speedMultiplier The speed of the flashing. A multiplier of 1 makes it
-     *                        2 seconds a cycle.
      */
-    public void flashingRGB(int R, int G, int B, double speedMultiplier) {
-        double interval = 100 * speedMultiplier; // if multiplier is 1: 2 seconds a cycle aka 1 second on 1 second off.
-        if (flashTimer < interval / 2) {
+    public void flashingRGB(int R, int G, int B) {
+        if (!this.flashing) {
             setSolidRGB(R, G, B);
         } else {
             setSolidRGB(0, 0, 0);
         }
-        flashTimer++;
-        flashTimer %= interval;
+        this.flashing = !this.flashing;
     }
 
     private int rainbowHueValue = 0;
@@ -80,8 +72,9 @@ public class Lights extends SubsystemBase {
      * effect)
      * This is also the example code from the documentation:
      * https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#creating-a-rainbow-effect
+     * @param speed_multiplier The speed multiplier of the rainbow. <strong>This is how you speed up the light effect.</strong>
      */
-    public void rainbow(double speed_multiplier) {
+    public void rainbow(int speed_multiplier) {
         final var length = m_ledBuffer.getLength();
         for (var i = 0; i < length; i++) {
             final var hue = (this.rainbowHueValue + (i * 180 / length)) % 180;
@@ -100,9 +93,9 @@ public class Lights extends SubsystemBase {
      * 
      * @param hue              The hue of the cylon from [0-180]
      * @param saturation       The saturation of the cylon from [0-255]
-     * @param speed_multiplier The speed multiplier of the cylon
+     * @param speed_multiplier The speed multiplier of the cylon. <strong>This is how you speed up the light effect.</strong>
      */
-    public void cylon(int hue, int saturation, double speed_multiplier) {
+    public void cylon(int hue, int saturation, int speed_multiplier) {
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
             int value = 250 - (Math.abs(this.cylon_center - i) * 50);
             if (value < 0) {
@@ -111,7 +104,7 @@ public class Lights extends SubsystemBase {
             this.m_ledBuffer.setHSV(i, hue, saturation, value);
         }
 
-        this.cylon_center += cylon_velocity;
+        this.cylon_center += (cylon_velocity * speed_multiplier);
         if (this.cylon_center >= this.m_ledBuffer.getLength() || this.cylon_center < 0) {
             this.cylon_velocity *= -1;
         } // makes the cylon go back and forth
@@ -130,6 +123,7 @@ public class Lights extends SubsystemBase {
                 current_color_index %= colors.length;
             }
         }
+        carnival_index++;
 
     }
 
@@ -161,11 +155,18 @@ public class Lights extends SubsystemBase {
     public class Light_Scheduler {
         LightEffect current_effect;
         double time_left = 0; // in seconds
-        boolean periodic;
+        int ticks_per_call = 1;
+        int tick_counter = 0;
         LightEffect default_disabled,
                 defualt_teleop,
                 defualt_auto;
         private int test_index = 0;
+        LightEffect[] tests = new LightEffect[] { 
+            () -> {Lights.this.flashingRGB(255, 0, 0);},
+            () -> {Lights.this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
+            () -> {Lights.this.rainbow(1);}, 
+            () -> {Lights.this.cylon(60, 255, 1);} 
+        };
 
         public Light_Scheduler() {
             this.default_disabled = () -> {
@@ -186,13 +187,12 @@ public class Lights extends SubsystemBase {
          * @param effect   The light effect to be applied. see the default effects in
          *                 {@link #Light_Scheduler} for an example of how to do this.
          * @param duration The duration of the light effect in seconds.
-         * @param periodic Whether or not the light effect should be applied
-         *                 periodically.
+         * @param ticks_per_call How ofted the light effect should be applied. A value of 1 is every .02 seconds. <strong>This is how you slow down the light effect.</strong>
          */
-        public void setLightEffect(LightEffect effect, double duration, boolean periodic) {
+        public void setLightEffect(LightEffect effect, double duration, int ticks_per_call) {
             this.current_effect = effect;
             this.time_left = duration;
-            this.periodic = periodic;
+            this.ticks_per_call = ticks_per_call;
             this.applyLightEffect();
         }
 
@@ -205,16 +205,17 @@ public class Lights extends SubsystemBase {
             period period = Lights.this.getPeriod();
             switch (period) {
                 case DISABLED:
-                    this.setLightEffect(default_disabled, 0, true);
+                    this.setLightEffect(default_disabled, 0, 1);
                     break;
                 case AUTO:
-                    this.setLightEffect(defualt_auto, 0, true);
+                    this.setLightEffect(defualt_auto, 0, 1);
                     break;
                 case TELEOP:
-                    this.setLightEffect(defualt_teleop, 0, true);
+                    this.setLightEffect(defualt_teleop, 0, 1);
                     break;
                 case TEST:
-                    this.setLightEffect(tests[test_index], 5, true);
+                    SmartDashboard.putBoolean("TEST", true);
+                    this.setLightEffect(this.tests[test_index], 7, (test_index<2) ? 10 : 1);
                     test_index++; test_index %= tests.length;
                     break;
                 case SIMULATION:
@@ -224,14 +225,15 @@ public class Lights extends SubsystemBase {
 
         /** Method to be executed from the parent classes periodic function */
         public void periodic() {
-            if (this.periodic) {
+            if (this.tick_counter++ % this.ticks_per_call == 0) {
                 this.applyLightEffect();
             }
-            if (this.time_left > 0) {
-                this.time_left -= 0.02; // 0.02 seconds is usually the period of the periodic function
+            if (this.time_left <= 0) { // this is some quirky java code because apparently the operation returns itself
+                 // 0.02 seconds is usually the period of the periodic function
+                 this.tick_counter = 0; // not really necessary but might help debugging
+                 this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect for the current period.
             } else {
-                this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect
-                                              // for the current period.
+                this.time_left-=.02;
             }
         }
     }
@@ -241,5 +243,8 @@ public class Lights extends SubsystemBase {
         this.scheduler.periodic();
 
         this.m_led.setData(m_ledBuffer);
+
     }
+    
+
 }

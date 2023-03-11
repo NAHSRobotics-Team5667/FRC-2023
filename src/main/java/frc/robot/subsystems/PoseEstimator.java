@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.VisionConstants;
 
 public class PoseEstimator extends SubsystemBase {
 
@@ -56,7 +57,8 @@ public class PoseEstimator extends SubsystemBase {
  private double previousPipelineTimestamp = 0;
 
  public PoseEstimator(PhotonCamera photonCamera, DrivetrainSubsystem drivetrainSubsystem) {
-    this.photonCamera = photonCamera;
+   photonCamera = new PhotonCamera(VisionConstants.kCameraName);
+   this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
     AprilTagFieldLayout layout;
     try {
@@ -87,6 +89,7 @@ public class PoseEstimator extends SubsystemBase {
  @Override
  public void periodic() {
  // Update pose estimator with the best visible target
+   
     var pipelineResult = photonCamera.getLatestResult();
     var resultTimestamp = pipelineResult.getTimestampSeconds();
     if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
