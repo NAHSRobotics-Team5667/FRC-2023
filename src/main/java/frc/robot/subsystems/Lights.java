@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants.LightConstants;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,14 +11,14 @@ public class Lights extends SubsystemBase {
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
     public Light_Scheduler scheduler;
-    public Lights() {
+    public Lights(int ledPort, int ledLength) {
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
-        this.m_led = new AddressableLED(LightConstants.kLEDPort);
+        this.m_led = new AddressableLED(ledPort);
         // Reuse buffer
         // Default to a length of 60, start empty output
         // Length is expensive to set, so only set it once, then just update data
-        this.m_ledBuffer = new AddressableLEDBuffer(150);
+        this.m_ledBuffer = new AddressableLEDBuffer(ledLength);
         this.m_led.setLength(m_ledBuffer.getLength());
         this.setSolidRGB(0, 255, 0);
 
@@ -110,13 +108,17 @@ public class Lights extends SubsystemBase {
     }
 
     private int carnival_index = 0;
-
-    public void carnival(int[][] colors, double speed_multiplier, int segment_length) {
+    /**
+     * Creates a carnival effect using the LEDs (must be called periodically).
+     * Looks best if the number of colors times the segment length is divisible by the number of LEDs (150).
+     * @param colors An array of {@link edu.wpi.first.wpilibj.util.Color}s to cycle through
+     * @param segment_length The length of each segment of the color
+     */
+    public void carnival(Color[] colors, int segment_length) {
         int current_color_index = 0;
         for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-            m_ledBuffer.setRGB((i + carnival_index) % m_ledBuffer.getLength(), colors[current_color_index][0],
-                    colors[current_color_index][1], colors[current_color_index][2]);
-            if (i % segment_length == 0) {
+            m_ledBuffer.setLED((i + carnival_index) % m_ledBuffer.getLength(), colors[current_color_index]);
+            if ((i+1) % segment_length == 0) {
                 current_color_index++;
                 current_color_index %= colors.length;
             }
@@ -162,7 +164,7 @@ public class Lights extends SubsystemBase {
             //() -> {Lights.this.setSolidRGB(0, 0, 0);},
             //() -> {Lights.this.setSolidRGB(255, 255, 255);}
             () -> {Lights.this.flashingRGB(255, 0, 0);},
-            () -> {Lights.this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
+            () -> {Lights.this.carnival(new Color[] {new Color(255,0,0), new Color(0,0,255), new Color(0,255,0)}, 3);},
             () -> {Lights.this.rainbow(1);}, 
             () -> {Lights.this.cylon(60, 255, 1);} 
         };
@@ -171,9 +173,11 @@ public class Lights extends SubsystemBase {
             this.default_disabled = () -> {
                 Lights.this.cylon(0, 255, 1);};
             this.defualt_teleop = () -> {
-                Lights.this.rainbow(3);};
+                Lights.this.rainbow(2);};
             this.defualt_auto = () -> {
-                Lights.this.rainbow(1);};
+                Lights.this.carnival(new Color[] {new Color(255,0,0), new Color(0,0,255), new Color(0,255,0)}, 5);
+            };
+        
                 
             this.setDefaultLightEffect(0);
         }
@@ -194,8 +198,6 @@ public class Lights extends SubsystemBase {
 
             if (fade_duration > 0) {
                 this.fadeLightEffectInit();
-            }else {
-                this.current_effect.apply();
             }
         }
 

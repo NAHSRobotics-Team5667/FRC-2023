@@ -190,7 +190,9 @@ public final class Constants {
     }
 
     public static final class LightConstants {
-        public static final int kLEDPort = 9;
+        public static final int lightstrip1Port = 9;
+        public static final int lightstrip1Length = 150;
+
     }
 
 }

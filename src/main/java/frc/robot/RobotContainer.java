@@ -31,7 +31,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.LimelightSubsystem;
-
+import frc.robot.Constants.LightConstants;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -102,7 +102,7 @@ public class RobotContainer {
         
 
 
-        lightstrip = new Lights();
+        lightstrip = new Lights(LightConstants.lightstrip1Port, LightConstants.lightstrip1Length);
 
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
