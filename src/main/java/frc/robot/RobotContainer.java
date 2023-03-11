@@ -55,6 +55,7 @@ public class RobotContainer {
     public static double pEditor = 0;
     public static double dEditor = 0;
     public double intakeToggle = 0;
+    public SwerveAutoBuilder autoBuilder;
     public Robot robot; //uh i dont think we need this -benjamin
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -117,7 +118,7 @@ public class RobotContainer {
         // Create the AutoBuilder. This only needs to be created once when robot code
         // starts, not every time you want to create an auto command. A good place to
         // put this is in RobotContainer along with your subsystems.
-        final SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+       autoBuilder = new SwerveAutoBuilder(
                 poseSupplier, // Pose2d supplier
                 resetPoseConsumer, // Pose2d consumer, used to reset odometry at the beginning of auto
                 m_drive.m_kinematics, // SwerveDriveKinematics
@@ -132,6 +133,7 @@ public class RobotContainer {
                 m_drive // The drive subsystem. Used to properly set the requirements of path following
                         // commands
         );
+        
 
         this.fullAuto = autoBuilder.fullAuto(pathGroup);
     }
@@ -144,6 +146,9 @@ public class RobotContainer {
      * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
+    public SwerveAutoBuilder getBuild(){
+        return autoBuilder;
+    }
     private void configureButtonBindings() {
         if (Math.abs(m_controller.getLeftX()) > .1){
             m_drive.run((Runnable) new DrivetrainCommand(m_drive));
@@ -154,12 +159,12 @@ public class RobotContainer {
 
         }
         if (m_controller.getBButtonPressed()){
-            m_drive.run((Runnable) new AlignFlatSurface(Limelight));
-            autoBuilder.fullAuto(poleLocation);
+            m_drive.run((Runnable) new AlignFlatSurface(Limelight, this));
+         
             
         }
         if (m_controller.getXButtonPressed()){
-            m_drive.run((Runnable) new AlignPole(Limelight));
+            m_drive.run((Runnable) new AlignPole(Limelight, this));
         }
 
 

@@ -17,10 +17,10 @@ import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Translation2d;
 public class AlignPole extends CommandBase {
   public LimelightSubsystem m_limelight;
-  
+  private RobotContainer m_RobotContainer;  
   /** Creates a new Align. */
-  public AlignPole(LimelightSubsystem m_Limelight) {
-   
+  public AlignPole(LimelightSubsystem m_Limelight, RobotContainer robotContainer) {
+    this.m_RobotContainer = robotContainer;
     this.m_limelight = m_Limelight;
     
     
@@ -44,7 +44,7 @@ public class AlignPole extends CommandBase {
     PathPlannerTrajectory poleLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
     new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()), 
     new PathPoint(new Translation2d(PoleFinder.getNearestPole().getX(), PoleFinder.getNearestPole().getY()), PoleFinder.getNearestPole().getRotation()));
-
+    m_RobotContainer.autoBuilder.fullAuto(poleLocation);
 
     // if (RobotContainer.m_controller.getYButtonPressed() == true) {
     //   if (m_limelight.hasValidTarget()){

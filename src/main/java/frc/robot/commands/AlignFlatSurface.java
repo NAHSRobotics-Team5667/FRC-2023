@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.FlatSurfaceFinder;
@@ -16,10 +17,11 @@ import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Translation2d;
 public class AlignFlatSurface extends CommandBase {
   public LimelightSubsystem m_limelight;
+  private RobotContainer m_RobotContainer;
   
   /** Creates a new Align. */
-  public AlignFlatSurface(LimelightSubsystem m_Limelight) {
-   
+  public AlignFlatSurface(LimelightSubsystem m_Limelight, RobotContainer robotContainer) {
+    this.m_RobotContainer = robotContainer;
     this.m_limelight = m_Limelight;
     
 
@@ -37,11 +39,11 @@ public class AlignFlatSurface extends CommandBase {
   @Override
   public void execute(){
 
-    PathPlannerTrajectory poleLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
+    PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
     new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()), 
     new PathPoint(new Translation2d(FlatSurfaceFinder.getNearestPole().getX(), FlatSurfaceFinder.getNearestPole().getY()), FlatSurfaceFinder.getNearestPole().getRotation()));
     
-
+    m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation);
     // if (RobotContainer.m_controller.getYButtonPressed() == true) {
     //   if (m_limelight.hasValidTarget()){
     //     if (m_limelight.getArea())
