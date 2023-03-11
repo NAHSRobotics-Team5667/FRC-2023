@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignFlatSurfaceAgain;
 import frc.robot.commands.AlignPoleAgain;
@@ -44,32 +45,32 @@ import frc.robot.subsystems.LimelightSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-   
-    public static EventLoop BButtonCommand = new EventLoop();
-    public static EventLoop XButtonCommand = new EventLoop();;
-    public static EventLoop AButtonCommand = new EventLoop();;
     public static BooleanSupplier BButtonPressed = new BooleanSupplier() {
         public boolean getAsBoolean(){
            return m_controller.getBButtonPressed();
         }
     };
     
-    public static Trigger BButton = new Trigger(BButtonCommand, BButtonPressed);
     public static BooleanSupplier XButtonPressed = new BooleanSupplier() {
         public boolean getAsBoolean(){
            return m_controller.getXButtonPressed();
         }
     };
-    public static Trigger XButton = new Trigger(XButtonCommand, XButtonPressed);
     public static BooleanSupplier AButtonPressed = new BooleanSupplier() {
         public boolean getAsBoolean(){
            return m_controller.getAButtonPressed();
         }
     };
-    public static Trigger AButton = new Trigger(AButtonCommand, AButtonPressed);
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
+    public static Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
+    public static Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
+    public static Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
+    public static Trigger xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
+
+    
+    
     private DrivetrainSubsystem m_drive; // declares dt subsystem
 
     @SuppressWarnings("unused")
@@ -177,8 +178,8 @@ public class RobotContainer {
         return autoBuilder;
     }
     private void configureButtonBindings() {
-        BButton.onTrue(new AlignFlatSurfaceAgain(this));
-        XButton.onTrue(new AlignPoleAgain(this));
+        bButton.onTrue(new AlignFlatSurfaceAgain(this));
+        xButton.onTrue(new AlignPoleAgain(this));
     }
 
     /**
