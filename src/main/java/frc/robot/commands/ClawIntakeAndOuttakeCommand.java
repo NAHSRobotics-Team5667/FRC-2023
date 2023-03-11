@@ -64,7 +64,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
         if (RobotContainer.m_controller.getXButton()){
             bumperPos = 3;
         }
-    if (intake) {
+    if (intake) { // TODO: Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
       while (!ClawSubsystem.isPieceIntaken()){
         ClawSubsystem.setIntake(.2);
       }

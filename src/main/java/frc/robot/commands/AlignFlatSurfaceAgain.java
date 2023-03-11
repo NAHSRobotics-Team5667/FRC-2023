@@ -30,8 +30,8 @@ public class AlignFlatSurfaceAgain extends ParallelRaceGroup {
 
   
   /** Creates a new AlignFlatSurfaceAgain. */
-  public AlignFlatSurfaceAgain() {
-          
+  public AlignFlatSurfaceAgain(RobotContainer m_RobotContainer) {
+    this.m_RobotContainer = m_RobotContainer;
 
 
     this.m_Controller = m_RobotContainer.m_controller;

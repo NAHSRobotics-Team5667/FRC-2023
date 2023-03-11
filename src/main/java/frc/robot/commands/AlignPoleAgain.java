@@ -27,8 +27,8 @@ public class AlignPoleAgain extends ParallelRaceGroup {
   private XboxController m_Controller;
   BooleanSupplier getSticks;
   /** Creates a new AlignPoleAgain. */
-  public AlignPoleAgain() {
-    
+  public AlignPoleAgain(RobotContainer m_RobotContainer) {
+    this.m_RobotContainer = m_RobotContainer;
 
     this.m_Controller = m_RobotContainer.m_controller;
     PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 

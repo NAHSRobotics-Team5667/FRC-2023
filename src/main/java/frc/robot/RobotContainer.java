@@ -45,14 +45,15 @@ import frc.robot.subsystems.LimelightSubsystem;
  */
 public class RobotContainer {
    
-    public static EventLoop BButtonCommand;
-    public static EventLoop XButtonCommand;
-    public static EventLoop AButtonCommand;
+    public static EventLoop BButtonCommand = new EventLoop();
+    public static EventLoop XButtonCommand = new EventLoop();;
+    public static EventLoop AButtonCommand = new EventLoop();;
     public static BooleanSupplier BButtonPressed = new BooleanSupplier() {
         public boolean getAsBoolean(){
            return m_controller.getBButtonPressed();
         }
     };
+    
     public static Trigger BButton = new Trigger(BButtonCommand, BButtonPressed);
     public static BooleanSupplier XButtonPressed = new BooleanSupplier() {
         public boolean getAsBoolean(){
@@ -98,7 +99,7 @@ public class RobotContainer {
         //why are we insantiating the robot in robot container? doesnt the hierarchy go from robot to robot container?
        // m_claw = new ClawSubsystem();
         //m_claw.setDefaultCommand(new ClawCommand(m_claw));
-        configureButtonBindings();
+        
         
         
 
@@ -159,7 +160,7 @@ public class RobotContainer {
                 m_drive // The drive subsystem. Used to properly set the requirements of path following
                         // commands
         );
-        
+        configureButtonBindings();
 
         this.fullAuto = autoBuilder.fullAuto(pathGroup);
     }
@@ -176,14 +177,8 @@ public class RobotContainer {
         return autoBuilder;
     }
     private void configureButtonBindings() {
-        BButton.onTrue(new AlignFlatSurfaceAgain());
-        XButton.onTrue(new AlignPoleAgain());
-        
-        
-       
-
-
-
+        BButton.onTrue(new AlignFlatSurfaceAgain(this));
+        XButton.onTrue(new AlignPoleAgain(this));
     }
 
     /**
