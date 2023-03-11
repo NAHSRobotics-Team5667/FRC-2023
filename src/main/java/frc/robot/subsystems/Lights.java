@@ -4,6 +4,8 @@ import frc.robot.Constants.LightConstants;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
@@ -27,12 +29,7 @@ public class Lights extends SubsystemBase {
         // Set the data
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
-        this.tests = new LightEffect[] { 
-            () -> {this.flashingRGB(255, 0, 0);},
-            () -> {this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
-            () -> {this.rainbow(1);}, 
-            () -> {this.cylon(60, 255, 1);} 
-        };
+
 
         scheduler = new Light_Scheduler();
     }
@@ -126,6 +123,7 @@ public class Lights extends SubsystemBase {
                 current_color_index %= colors.length;
             }
         }
+        carnival_index++;
 
     }
 
@@ -163,6 +161,12 @@ public class Lights extends SubsystemBase {
                 defualt_teleop,
                 defualt_auto;
         private int test_index = 0;
+        LightEffect[] tests = new LightEffect[] { 
+            () -> {Lights.this.flashingRGB(255, 0, 0);},
+            () -> {Lights.this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
+            () -> {Lights.this.rainbow(1);}, 
+            () -> {Lights.this.cylon(60, 255, 1);} 
+        };
 
         public Light_Scheduler() {
             this.default_disabled = () -> {
@@ -210,7 +214,8 @@ public class Lights extends SubsystemBase {
                     this.setLightEffect(defualt_teleop, 0, 1);
                     break;
                 case TEST:
-                    this.setLightEffect(tests[test_index], 7, (test_index<2) ? 25 : 1);
+                    SmartDashboard.putBoolean("TEST", true);
+                    this.setLightEffect(this.tests[test_index], 7, (test_index<2) ? 10 : 1);
                     test_index++; test_index %= tests.length;
                     break;
                 case SIMULATION:
@@ -223,10 +228,12 @@ public class Lights extends SubsystemBase {
             if (this.tick_counter++ % this.ticks_per_call == 0) {
                 this.applyLightEffect();
             }
-            if ((this.time_left -= 0.02) <= 0) { // this is some quirky java code because apparently the operation returns itself
+            if (this.time_left <= 0) { // this is some quirky java code because apparently the operation returns itself
                  // 0.02 seconds is usually the period of the periodic function
                  this.tick_counter = 0; // not really necessary but might help debugging
                  this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect for the current period.
+            } else {
+                this.time_left-=.02;
             }
         }
     }
@@ -236,5 +243,8 @@ public class Lights extends SubsystemBase {
         this.scheduler.periodic();
 
         this.m_led.setData(m_ledBuffer);
+
     }
+    
+
 }
