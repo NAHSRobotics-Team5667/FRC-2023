@@ -12,12 +12,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
-public class PoleFinder extends SubsystemBase {
+public class FlatSurfaceFinder extends SubsystemBase {
   
-  public boolean isBlue = true;
+  public static boolean isBlue = true;
   public static final class FieldConstants{
     public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
-    public static final List<Pose2d> REDPOLES_POSE2DS = new ArrayList<Pose2d>(){{
+    public static final List<Pose2d> REDFLATSURFACES_POSE2DS = new ArrayList<Pose2d>(){{
       add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
       add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
       add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
@@ -31,7 +31,7 @@ public class PoleFinder extends SubsystemBase {
     }
   };
     public static final Rotation2d BLUE_ROTATION2D = new Rotation2d(0);
-    public static final List<Pose2d> BLUEPOLES_POSE2DS = new ArrayList<Pose2d>() {{
+    public static final List<Pose2d> BLUEFLATSURFACES_POSE2DS = new ArrayList<Pose2d>() {{
 
       add(new Pose2d(0,0, BLUE_ROTATION2D)); 
       add(new Pose2d(0,0, BLUE_ROTATION2D)); 
@@ -54,15 +54,15 @@ public class PoleFinder extends SubsystemBase {
 
 }
   /** Creates a new PoleFinder. */
-  public PoleFinder() {
+  public FlatSurfaceFinder() {
 
   }
   public static Pose2d getNearestPole(){
    if (isBlue){
-    return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.BLUEPOLES_POSE2DS);
+    return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.BLUEFLATSURFACES_POSE2DS);
    }
    else{
-    return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.REDPOLES_POSE2DS);
+    return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.REDFLATSURFACES_POSE2DS);
    }
 
   }

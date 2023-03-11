@@ -14,7 +14,7 @@ import frc.robot.RobotContainer;
 
 public class PoleFinder extends SubsystemBase {
   
-  public boolean isBlue = true;
+  public static boolean isBlue = true;
   public static final class FieldConstants{
     public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
     public static final List<Pose2d> REDPOLES_POSE2DS = new ArrayList<Pose2d>(){{

@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.commands.AlignFlatSurface;
+import frc.robot.commands.AlignPole;
 import frc.robot.commands.ClawIntakeAndOuttakeCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -115,7 +117,7 @@ public class RobotContainer {
         // Create the AutoBuilder. This only needs to be created once when robot code
         // starts, not every time you want to create an auto command. A good place to
         // put this is in RobotContainer along with your subsystems.
-        SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+        final SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
                 poseSupplier, // Pose2d supplier
                 resetPoseConsumer, // Pose2d consumer, used to reset odometry at the beginning of auto
                 m_drive.m_kinematics, // SwerveDriveKinematics
@@ -125,7 +127,7 @@ public class RobotContainer {
                                                  // rotation controller)
                 outputModuleConsumer, // Module states consumer used to output to the drive subsystem
                 eventMap,
-                false, // Should the path be automatically mirrored depending on alliance color.
+                true, // Should the path be automatically mirrored depending on alliance color.
                       // Optional, defaults to true
                 m_drive // The drive subsystem. Used to properly set the requirements of path following
                         // commands
@@ -143,10 +145,21 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        if (Math.abs(m_controller.getLeftX()) > .1){
+            m_drive.run((Runnable) new DrivetrainCommand(m_drive));
+        }
         if (m_controller.getAButtonPressed()){
             m_claw.run((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
             intakeToggle++;        
 
+        }
+        if (m_controller.getBButtonPressed()){
+            m_drive.run((Runnable) new AlignFlatSurface(Limelight));
+            autoBuilder.fullAuto(poleLocation);
+            
+        }
+        if (m_controller.getXButtonPressed()){
+            m_drive.run((Runnable) new AlignPole(Limelight));
         }
 
 
