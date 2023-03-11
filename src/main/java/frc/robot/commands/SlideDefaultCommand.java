@@ -44,7 +44,7 @@ public class SlideDefaultCommand extends CommandBase {
 
     }
     public void joystickControl() {
-        double bumperPos = 0;
+        int bumperPos = 0;
         if (RobotContainer.m_controller.getLeftBumperPressed()) {
             if (bumperPos == 3){
                 bumperPos= 3;

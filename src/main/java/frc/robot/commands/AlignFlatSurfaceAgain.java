@@ -26,6 +26,7 @@ public class AlignFlatSurfaceAgain extends ParallelRaceGroup {
   PathPlannerTrajectory FlatSurfaceLocation;
   private RobotContainer m_RobotContainer;
   private XboxController m_Controller;
+  BooleanSupplier getSticks;
 
   
   /** Creates a new AlignFlatSurfaceAgain. */
@@ -38,18 +39,17 @@ public class AlignFlatSurfaceAgain extends ParallelRaceGroup {
     new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()),
     new PathPoint(new Translation2d(FlatSurfaceFinder.getNearestPole().getX(), FlatSurfaceFinder.getNearestPole().getY()), FlatSurfaceFinder.getNearestPole().getRotation()));
     this.FlatSurfaceLocation = FlatSurfaceLocation;
-    Supplier<Boolean> getSticks = new Supplier<Boolean>() {
-
-      @Override
-      public Boolean get() {
+    BooleanSupplier getSticks = new BooleanSupplier() {
+      
+      public boolean getAsBoolean() {
         // TODO Auto-generated method stub
-        return ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.1))> 0) || ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))> 0);
+        return ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.1))> 0) || ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))> 0) || Math.pow((Math.pow(FlatSurfaceFinder.getNearestPole().getX(), 2) + Math.pow(FlatSurfaceFinder.getNearestPole().getY(), 2)), .5) < .08;
       }
   };
     
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(m_RobotContainer.autoBuilder.fullAuto(AlignFlatSurface.FlatSurfaceLocation));
+    addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
     until(getSticks);
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -22,8 +23,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc.robot.commands.AlignFlatSurface;
-import frc.robot.commands.AlignPole;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlignFlatSurfaceAgain;
+import frc.robot.commands.AlignPoleAgain;
 import frc.robot.commands.ClawIntakeAndOuttakeCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -42,10 +44,28 @@ import frc.robot.subsystems.LimelightSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    public static EventLoop BButton;
-    public static EventLoop XButton;
-    public static EventLoop AButton;
-
+   
+    public static EventLoop BButtonCommand;
+    public static EventLoop XButtonCommand;
+    public static EventLoop AButtonCommand;
+    public static BooleanSupplier BButtonPressed = new BooleanSupplier() {
+        public boolean getAsBoolean(){
+           return m_controller.getBButtonPressed();
+        }
+    };
+    public static Trigger BButton = new Trigger(BButtonCommand, BButtonPressed);
+    public static BooleanSupplier XButtonPressed = new BooleanSupplier() {
+        public boolean getAsBoolean(){
+           return m_controller.getXButtonPressed();
+        }
+    };
+    public static Trigger XButton = new Trigger(XButtonCommand, XButtonPressed);
+    public static BooleanSupplier AButtonPressed = new BooleanSupplier() {
+        public boolean getAsBoolean(){
+           return m_controller.getAButtonPressed();
+        }
+    };
+    public static Trigger AButton = new Trigger(AButtonCommand, AButtonPressed);
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
@@ -156,20 +176,12 @@ public class RobotContainer {
         return autoBuilder;
     }
     private void configureButtonBindings() {
+        BButton.onTrue(new AlignFlatSurfaceAgain());
+        XButton.onTrue(new AlignPoleAgain());
         
-        BButton.bind((Runnable) new AlignFlatSurface(Limelight, this));
-        XButton.bind((Runnable) new AlignPole(Limelight, this));
-        AButton.bind((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
+        
        
-        if (Math.abs(m_controller.getLeftX()) > .1){
-            m_drive.run((Runnable) new DrivetrainCommand(m_drive));
-        }
 
-        m_controller.a(AButton);
-        m_controller.x(XButton);
-        m_controller.b(BButton);
-    
-//when b button pressed
 
 
     }

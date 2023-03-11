@@ -26,8 +26,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     @SuppressWarnings("unused")
     private PIDController 
-        controllerRight, controllerLeft = new PIDController(.5, 0, 0),
-        controllerTilt = new PIDController(.5, 0, 0);
+        controllerRight, controllerLeft = new PIDController(.5, 0, 0);
         
     // maybe add a feed forward? May be unnecessary though
     /** Creates a new SlideSubsystem. */

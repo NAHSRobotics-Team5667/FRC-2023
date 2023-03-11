@@ -149,6 +149,8 @@ public final class Constants {
 
     public static final class WristConstants {
          public static final int kWristID = -1;
+         public static final int kWristConeSetpoint = -1;
+         public static final int kWristCubeSetpoint = -1;
     }
     
 //Have to add mirrored trajectories if alliance is switched
