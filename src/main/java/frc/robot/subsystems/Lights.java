@@ -28,7 +28,7 @@ public class Lights extends SubsystemBase {
         this.m_led.setData(m_ledBuffer);
         this.m_led.start();
         this.tests = new LightEffect[] { 
-            () -> {this.flashingRGB(255, 0, 0, 1);},
+            () -> {this.flashingRGB(255, 0, 0);},
             () -> {this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
             () -> {this.rainbow(1);}, 
             () -> {this.cylon(60, 255, 1);} 
@@ -51,26 +51,21 @@ public class Lights extends SubsystemBase {
         }
     }
 
-    private int flashTimer = 0;
-
+    private boolean flashing = false;
     /**
-     * Flashes the LEDs between on and off. Should be called periodically
+     * Flashes the LEDs between on and off. Should be called periodically. Speed is meant to be controlled by the scheduler
      * 
      * @param R               Red value (0-255)
      * @param G               Green value (0-255)
      * @param B               Blue value (0-255)
-     * @param speedMultiplier The speed of the flashing. A multiplier of 1 makes it
-     *                        2 seconds a cycle.
      */
-    public void flashingRGB(int R, int G, int B, double speedMultiplier) {
-        double interval = 100 * speedMultiplier; // if multiplier is 1: 2 seconds a cycle aka 1 second on 1 second off.
-        if (flashTimer < interval / 2) {
+    public void flashingRGB(int R, int G, int B) {
+        if (!this.flashing) {
             setSolidRGB(R, G, B);
         } else {
             setSolidRGB(0, 0, 0);
         }
-        flashTimer++;
-        flashTimer %= interval;
+        this.flashing = !this.flashing;
     }
 
     private int rainbowHueValue = 0;
@@ -215,7 +210,7 @@ public class Lights extends SubsystemBase {
                     this.setLightEffect(defualt_teleop, 0, 1);
                     break;
                 case TEST:
-                    this.setLightEffect(tests[test_index], 5, 1);
+                    this.setLightEffect(tests[test_index], 7, (test_index<2) ? 25 : 1);
                     test_index++; test_index %= tests.length;
                     break;
                 case SIMULATION:
