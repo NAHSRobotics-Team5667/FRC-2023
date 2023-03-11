@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SlideSubsystem extends SubsystemBase {
-    private WPI_TalonFX m_rightSlide, m_leftSlide, m_tilt;
+    private WPI_TalonFX m_rightSlide, m_leftSlide;
     private DutyCycleEncoder absEncoderHeight = new DutyCycleEncoder(Constants.SlideConstants.EncoderId);
     private double trueHeightOffset = absEncoderHeight.getAbsolutePosition() - Constants.SlideConstants.EncoderOffset;
     private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0,0,0);
@@ -39,10 +39,6 @@ public class SlideSubsystem extends SubsystemBase {
         m_rightSlide = new WPI_TalonFX(Constants.SlideConstants.kRSlideID);
         m_rightSlide.setNeutralMode(NeutralMode.Brake);
         m_rightSlide.setSelectedSensorPosition(0);
-
-        m_tilt = new WPI_TalonFX(Constants.SlideConstants.kTiltID);
-        m_tilt.setNeutralMode(NeutralMode.Brake); //DO NOT CHANGE FROM BRAKE
-        m_tilt.setSelectedSensorPosition(0);
 
         m_leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
@@ -66,9 +62,6 @@ public class SlideSubsystem extends SubsystemBase {
       
     }
 
-    public void setTilt(double percentOutput) {
-        m_tilt.set(ControlMode.PercentOutput, percentOutput);
-    }
     public double getLeftPosition(){
         return (m_leftSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
 
