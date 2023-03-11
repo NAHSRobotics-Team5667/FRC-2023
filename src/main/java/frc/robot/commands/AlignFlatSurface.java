@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class AlignFlatSurface extends CommandBase {
   public LimelightSubsystem m_limelight;
   private RobotContainer m_RobotContainer;
+  PathPlannerTrajectory FlatSurfaceLocation;
   
   /** Creates a new Align. */
   public AlignFlatSurface(LimelightSubsystem m_Limelight, RobotContainer robotContainer) {
@@ -33,22 +34,25 @@ public class AlignFlatSurface extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
+    new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()), 
+    new PathPoint(new Translation2d(FlatSurfaceFinder.getNearestPole().getX(), FlatSurfaceFinder.getNearestPole().getY()), FlatSurfaceFinder.getNearestPole().getRotation()));
+    this.FlatSurfaceLocation = FlatSurfaceLocation;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute(){
 
-    PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
-    new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()), 
-    new PathPoint(new Translation2d(FlatSurfaceFinder.getNearestPole().getX(), FlatSurfaceFinder.getNearestPole().getY()), FlatSurfaceFinder.getNearestPole().getRotation()));
+    
     
     m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation);
     // if (RobotContainer.m_controller.getYButtonPressed() == true) {
     //   if (m_limelight.hasValidTarget()){
     //     if (m_limelight.getArea())
     //   }
-
+ 
     // }
  }
 
