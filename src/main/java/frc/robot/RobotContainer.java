@@ -45,6 +45,7 @@ public class RobotContainer {
     public static EventLoop BButton;
     public static EventLoop XButton;
     public static EventLoop AButton;
+
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
@@ -55,7 +56,7 @@ public class RobotContainer {
 
      //deal with it liam
     public Lights lightstrip;
-    public LimelightSubsystem Limelight;
+    public static LimelightSubsystem Limelight;
     public static PoseEstimator poseEstimate;
     public static double pEditor = 0;
     public static double dEditor = 0;
@@ -155,7 +156,7 @@ public class RobotContainer {
         return autoBuilder;
     }
     private void configureButtonBindings() {
-
+        
         BButton.bind((Runnable) new AlignFlatSurface(Limelight, this));
         XButton.bind((Runnable) new AlignPole(Limelight, this));
         AButton.bind((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
@@ -163,15 +164,12 @@ public class RobotContainer {
         if (Math.abs(m_controller.getLeftX()) > .1){
             m_drive.run((Runnable) new DrivetrainCommand(m_drive));
         }
-        if (m_controller.getAButtonPressed()){
-            m_claw.run((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
-            intakeToggle++;        
 
-        }
         m_controller.a(AButton);
         m_controller.x(XButton);
         m_controller.b(BButton);
     
+//when b button pressed
 
 
     }
