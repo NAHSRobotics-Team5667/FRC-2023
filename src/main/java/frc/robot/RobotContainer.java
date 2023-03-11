@@ -156,9 +156,9 @@ public class RobotContainer {
     }
     private void configureButtonBindings() {
 
-        BButton.bind((Runnable) new AlignFlatSurface(Limelight, this));
-        XButton.bind((Runnable) new AlignPole(Limelight, this));
-        AButton.bind((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
+        //BButton.bind((Runnable) new AlignFlatSurface(Limelight, this));
+        //XButton.bind((Runnable) new AlignPole(Limelight, this));
+        //AButton.bind((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
        
         if (Math.abs(m_controller.getLeftX()) > .1){
             m_drive.run((Runnable) new DrivetrainCommand(m_drive));
@@ -168,9 +168,9 @@ public class RobotContainer {
             intakeToggle++;        
 
         }
-        m_controller.a(AButton);
-        m_controller.x(XButton);
-        m_controller.b(BButton);
+        //m_controller.a(AButton);
+        //m_controller.x(XButton);
+        //m_controller.b(BButton);
     
 
 

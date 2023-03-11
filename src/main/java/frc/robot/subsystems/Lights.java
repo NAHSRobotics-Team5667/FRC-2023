@@ -5,6 +5,7 @@ import frc.robot.Constants.LightConstants;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
@@ -154,6 +155,9 @@ public class Lights extends SubsystemBase {
         double time_left = 0; // in seconds
         int ticks_per_call = 1;
         int tick_counter = 0;
+        double fade_time_left = 0;
+        Color[] fade_from;
+        Color[] fade_to;
         LightEffect default_disabled,
                 defualt_teleop,
                 defualt_auto;
@@ -186,15 +190,42 @@ public class Lights extends SubsystemBase {
          * @param duration The duration of the light effect in seconds.
          * @param ticks_per_call How ofted the light effect should be applied. A value of 1 is every .02 seconds. <strong>This is how you slow down the light effect.</strong>
          */
-        public void setLightEffect(LightEffect effect, double duration, int ticks_per_call) {
+        public void setLightEffect(LightEffect effect, double duration, int ticks_per_call, double fade_duration) {
             this.current_effect = effect;
             this.time_left = duration;
             this.ticks_per_call = ticks_per_call;
-            this.applyLightEffect();
+
+            if (fade_duration > 0) {
+                this.fadeLightEffectInit(fade_duration);
+            }else {
+                this.applyLightEffect();
+            }
         }
 
         private void applyLightEffect() {
             current_effect.apply();
+        }
+        private void fadeLightEffectInit(double duration) {
+            System.out.println("fadeInit");
+            this.fade_from = new Color[m_ledBuffer.getLength()];
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+                this.fade_from[i] = m_ledBuffer.getLED(i);
+            }
+            this.fade_time_left = duration;
+            this.current_effect.apply();
+            this.fade_to = new Color[m_ledBuffer.getLength()];
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+                this.fade_to[i] = m_ledBuffer.getLED(i);
+            }
+        }
+        private void fadeLightEffect(){
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+                int red = (int) (fade_from[i].red + ((fade_to[i].red - fade_from[i].red) * (1 / (fade_time_left * .02))));
+                int green = (int) (fade_from[i].green + ((fade_to[i].green - fade_from[i].green) * (1 / (fade_time_left * .02))));
+                int blue = (int) (fade_from[i].blue + ((fade_to[i].blue - fade_from[i].blue) * (1 / (fade_time_left * .02))));
+                m_ledBuffer.setRGB(i, red, green, blue);
+            }
+            fade_time_left -= .02;
         }
 
         /** Sets the default light effect for the current period */
@@ -202,17 +233,17 @@ public class Lights extends SubsystemBase {
             period period = Lights.this.getPeriod();
             switch (period) {
                 case DISABLED:
-                    this.setLightEffect(default_disabled, 0, 1);
+                    this.setLightEffect(default_disabled, 0, 1,0);
                     break;
                 case AUTO:
-                    this.setLightEffect(defualt_auto, 0, 1);
+                    this.setLightEffect(defualt_auto, 0, 1,0);
                     break;
                 case TELEOP:
-                    this.setLightEffect(defualt_teleop, 0, 1);
+                    this.setLightEffect(defualt_teleop, 0, 1,0);
                     break;
                 case TEST:
                     SmartDashboard.putBoolean("TEST", true);
-                    this.setLightEffect(this.tests[test_index], 7, (test_index<2) ? 10 : 1);
+                    this.setLightEffect(this.tests[test_index], 7, (test_index<2) ? 10 : 1, 3);
                     test_index++; test_index %= tests.length;
                     break;
                 case SIMULATION:
@@ -222,8 +253,11 @@ public class Lights extends SubsystemBase {
 
         /** Method to be executed from the parent classes periodic function */
         public void periodic() {
-            if (this.tick_counter++ % this.ticks_per_call == 0) {
+            if (this.tick_counter++ % this.ticks_per_call == 0 && this.fade_time_left <= 0) {
                 this.applyLightEffect();
+            }
+            if (this.fade_time_left > 0){
+                this.fadeLightEffect();
             }
             if (this.time_left <= 0) { // this is some quirky java code because apparently the operation returns itself
                  // 0.02 seconds is usually the period of the periodic function
