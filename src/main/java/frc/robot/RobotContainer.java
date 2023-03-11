@@ -16,8 +16,10 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.concurrent.Event;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.AlignFlatSurface;
@@ -40,6 +42,9 @@ import frc.robot.subsystems.LimelightSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    public static EventLoop BButton;
+    public static EventLoop XButton;
+    public static EventLoop AButton;
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
@@ -150,6 +155,11 @@ public class RobotContainer {
         return autoBuilder;
     }
     private void configureButtonBindings() {
+
+        BButton.bind((Runnable) new AlignFlatSurface(Limelight, this));
+        XButton.bind((Runnable) new AlignPole(Limelight, this));
+        AButton.bind((Runnable) new ClawIntakeAndOuttakeCommand(m_claw, intakeToggle % 2 == 0));
+       
         if (Math.abs(m_controller.getLeftX()) > .1){
             m_drive.run((Runnable) new DrivetrainCommand(m_drive));
         }
@@ -158,14 +168,10 @@ public class RobotContainer {
             intakeToggle++;        
 
         }
-        if (m_controller.getBButtonPressed()){
-            m_drive.run((Runnable) new AlignFlatSurface(Limelight, this));
-         
-            
-        }
-        if (m_controller.getXButtonPressed()){
-            m_drive.run((Runnable) new AlignPole(Limelight, this));
-        }
+        m_controller.a(AButton);
+        m_controller.x(XButton);
+        m_controller.b(BButton);
+    
 
 
     }

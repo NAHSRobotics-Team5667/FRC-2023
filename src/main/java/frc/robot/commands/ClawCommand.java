@@ -23,7 +23,7 @@ public class ClawCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        ClawSubsystem.setIntake(.1);
+        ClawSubsystem.setIntake(.05);
    
     }
     // Called once the command ends or is interrupted.
