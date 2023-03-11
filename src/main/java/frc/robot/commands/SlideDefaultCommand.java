@@ -31,7 +31,7 @@ public class SlideDefaultCommand extends CommandBase {
     @Override
     public void initialize() {
         slide.setSlide(0);
-        slide.setTilt(0);
+        
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -78,7 +78,7 @@ public class SlideDefaultCommand extends CommandBase {
         // make or call a function to set slide to zero sets slide back to zero
         bumperPos = 0;
         slide.setSlide(0);
-        slide.setTilt(0); 
+         
     }
 
     // Returns true when the command should end.

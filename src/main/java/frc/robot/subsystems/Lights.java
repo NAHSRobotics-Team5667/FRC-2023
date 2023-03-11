@@ -4,7 +4,6 @@ import frc.robot.Constants.LightConstants;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -13,8 +12,6 @@ public class Lights extends SubsystemBase {
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
     public Light_Scheduler scheduler;
-    private LightEffect[] tests;
-
     public Lights() {
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
