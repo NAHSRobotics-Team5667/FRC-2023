@@ -134,7 +134,6 @@ public final class Constants {
     public static final class SlideConstants {
         public static final int kLSlideID = -1;
         public static final int kRSlideID = -1;
-        public static final int kTiltID = -1;
         public static final int kSlideConstant = -1; //TODO: Find gear ratio
 
         public static final int EncoderId = -1;
@@ -146,6 +145,10 @@ public final class Constants {
         public static final int levelOneHeight = -1;
         public static final int levelTwoHeight = -1;
         public static final int levelThreeHeight = -1;
+    }
+
+    public static final class WristConstants {
+         public static final int kWristID = -1;
     }
     
 //Have to add mirrored trajectories if alliance is switched
