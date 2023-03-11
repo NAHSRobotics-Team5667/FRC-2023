@@ -64,14 +64,15 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
         if (RobotContainer.m_controller.getXButton()){
             bumperPos = 3;
         }
-    if (intake) { // TODO: Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
-      while (!ClawSubsystem.isPieceIntaken()){
+    long start_time = System.currentTimeMillis();
+    if (intake) {
+      while (!ClawSubsystem.isPieceIntaken() && System.currentTimeMillis() - start_time < 2000){
         ClawSubsystem.setIntake(.2);
       }
       finished = true;
 
     }else{
-      while (ClawSubsystem.isPieceIntaken()){
+      while (ClawSubsystem.isPieceIntaken() && System.currentTimeMillis() - start_time < 2000){
         ClawSubsystem.setIntake(-.2);
         
       }
