@@ -26,9 +26,9 @@ public class Lights extends SubsystemBase {
 
         // Set the data
         this.m_led.setData(m_ledBuffer);
+
+
         this.m_led.start();
-
-
         scheduler = new Light_Scheduler();
     }
 
@@ -76,7 +76,7 @@ public class Lights extends SubsystemBase {
         final var length = m_ledBuffer.getLength();
         for (var i = 0; i < length; i++) {
             final var hue = (this.rainbowHueValue + (i * 180 / length)) % 180;
-            this.m_ledBuffer.setHSV(i, hue, 255, 128);
+            this.m_ledBuffer.setHSV(i, hue, 255, 255);
         }
         this.rainbowHueValue += 1 * speed_multiplier;
         this.rainbowHueValue %= 180;
@@ -126,7 +126,7 @@ public class Lights extends SubsystemBase {
     }
 
     public enum period {
-        AUTO, TELEOP, DISABLED, TEST, SIMULATION
+        AUTO, TELEOP, DISABLED, TEST
     }
 
     private period currentPeriod = Lights.period.DISABLED;
@@ -137,6 +137,7 @@ public class Lights extends SubsystemBase {
 
     public void setPeriod(Lights.period p) {
         currentPeriod = p;
+        scheduler.setDefaultLightEffect(.5);
     }
 
     @FunctionalInterface
@@ -152,17 +153,14 @@ public class Lights extends SubsystemBase {
 
     public class Light_Scheduler {
         LightEffect current_effect;
-        double time_left = 0; // in seconds
-        int ticks_per_call = 1;
-        int tick_counter = 0;
-        double fade_time_left = 0;
-        Color[] fade_from;
-        Color[] fade_to;
-        LightEffect default_disabled,
-                defualt_teleop,
-                defualt_auto;
-        private int test_index = 0;
+        private int ticks_per_call = 1, tick_counter = 0, test_index = 0;
+        double time_left = 0, fade_time_left = 0; // in seconds
+        Color[] fade_from, fade_to;
+        LightEffect default_disabled, defualt_teleop, defualt_auto;
+        
         LightEffect[] tests = new LightEffect[] { 
+            //() -> {Lights.this.setSolidRGB(0, 0, 0);},
+            //() -> {Lights.this.setSolidRGB(255, 255, 255);}
             () -> {Lights.this.flashingRGB(255, 0, 0);},
             () -> {Lights.this.carnival(new int[][] { { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 } }, 1, 3);},
             () -> {Lights.this.rainbow(1);}, 
@@ -171,15 +169,13 @@ public class Lights extends SubsystemBase {
 
         public Light_Scheduler() {
             this.default_disabled = () -> {
-                Lights.this.cylon(0, 255, 1);
-            };
+                Lights.this.cylon(0, 255, 1);};
             this.defualt_teleop = () -> {
-                Lights.this.rainbow(3);
-            };
+                Lights.this.rainbow(3);};
             this.defualt_auto = () -> {
-                Lights.this.rainbow(1);
-            };
-            this.setDefaultLightEffect();
+                Lights.this.rainbow(1);};
+                
+            this.setDefaultLightEffect(0);
         }
 
         /**
@@ -194,59 +190,60 @@ public class Lights extends SubsystemBase {
             this.current_effect = effect;
             this.time_left = duration;
             this.ticks_per_call = ticks_per_call;
+            this.fade_time_left = fade_duration;
 
             if (fade_duration > 0) {
-                this.fadeLightEffectInit(fade_duration);
+                this.fadeLightEffectInit();
             }else {
-                this.applyLightEffect();
+                this.current_effect.apply();
             }
         }
 
-        private void applyLightEffect() {
-            current_effect.apply();
-        }
-        private void fadeLightEffectInit(double duration) {
-            System.out.println("fadeInit");
+        private void fadeLightEffectInit() {
             this.fade_from = new Color[m_ledBuffer.getLength()];
             for (int i = 0; i < m_ledBuffer.getLength(); i++) {
                 this.fade_from[i] = m_ledBuffer.getLED(i);
             }
-            this.fade_time_left = duration;
             this.current_effect.apply();
             this.fade_to = new Color[m_ledBuffer.getLength()];
             for (int i = 0; i < m_ledBuffer.getLength(); i++) {
                 this.fade_to[i] = m_ledBuffer.getLED(i);
             }
+            fade_time_elapsed = 0;
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+                m_ledBuffer.setRGB(i, (int)fade_from[i].red, (int)fade_from[i].green, (int)fade_from[i].blue);
+            }
         }
+
+        private double fade_time_elapsed = 0;
         private void fadeLightEffect(){
             for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-                int red = (int) (fade_from[i].red + ((fade_to[i].red - fade_from[i].red) * (1 / (fade_time_left * .02))));
-                int green = (int) (fade_from[i].green + ((fade_to[i].green - fade_from[i].green) * (1 / (fade_time_left * .02))));
-                int blue = (int) (fade_from[i].blue + ((fade_to[i].blue - fade_from[i].blue) * (1 / (fade_time_left * .02))));
+                int red = (int) (255*(fade_from[i].red + (fade_time_elapsed*((fade_to[i].red - fade_from[i].red) / (fade_time_left + fade_time_elapsed)))));
+                int green = (int) (255*(fade_from[i].green + (fade_time_elapsed*((fade_to[i].green - fade_from[i].green) / (fade_time_left + fade_time_elapsed)))));
+                int blue = (int) (255*(fade_from[i].blue + (fade_time_elapsed*((fade_to[i].blue - fade_from[i].blue) / (fade_time_left + fade_time_elapsed)))));
                 m_ledBuffer.setRGB(i, red, green, blue);
             }
             fade_time_left -= .02;
+            fade_time_elapsed += .02;
         }
 
         /** Sets the default light effect for the current period */
-        public void setDefaultLightEffect() {
+        public void setDefaultLightEffect(double fade_duration) {
             period period = Lights.this.getPeriod();
             switch (period) {
                 case DISABLED:
-                    this.setLightEffect(default_disabled, 0, 1,0);
+                    this.setLightEffect(default_disabled, 0, 1,fade_duration);
                     break;
                 case AUTO:
-                    this.setLightEffect(defualt_auto, 0, 1,0);
+                    this.setLightEffect(defualt_auto, 0, 1,fade_duration);
                     break;
                 case TELEOP:
-                    this.setLightEffect(defualt_teleop, 0, 1,0);
+                    this.setLightEffect(defualt_teleop, 0, 1, fade_duration);
                     break;
                 case TEST:
                     SmartDashboard.putBoolean("TEST", true);
-                    this.setLightEffect(this.tests[test_index], 7, (test_index<2) ? 10 : 1, 3);
+                    this.setLightEffect(this.tests[test_index], 7,1, 1);
                     test_index++; test_index %= tests.length;
-                    break;
-                case SIMULATION:
                     break;
             }
         }
@@ -254,17 +251,18 @@ public class Lights extends SubsystemBase {
         /** Method to be executed from the parent classes periodic function */
         public void periodic() {
             if (this.tick_counter++ % this.ticks_per_call == 0 && this.fade_time_left <= 0) {
-                this.applyLightEffect();
+                this.current_effect.apply();
             }
             if (this.fade_time_left > 0){
                 this.fadeLightEffect();
             }
-            if (this.time_left <= 0) { // this is some quirky java code because apparently the operation returns itself
-                 // 0.02 seconds is usually the period of the periodic function
-                 this.tick_counter = 0; // not really necessary but might help debugging
-                 this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect for the current period.
+            if (this.time_left <= 0) { 
+                if (this.fade_time_left <= 0) {
+                    this.tick_counter = 0; // not really necessary but might help debugging
+                    this.setDefaultLightEffect(0); // if no time is left for whatever effect, set the default light effect for the current period.
+                }
             } else {
-                this.time_left-=.02;
+                this.time_left-=.02; // 0.02 seconds is usually the period of the periodic function
             }
         }
     }

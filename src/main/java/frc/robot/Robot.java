@@ -122,7 +122,6 @@ public class Robot extends TimedRobot {
     /** This function is called once when the robot is first started up. */
     @Override
     public void simulationInit() {
-        this.m_robotContainer.lightstrip.setPeriod(Lights.period.SIMULATION);
     }
 
     /** This function is called periodically whilst in simulation. */
