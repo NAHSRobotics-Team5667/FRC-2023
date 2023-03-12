@@ -65,8 +65,8 @@ public class RobotContainer {
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
-    public static Trigger LeftBumper = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
-    public static Trigger RightBumper = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
+    public static Trigger LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
+    public static Trigger RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
     public static Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
     public static Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
     public static Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
@@ -185,8 +185,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         bButton.onTrue(new AlignFlatSurfaceAgain(this));
         xButton.onTrue(new AlignPoleAgain(this));
-        RightBumper.onTrue(new IntakeAndOuttakeProcedure(this, false));
-        LeftBumper.onTrue(new IntakeAndOuttakeProcedure(this, true));
+        RightTrigger.onTrue(new IntakeAndOuttakeProcedure(this, false));
+        LeftTrigger.onTrue(new IntakeAndOuttakeProcedure(this, true));
     }
 
     /**

@@ -41,9 +41,9 @@ public class WristSubsystem extends SubsystemBase {
   public double pidError(){
     return wristPID.getPositionError();
   }
-  public void maintainPosition(){
+  public void maintainSafePosition(){
     double currentPosition = getPosition();
-    double outputWrist = wristPID.calculate(currentPosition, currentPosition);
+    double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristSafePostion );
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         m_wristMotor.setVoltage(outputWrist + wristFeedForward);
     

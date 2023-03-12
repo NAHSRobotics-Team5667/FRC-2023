@@ -23,6 +23,7 @@ public class IntakeOuttakeProcessWrist extends CommandBase {
     this.isPieceIntaken = claw.isPieceIntaken();
     this.m_wrist = wrist;
     this.isCube = isCube;
+    addRequirements(m_wrist);
 
   
     // Use addRequirements() here to declare subsystem dependencies.

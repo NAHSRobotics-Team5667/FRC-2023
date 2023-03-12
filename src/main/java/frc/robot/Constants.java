@@ -157,6 +157,7 @@ public final class Constants {
          public static final int kWristID = -1;
          public static final int kWristConeSetpoint = -1;
          public static final int kWristConeOuttakeSetpoint = -1;
+         public static final int kWristSafePostion = -1;
          public static final double[] kWristCubeSetpoint = {
             0, //intake pos
             0, //heights 1-4
