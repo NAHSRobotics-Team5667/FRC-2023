@@ -154,10 +154,10 @@ public class Lights extends SubsystemBase {
      */
 
     public class Light_Scheduler {
-        LightEffect current_effect;
+        private LightEffect current_effect;
         private int ticks_per_call = 1, tick_counter = 0, test_index = 0;
-        double time_left = 0, fade_time_left = 0; // in seconds
-        Color[] fade_from, fade_to;
+        private double time_left = 0, fade_time_left = 0; // in seconds
+        private Color[] fade_from, fade_to;
         LightEffect default_disabled, defualt_teleop, defualt_auto;
         
         LightEffect[] tests = new LightEffect[] { 
@@ -170,15 +170,12 @@ public class Lights extends SubsystemBase {
         };
 
         public Light_Scheduler() {
-            this.default_disabled = () -> {
-                Lights.this.cylon(0, 255, 1);};
-            this.defualt_teleop = () -> {
-                Lights.this.rainbow(2);};
+            this.default_disabled = () -> {Lights.this.cylon(0, 255, 1);};
+            this.defualt_teleop = () -> {Lights.this.rainbow(2);};
             this.defualt_auto = () -> {
                 Lights.this.carnival(new Color[] {new Color(255,0,0), new Color(0,0,255), new Color(0,255,0)}, 5);
             };
         
-                
             this.setDefaultLightEffect(0);
         }
 
@@ -272,10 +269,6 @@ public class Lights extends SubsystemBase {
     @Override
     public void periodic() {
         this.scheduler.periodic();
-
         this.m_led.setData(m_ledBuffer);
-
     }
-    
-
 }

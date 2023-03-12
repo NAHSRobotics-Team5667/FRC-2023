@@ -21,15 +21,12 @@ public class LimelightSubsystem {
     private NetworkTable table; // Network table to access Lime Light Values
 
     // Frequently used entries to store
-    private NetworkTableEntry tx;
-    private NetworkTableEntry ty;
-    private NetworkTableEntry ta;
+    private NetworkTableEntry tx, ty, ta;
 
     public enum LightMode {
         DEFAULT(0), OFF(1), BLINK(2), ON(3);
 
         private final int ledMode;
-
         private LightMode(int ledMode) {
             this.ledMode = ledMode;
         }
