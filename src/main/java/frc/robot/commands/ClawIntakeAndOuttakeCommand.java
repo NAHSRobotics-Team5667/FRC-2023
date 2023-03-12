@@ -28,7 +28,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
   public ClawIntakeAndOuttakeCommand( ClawSubsystem clawSubsystem, WristSubsystem wrist) {
     this.clawSubsystem = clawSubsystem;
     this.wrist = wrist; 
-    isDoneCheck = clawSubsystem.isPieceIntaken();
+    isDoneCheck = clawSubsystem.isPieceIntaken(); // TODO: This may not update constantly because its not in execute(), it is only called once in the constructor.
   
     addRequirements(clawSubsystem);
 
@@ -46,7 +46,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
   public void execute() {
   
        // TODO: Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
-      //you right. it is also spelled Benjamin.
+      //you right. it is also spelled Banjiman.
       if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == false){
         clawSubsystem.setIntake(.1);
 

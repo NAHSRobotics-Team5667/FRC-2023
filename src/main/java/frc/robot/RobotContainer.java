@@ -65,26 +65,25 @@ public class RobotContainer {
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
-    public static Trigger LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
-    public static Trigger RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
-    public static Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
-    public static Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
-    public static Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
-    public static Trigger xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
+    public static Trigger 
+        LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
+        RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value),
+        yButton = new JoystickButton(m_controller, XboxController.Button.kY.value),
+        bButton = new JoystickButton(m_controller, XboxController.Button.kB.value),
+        aButton = new JoystickButton(m_controller, XboxController.Button.kA.value),
+        xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
 
     
     
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     public WristSubsystem m_wrist;
-    @SuppressWarnings("unused")
     public ClawSubsystem m_claw; // declares claw subsystem
 
      //deal with it liam
     public Lights lightstrip;
     public static LimelightSubsystem Limelight;
     public static PoseEstimator poseEstimate;
-    public static double pEditor = 0;
-    public static double dEditor = 0;
+    public static double pEditor = 0, dEditor = 0;
     public double intakeToggle = 0;
     public SwerveAutoBuilder autoBuilder;
     public Robot robot; //uh i dont think we need this -benjamin
