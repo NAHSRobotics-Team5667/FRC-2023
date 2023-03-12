@@ -110,7 +110,7 @@ public class RobotContainer {
         
 
 
-        lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants);
+        lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
