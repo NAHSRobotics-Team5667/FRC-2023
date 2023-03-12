@@ -132,6 +132,12 @@ public final class Constants {
     } 
 
     public static final class SlideConstants {
+        public static double[] SlideSetpoints = { 
+            0,
+            0,
+            0,
+            0
+        };
         public static final int kLSlideID = -1;
         public static final int kRSlideID = -1;
         public static final int kSlideConstant = -1; //TODO: Find gear ratio
@@ -150,7 +156,14 @@ public final class Constants {
     public static final class WristConstants {
          public static final int kWristID = -1;
          public static final int kWristConeSetpoint = -1;
-         public static final int kWristCubeSetpoint = -1;
+         public static final int kWristConeOuttakeSetpoint = -1;
+         public static final double[] kWristCubeSetpoint = {
+            0, //intake pos
+            0, //heights 1-4
+            0,
+            0,
+            0
+        };
     }
     
 //Have to add mirrored trajectories if alliance is switched

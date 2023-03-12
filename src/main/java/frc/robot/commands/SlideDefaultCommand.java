@@ -32,7 +32,7 @@ public class SlideDefaultCommand extends CommandBase {
     public void initialize() {
         slide.setSlide(0);
         
-    }
+    }     
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override

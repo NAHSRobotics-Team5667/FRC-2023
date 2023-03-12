@@ -12,8 +12,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class WristSubsystem extends SubsystemBase {
+  public int bumperPos = 0;
   private WPI_TalonFX m_wrist;
   private PIDController wristPID = new PIDController(.5, 0, 0);
   private SimpleMotorFeedforward m_wristFeedForward = new SimpleMotorFeedforward(0,0,0);
@@ -36,15 +38,33 @@ public class WristSubsystem extends SubsystemBase {
   public double getDriveRate(){
     return m_wrist.getSelectedSensorVelocity();
     }
+  public double pidError(){
+    return wristPID.getPositionError();
+  }
+  public void maintainPosition(){
+    double currentPosition = getPosition();
+    double outputWrist = wristPID.calculate(currentPosition, currentPosition);
+        double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
+        m_wrist.setVoltage(outputWrist + wristFeedForward);
+    
+  }
 
-  public void coneAngled(){
+  public void coneIntakeAngled(){
     double currentPosition = getPosition();
     double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeSetpoint);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         m_wrist.setVoltage(outputWrist + wristFeedForward);
+    
 
   //Wrist Angled for Cone intake
   }
+  public void coneOuttakeAngled(){
+    double currentPosition = getPosition();
+    double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeOuttakeSetpoint);
+        double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
+        m_wrist.setVoltage(outputWrist + wristFeedForward);
+  }
+
   public void cubeAngled(double wristPoint){
     double currentPosition = getPosition();
     double outputWrist = wristPID.calculate(currentPosition, wristPoint);
@@ -55,6 +75,30 @@ public class WristSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    //placed here because i need it updated constantly and dont want to deal with putting it in a command properly
+    if (RobotContainer.m_controller.getLeftBumperPressed()) {
+        if (bumperPos == 3){
+            bumperPos= 3;
+        }
+        else{
+            bumperPos++;
+        }
+    }
+    if (RobotContainer.m_controller.getRightBumperPressed()) {
+        if (bumperPos == 0){
+            bumperPos= 0;
+        }
+        else{
+            bumperPos =- 1;
+        }
+    }
+    if (RobotContainer.m_controller.getYButton()) {
+        bumperPos = 0;
+    }
+    if (RobotContainer.m_controller.getXButton()){
+        bumperPos = 3;
+    }
+
     // This method will be called once per scheduler run
   }
 }
