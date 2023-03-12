@@ -25,13 +25,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignFlatSurfaceAgain;
 import frc.robot.commands.AlignPoleAgain;
+import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
+import frc.robot.commands.IntakeAndOuttakeProcedure;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.Constants.LightConstants;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -61,6 +65,8 @@ public class RobotContainer {
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
+    public static Trigger LeftBumper = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
+    public static Trigger RightBumper = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
     public static Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
     public static Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
     public static Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
@@ -69,9 +75,9 @@ public class RobotContainer {
     
     
     private DrivetrainSubsystem m_drive; // declares dt subsystem
-
+    public WristSubsystem m_wrist;
     @SuppressWarnings("unused")
-    private ClawSubsystem m_claw; // declares claw subsystem
+    public ClawSubsystem m_claw; // declares claw subsystem
 
      //deal with it liam
     public Lights lightstrip;
@@ -89,20 +95,22 @@ public class RobotContainer {
 
     public RobotContainer(Robot robot) {
         this.robot = robot;
+        m_wrist = new WristSubsystem();
         m_drive = new DrivetrainSubsystem();
         m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
         poseEstimate = new PoseEstimator(null, m_drive);
         Limelight = new LimelightSubsystem();
         //removing everything that isnt the drive train for now to make troubleshooting easier
         //why are we insantiating the robot in robot container? doesnt the hierarchy go from robot to robot container?
-       // m_claw = new ClawSubsystem();
-        //m_claw.setDefaultCommand(new ClawCommand(m_claw));
+        m_claw = new ClawSubsystem();
+        m_claw.setDefaultCommand(new ClawCommand(m_claw));
+        m_wrist.setDefaultCommand(new WristCommand(m_wrist));
         
         
         
 
 
-        lightstrip = new Lights(LightConstants.lightstrip1Port, LightConstants.lightstrip1Length);
+        lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants);
 
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
@@ -177,6 +185,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         bButton.onTrue(new AlignFlatSurfaceAgain(this));
         xButton.onTrue(new AlignPoleAgain(this));
+        RightBumper.onTrue(new IntakeAndOuttakeProcedure(this, false));
+        LeftBumper.onTrue(new IntakeAndOuttakeProcedure(this, true));
     }
 
     /**

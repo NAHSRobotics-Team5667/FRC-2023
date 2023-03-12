@@ -5,15 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.CurrentSpikeCounter;
 
 public class ClawIntakeAndOuttakeCommand extends CommandBase {
-  public boolean intake;
   public ClawSubsystem clawSubsystem;
   public CurrentSpikeCounter spikeCounter;
   public boolean finished = false;
+  public WristSubsystem wrist;
+  public boolean isDoneCheck;
   public static double[] Setpoints = { 
     0,
     0,
@@ -24,11 +25,11 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
 };
   
   /** Creates a new SlideIntakeAndOuttakeCommand. */
-  public ClawIntakeAndOuttakeCommand( ClawSubsystem clawSubsystem, boolean intake) {
-    this.intake = intake;
+  public ClawIntakeAndOuttakeCommand( ClawSubsystem clawSubsystem, WristSubsystem wrist) {
     this.clawSubsystem = clawSubsystem;
-
-    
+    this.wrist = wrist; 
+    isDoneCheck = clawSubsystem.isPieceIntaken();
+  
     addRequirements(clawSubsystem);
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -36,55 +37,37 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    int bumperPos = 0;
-        if (RobotContainer.m_controller.getLeftBumperPressed()) {
-            if (bumperPos == 3){
-                bumperPos= 3;
-            }
-            else{
-                bumperPos++;
-            }
-        }
-        if (RobotContainer.m_controller.getRightBumperPressed()) {
-            if (bumperPos == 0){
-                bumperPos= 0;
-            }
-            else{
-                bumperPos =- 1;
-            }
-        }
-        if (RobotContainer.m_controller.getYButton()) {
-            bumperPos = 0;
-        }
-        if (RobotContainer.m_controller.getXButton()){
-            bumperPos = 3;
-        }
-    if (intake) { // TODO: Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
-      while (!ClawSubsystem.isPieceIntaken()){
-        ClawSubsystem.setIntake(.2);
-      }
-      finished = true;
+  
+       // TODO: Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
+      //you right. it is also spelled Benjamin.
+      if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == false){
+        clawSubsystem.setIntake(.1);
 
-    }else{
-      while (ClawSubsystem.isPieceIntaken()){
-        ClawSubsystem.setIntake(-.2);
+      } if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == true){
+        clawSubsystem.setIntake(.4);
+
+
+      } else {
+        finished = true;
+
+      }
+      
+      
         
-      }
-      finished = true;
-    }
-
+    
 
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    finished = false;
+    clawSubsystem.setIntake(0);
   }
 
   // Returns true when the command should end.

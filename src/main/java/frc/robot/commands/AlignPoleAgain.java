@@ -5,8 +5,6 @@ package frc.robot.commands;
 import frc.robot.RobotContainer;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 import frc.robot.util.PoleFinder;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -15,7 +13,6 @@ import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -23,14 +20,9 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AlignPoleAgain extends ParallelRaceGroup {
   PathPlannerTrajectory FlatSurfaceLocation;
-  private RobotContainer m_RobotContainer;
-  private XboxController m_Controller;
   BooleanSupplier getSticks;
   /** Creates a new AlignPoleAgain. */
   public AlignPoleAgain(RobotContainer m_RobotContainer) {
-    this.m_RobotContainer = m_RobotContainer;
-
-    this.m_Controller = m_RobotContainer.m_controller;
     PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
     new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()),
     new PathPoint(new Translation2d(PoleFinder.getNearestPole().getX(), PoleFinder.getNearestPole().getY()), PoleFinder.getNearestPole().getRotation()));

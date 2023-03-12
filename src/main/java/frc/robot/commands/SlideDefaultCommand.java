@@ -7,9 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SlideSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 public class SlideDefaultCommand extends CommandBase {
     private SlideSubsystem slide;
+    private WristSubsystem wrist;
     public int bumperPos = 0;
     public static double[] Setpoints = { 
         0,
@@ -21,9 +23,11 @@ public class SlideDefaultCommand extends CommandBase {
     };
 
     /** Creates a new SlideCommand. */
-    public SlideDefaultCommand(SlideSubsystem slide) {
+    public SlideDefaultCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
+        this.wrist = wrist;
+        wrist = m_RobotContainer.m_wrist;
         addRequirements(slide);
     }
 
@@ -37,38 +41,14 @@ public class SlideDefaultCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        slide.moveSlide(Setpoints[bumperPos]);
+        slide.moveSlide(Setpoints[wrist.bumperPos]);
 
         
        
 
     }
     public void joystickControl() {
-        int bumperPos = 0;
-        if (RobotContainer.m_controller.getLeftBumperPressed()) {
-            if (bumperPos == 3){
-                bumperPos= 3;
-            }
-            else{
-                bumperPos++;
-            }
-        }
-        if (RobotContainer.m_controller.getRightBumperPressed()) {
-            if (bumperPos == 0){
-                bumperPos= 0;
-            }
-            else{
-                bumperPos =- 1;
-            }
-        }
-        if (RobotContainer.m_controller.getYButton()) {
-            bumperPos = 0;
-        }
-        if (RobotContainer.m_controller.getXButton()){
-            bumperPos = 3;
-        }
-
-
+      
         
     }
 

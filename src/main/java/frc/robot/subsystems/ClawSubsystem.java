@@ -28,7 +28,7 @@ public class ClawSubsystem extends SubsystemBase {
      *  
      * @param percentOutput: Percent of output using Motor Controller
      */
-    public static void setIntake(double percentOutput) {
+    public void setIntake(double percentOutput) {
         m_claw.set(ControlMode.PercentOutput, percentOutput);
     }
     /**
@@ -38,7 +38,7 @@ public class ClawSubsystem extends SubsystemBase {
     public double getMotorOutputVoltage(){
         return m_claw.getMotorOutputVoltage();
     }
-    public static boolean isPieceIntaken(){
+    public boolean isPieceIntaken(){
         return spikeCounter.update(m_claw.getStatorCurrent(), false); 
 
     }

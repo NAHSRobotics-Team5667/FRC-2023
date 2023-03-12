@@ -6,12 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
-public class IntakeOuttakeProcessWristAndSlide extends CommandBase {
+public class IntakeOuttakeProcessWrist extends CommandBase {
   boolean isPieceIntaken;
   ClawSubsystem m_claw;
   SlideSubsystem m_slide;
@@ -20,8 +19,8 @@ public class IntakeOuttakeProcessWristAndSlide extends CommandBase {
   double setpoint;
   boolean isDone = false;
   /** Creates a new IntakeOuttakeProcessCube. */
-  public IntakeOuttakeProcessWristAndSlide(boolean isPieceIntaken, WristSubsystem wrist, boolean isCube) {
-    this.isPieceIntaken = isPieceIntaken;
+  public IntakeOuttakeProcessWrist(WristSubsystem wrist, boolean isCube, ClawSubsystem claw) {
+    this.isPieceIntaken = claw.isPieceIntaken();
     this.m_wrist = wrist;
     this.isCube = isCube;
 
@@ -73,7 +72,9 @@ public class IntakeOuttakeProcessWristAndSlide extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_wrist.m_wristMotor.setVoltage(0);
+  }
 
   // Returns true when the command should end.
   @Override

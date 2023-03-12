@@ -16,7 +16,7 @@ import frc.robot.RobotContainer;
 
 public class WristSubsystem extends SubsystemBase {
   public int bumperPos = 0;
-  private WPI_TalonFX m_wrist;
+  public WPI_TalonFX m_wristMotor;
   private PIDController wristPID = new PIDController(.5, 0, 0);
   private SimpleMotorFeedforward m_wristFeedForward = new SimpleMotorFeedforward(0,0,0);
 
@@ -24,19 +24,19 @@ public class WristSubsystem extends SubsystemBase {
   public WristSubsystem() {
     
 
-    m_wrist = new WPI_TalonFX(Constants.WristConstants.kWristID);
-    m_wrist.setNeutralMode(NeutralMode.Brake); //DO NOT CHANGE FROM BRAKE
-    m_wrist.setSelectedSensorPosition(0);
+    m_wristMotor = new WPI_TalonFX(Constants.WristConstants.kWristID);
+    m_wristMotor.setNeutralMode(NeutralMode.Brake); //DO NOT CHANGE FROM BRAKE
+    m_wristMotor.setSelectedSensorPosition(0);
   }
 
   public void setWrist(double percentOutput) {
-    m_wrist.set(ControlMode.PercentOutput, percentOutput);
+    m_wristMotor.set(ControlMode.PercentOutput, percentOutput);
   }
   public double getPosition(){
-    return m_wrist.getSelectedSensorPosition();
+    return m_wristMotor.getSelectedSensorPosition();
   }
   public double getDriveRate(){
-    return m_wrist.getSelectedSensorVelocity();
+    return m_wristMotor.getSelectedSensorVelocity();
     }
   public double pidError(){
     return wristPID.getPositionError();
@@ -45,7 +45,7 @@ public class WristSubsystem extends SubsystemBase {
     double currentPosition = getPosition();
     double outputWrist = wristPID.calculate(currentPosition, currentPosition);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        m_wrist.setVoltage(outputWrist + wristFeedForward);
+        m_wristMotor.setVoltage(outputWrist + wristFeedForward);
     
   }
 
@@ -53,7 +53,7 @@ public class WristSubsystem extends SubsystemBase {
     double currentPosition = getPosition();
     double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeSetpoint);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        m_wrist.setVoltage(outputWrist + wristFeedForward);
+        m_wristMotor.setVoltage(outputWrist + wristFeedForward);
     
 
   //Wrist Angled for Cone intake
@@ -62,14 +62,14 @@ public class WristSubsystem extends SubsystemBase {
     double currentPosition = getPosition();
     double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeOuttakeSetpoint);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        m_wrist.setVoltage(outputWrist + wristFeedForward);
+        m_wristMotor.setVoltage(outputWrist + wristFeedForward);
   }
 
   public void cubeAngled(double wristPoint){
     double currentPosition = getPosition();
     double outputWrist = wristPID.calculate(currentPosition, wristPoint);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        m_wrist.setVoltage(outputWrist + wristFeedForward);
+        m_wristMotor.setVoltage(outputWrist + wristFeedForward);
   //Wrist Angled for Cube intake
   }
 

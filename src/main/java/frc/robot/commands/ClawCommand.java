@@ -9,27 +9,29 @@ import frc.robot.subsystems.ClawSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ClawCommand extends CommandBase {
+    public ClawSubsystem claw;
     /** Creates a new ClawCommand. */
     public ClawCommand(ClawSubsystem claw) {
+        this.claw = claw;
         addRequirements(claw);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        ClawSubsystem.setIntake(0);
+        claw.setIntake(0);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        ClawSubsystem.setIntake(.05);
+        claw.setIntake(.05);
    
     }
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        ClawSubsystem.setIntake(0);
+        claw.setIntake(0);
     }
 
     // Returns true when the command should end.
