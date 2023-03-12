@@ -14,6 +14,7 @@ public class WristCommand extends CommandBase {
     
     /** Creates a new WristCommand. */
     public WristCommand(WristSubsystem wrist) {
+        this.wrist = wrist;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(wrist);
     }

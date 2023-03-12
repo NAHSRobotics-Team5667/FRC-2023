@@ -25,7 +25,6 @@ public class SwerveModule {
             kModuleMaxAngularAcceleration = DriveConstants.kMaxAngularAcceleration; // radians per second squared
    
     private final WPI_TalonFX m_driveMotor, m_turningMotor;
-
     private final PIDController m_drivePIDController = new PIDController(.031576, 0, 0);
 
     // Gains are for example purposes only - must be determined for your own robot!
@@ -33,8 +32,7 @@ public class SwerveModule {
     public final PIDController m_turningPIDController;
 
     private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(.096682, 2.2041, .54385);
-    double trueEncoderOffset = 100;
-    double trueEncoderOffsetTest = 0;
+    double trueEncoderOffset = 100, trueEncoderOffsetTest = 0;
     double[] averageOffsetBoi;
     @SuppressWarnings("unused")
     private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398); // TODO: do something idk
@@ -44,8 +42,7 @@ public class SwerveModule {
     @SuppressWarnings("unused")
     private final LinearFilter filter = LinearFilter.movingAverage(10000); // average over last 5 samples
 
-    private double sampleCounter = 0;
-    private double m_encoderSampleSum = 0;
+    private double sampleCounter = 0,  m_encoderSampleSum = 0;
 
     /**
      * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -53,17 +50,10 @@ public class SwerveModule {
      *
      * @param driveMotorChannel      PWM output for the drive motor.
      * @param turningMotorChannel    PWM output for the turning motor.
-     * @param driveEncoderChannelA   DIO input for the drive encoder channel A
-     * @param driveEncoderChannelB   DIO input for the drive encoder channel B
-     * @param turningEncoderChannelA DIO input for the turning encoder channel A
-     * @param turningEncoderChannelB DIO input for the turning encoder channel B
+     * @param angleOffset            Offset for the turning encoder
+     * @param Encoder                Encoder for the turning motor
      */
-    public SwerveModule(
-        int driveMotorChannel,
-        int turningMotorChannel,
-        double angleOffset,
-        DutyCycleEncoder Encoder) {
-
+    public SwerveModule(int driveMotorChannel, int turningMotorChannel, double angleOffset, DutyCycleEncoder Encoder) {
         this (
             driveMotorChannel, 
             turningMotorChannel, 
@@ -72,9 +62,7 @@ public class SwerveModule {
             DriveConstants.kTurnKp, 
             DriveConstants.kTurnKi, 
             DriveConstants.kTurnKd);
-
     }
-   
 
     /**
      * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -91,13 +79,13 @@ public class SwerveModule {
      * @param turnKd                 Turn D value
      */
     public SwerveModule(
-        int driveMotorChannel,
-        int turningMotorChannel,
-        double angleOffset,
-        DutyCycleEncoder Encoder,
-        double turnKp,
-        double turnKi,
-        double turnKd) {
+            int driveMotorChannel,
+            int turningMotorChannel,
+            double angleOffset,
+            DutyCycleEncoder Encoder,
+            double turnKp,
+            double turnKi,
+            double turnKd) {
 
         this.Encoder = Encoder;
         this.angleOffset = angleOffset;
@@ -111,7 +99,7 @@ public class SwerveModule {
         //     kModuleMaxAngularVelocity,
         //     kModuleMaxAngularAcceleration));
 
-        m_turningPIDController = new PIDController(turnKp, turnKi, turnKd);
+        this.m_turningPIDController = new PIDController(turnKp, turnKi, turnKd);
 
         this.m_driveMotor = new WPI_TalonFX(driveMotorChannel);
         this.m_turningMotor = new WPI_TalonFX(turningMotorChannel);
@@ -119,13 +107,13 @@ public class SwerveModule {
         this.m_driveMotor.setNeutralMode(NeutralMode.Brake);
         this.m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         this.m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        m_turningPIDController.setTolerance(0, 0);
-        m_turningMotor.setSelectedSensorPosition(0);
-        m_driveMotor.setSelectedSensorPosition(0);
+        this.m_turningPIDController.setTolerance(0, 0);
+        this.m_turningMotor.setSelectedSensorPosition(0);
+        this.m_driveMotor.setSelectedSensorPosition(0);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
-        m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        this.m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     /**
