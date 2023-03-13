@@ -45,7 +45,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     public void execute() {
         
         // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
-        //you right. it is also spelled Banjiman.
+        //you right. it is also spelled Bangiman.
         if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == false){
             clawSubsystem.setIntake(.1);
             

@@ -11,6 +11,7 @@ import frc.robot.subsystems.WristSubsystem;
 
 public class SlideDefaultCommand extends CommandBase {
     private SlideSubsystem slide;
+    @SuppressWarnings("unused")
     private WristSubsystem wrist;
     public int bumperPos = 0;
     public static double[] Setpoints = { 
@@ -41,10 +42,6 @@ public class SlideDefaultCommand extends CommandBase {
     public void execute() {
         //slide.moveSlide(Setpoints[wrist.bumperPos]);
         slide.setSlide(0);
-
-        
-       
-
     }
     
     public void joystickControl() {}

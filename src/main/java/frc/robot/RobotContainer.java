@@ -15,6 +15,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -36,6 +37,8 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.util.FlatSurfaceFinder;
+import frc.robot.util.PoleFinder;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /**
@@ -200,4 +203,32 @@ public class RobotContainer {
         return this.fullAuto;
         
     }
+    public static enum getSticksMode{
+        POLE, SURFACE, NONE
+    }
+    public BooleanSupplier getSticks(getSticksMode mode){
+    return new BooleanSupplier() {
+            
+            public boolean getAsBoolean() {
+                // TODO Auto-generated method stub
+                boolean extra = false;
+                switch (mode){
+                    case POLE:
+                        extra = Math.pow((Math.pow(PoleFinder.getNearestPole().getX(), 2) + Math.pow(PoleFinder.getNearestPole().getY(), 2)), .5) < .08;
+                        break;
+                    case SURFACE:
+                        extra = Math.pow((Math.pow(FlatSurfaceFinder.getNearestPole().getX(), 2) + Math.pow(FlatSurfaceFinder.getNearestPole().getY(), 2)), .5) < .08;
+                        break;
+                    case NONE:
+                        extra = false;
+                        break;
+                }
+                return 
+                    ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.1))> 0) || 
+                    ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))> 0) || 
+                    extra;
+                    
+            }
+        };
+}
 }

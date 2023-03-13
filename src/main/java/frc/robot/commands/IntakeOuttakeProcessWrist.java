@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
@@ -18,18 +20,27 @@ public class IntakeOuttakeProcessWrist extends CommandBase {
     boolean isCube;
     double setpoint;
     boolean isDone = false;
+    RobotContainer m_RobotContainer;
+    Lights lightstrip;
     /** Creates a new IntakeOuttakeProcessCube. */
-    public IntakeOuttakeProcessWrist(WristSubsystem wrist, boolean isCube, ClawSubsystem claw) {
+    public IntakeOuttakeProcessWrist(WristSubsystem wrist, boolean isCube, ClawSubsystem claw, RobotContainer m_RobotContainer) {
         this.isPieceIntaken = claw.isPieceIntaken();
         this.m_wrist = wrist;
         this.isCube = isCube;
+        this.m_RobotContainer = m_RobotContainer;
+        this.lightstrip = m_RobotContainer.lightstrip;   
+        lightstrip.scheduler.setLightEffect(() -> {
+            lightstrip.flashingRGB(isCube ? 255 : 120, isCube ? 210 : 0, isCube ? 0 : 153);
+        }, 1.5, 10, .14);
         addRequirements(m_wrist);
         // Use addRequirements() here to declare subsystem dependencies.
     }
     
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {}
+    public void initialize() {
+
+    }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override

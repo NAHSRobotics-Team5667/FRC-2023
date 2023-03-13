@@ -3,8 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.RobotContainer;
 
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.getSticksMode;
 import java.util.function.BooleanSupplier;
 
 import frc.robot.util.FlatSurfaceFinder;
@@ -13,7 +14,6 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 
@@ -24,22 +24,20 @@ public class AlignFlatSurface extends ParallelRaceGroup {
   PathPlannerTrajectory FlatSurfaceLocation;
   BooleanSupplier getSticks;
 
-  
   /** Creates a new AlignFlatSurfaceAgain. */
   public AlignFlatSurface(RobotContainer m_RobotContainer) {
 
-
-    PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
-    new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()),
-    new PathPoint(new Translation2d(FlatSurfaceFinder.getNearestPole().getX(), FlatSurfaceFinder.getNearestPole().getY()), FlatSurfaceFinder.getNearestPole().getRotation()));
+    PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints(5, 5),
+        new PathPoint(
+            new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(),
+                RobotContainer.poseEstimate.getCurrentPose().getY()),
+            RobotContainer.poseEstimate.getCurrentPose().getRotation()),
+        new PathPoint(
+            new Translation2d(FlatSurfaceFinder.getNearestPole().getX(), FlatSurfaceFinder.getNearestPole().getY()),
+            FlatSurfaceFinder.getNearestPole().getRotation()));
     this.FlatSurfaceLocation = FlatSurfaceLocation;
-    BooleanSupplier getSticks = new BooleanSupplier() {
-      
-      public boolean getAsBoolean() {
-        return ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.1))> 0) || ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))> 0) || Math.pow((Math.pow(FlatSurfaceFinder.getNearestPole().getX(), 2) + Math.pow(FlatSurfaceFinder.getNearestPole().getY(), 2)), .5) < .08;
-      }
-  };
-    
+    BooleanSupplier getSticks = m_RobotContainer.getSticks(getSticksMode.SURFACE);
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));

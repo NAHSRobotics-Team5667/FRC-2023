@@ -11,23 +11,21 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide;
-    //private DutyCycleEncoder absEncoderHeight = new DutyCycleEncoder(Constants.SlideConstants.EncoderId);
-   // private double trueHeightOffset = absEncoderHeight.getAbsolutePosition() - Constants.SlideConstants.EncoderOffset;
-    private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0,0,0);
-   
-
+    // private DutyCycleEncoder absEncoderHeight = new
+    // DutyCycleEncoder(Constants.SlideConstants.EncoderId);
+    // private double trueHeightOffset = absEncoderHeight.getAbsolutePosition() -
+    // Constants.SlideConstants.EncoderOffset;
+    @SuppressWarnings("unused")
+    private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0, 0, 0);
 
     @SuppressWarnings("unused")
-    private PIDController 
-        controllerRight, controllerLeft = new PIDController(.5, 0, 0);
-        
+    private PIDController controllerRight, controllerLeft = new PIDController(.5, 0, 0);
+
     // maybe add a feed forward? May be unnecessary though
     /** Creates a new SlideSubsystem. */
     public SlideSubsystem() {
@@ -41,17 +39,20 @@ public class SlideSubsystem extends SubsystemBase {
 
         m_leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
-    public double getDriveRate(){
+
+    public double getDriveRate() {
         return m_leftSlide.getSelectedSensorVelocity();
     }
-    // public void    moveSlide(double desiredState){
-    //     double currentLeftPosition = getLeftPosition();
-    //     double outputLeft = controllerLeft.calculate(currentLeftPosition, desiredState);
-    //     double slideFeedForward = m_slideFeedForward.calculate(getDriveRate());
-    //     m_leftSlide.setVoltage(outputLeft + slideFeedForward);
-    //     double currentRightPosition = getRightPosition();
-    //     double outputRight = controllerLeft.calculate(currentRightPosition, desiredState);
-    //     m_leftSlide.setVoltage(outputRight + slideFeedForward);
+    // public void moveSlide(double desiredState){
+    // double currentLeftPosition = getLeftPosition();
+    // double outputLeft = controllerLeft.calculate(currentLeftPosition,
+    // desiredState);
+    // double slideFeedForward = m_slideFeedForward.calculate(getDriveRate());
+    // m_leftSlide.setVoltage(outputLeft + slideFeedForward);
+    // double currentRightPosition = getRightPosition();
+    // double outputRight = controllerLeft.calculate(currentRightPosition,
+    // desiredState);
+    // m_leftSlide.setVoltage(outputRight + slideFeedForward);
 
     // }
 
@@ -61,19 +62,21 @@ public class SlideSubsystem extends SubsystemBase {
     }
 
     // public double getLeftPosition(){
-    //     return (m_leftSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
+    // return (m_leftSlide.getSelectedSensorPosition() *
+    // Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
 
     // }
     // public double getRightPosition(){
-    //     return (m_rightSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
+    // return (m_rightSlide.getSelectedSensorPosition() *
+    // Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
 
     // }
     // public boolean isLeftAndRightBalanced(){
-    //     return (Math.abs(getLeftPosition()-getRightPosition()) < .01);
+    // return (Math.abs(getLeftPosition()-getRightPosition()) < .01);
     // }
-    
-    public double getSlideOutput(){
-        return 0; //TODO              
+
+    public double getSlideOutput() {
+        return 0; // TODO
     }
 
     // make a function that gets the number of ticks
@@ -82,7 +85,7 @@ public class SlideSubsystem extends SubsystemBase {
     // try to optimize
     @Override
     public void periodic() {
-        //SmartDashboard.putBoolean("Balance", isLeftAndRightBalanced());
+        // SmartDashboard.putBoolean("Balance", isLeftAndRightBalanced());
         // This method will be called once per scheduler run
     }
 }
