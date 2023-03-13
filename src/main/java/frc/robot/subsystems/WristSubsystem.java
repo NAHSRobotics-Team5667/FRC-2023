@@ -15,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class WristSubsystem extends SubsystemBase {
+
   public int bumperPos = 0;
   public WPI_TalonFX m_wristMotorFirst;
   public WPI_TalonFX m_wristMotorSecond;
@@ -84,32 +85,27 @@ public class WristSubsystem extends SubsystemBase {
   //Wrist Angled for Cube intake
   }
 
-  @Override
-  public void periodic() {
-    //placed here because i need it updated constantly and dont want to deal with putting it in a command properly
-    if (RobotContainer.m_controller.getLeftBumperPressed()) {
-        if (bumperPos == 3){
-            bumperPos= 3;
+    @Override
+    public void periodic() {
+        // placed here because i need it updated constantly and dont want to deal with
+        // putting it in a command properly
+        if (RobotContainer.m_controller.getLeftBumperPressed()) {
+            if (bumperPos != 3) {
+                bumperPos++;
+            }
         }
-        else{
-            bumperPos++;
+        if (RobotContainer.m_controller.getRightBumperPressed()) {
+            if (bumperPos != 0) {
+                bumperPos = -1;
+            }
         }
-    }
-    if (RobotContainer.m_controller.getRightBumperPressed()) {
-        if (bumperPos == 0){
-            bumperPos= 0;
+        if (RobotContainer.m_controller.getYButton()) {
+            bumperPos = 0;
         }
-        else{
-            bumperPos =- 1;
+        if (RobotContainer.m_controller.getXButton()) {
+            bumperPos = 3;
         }
-    }
-    if (RobotContainer.m_controller.getYButton()) {
-        bumperPos = 0;
-    }
-    if (RobotContainer.m_controller.getXButton()){
-        bumperPos = 3;
-    }
 
-    // This method will be called once per scheduler run
-  }
+        // This method will be called once per scheduler run
+    }
 }

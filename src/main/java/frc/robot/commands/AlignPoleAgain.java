@@ -19,28 +19,34 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AlignPoleAgain extends ParallelRaceGroup {
-  PathPlannerTrajectory FlatSurfaceLocation;
-  BooleanSupplier getSticks;
-  /** Creates a new AlignPoleAgain. */
-  public AlignPoleAgain(RobotContainer m_RobotContainer) {
-    PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 
-    new PathPoint(new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(), RobotContainer.poseEstimate.getCurrentPose().getY()), RobotContainer.poseEstimate.getCurrentPose().getRotation()),
-    new PathPoint(new Translation2d(PoleFinder.getNearestPole().getX(), PoleFinder.getNearestPole().getY()), PoleFinder.getNearestPole().getRotation()));
-    this.FlatSurfaceLocation = FlatSurfaceLocation;
-    BooleanSupplier getSticks = new BooleanSupplier() {
-      
-      public boolean getAsBoolean() {
-        // TODO Auto-generated method stub
-        return ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.1))> 0) || ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))> 0) || Math.pow((Math.pow(PoleFinder.getNearestPole().getX(), 2) + Math.pow(PoleFinder.getNearestPole().getY(), 2)), .5) < .08;
-      }
-  };
-    
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
-    until(getSticks);
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-  
-  }
+    PathPlannerTrajectory FlatSurfaceLocation;
+    BooleanSupplier getSticks;
+    /** Creates a new AlignPoleAgain. */
+    public AlignPoleAgain(RobotContainer m_RobotContainer) {
+        this.FlatSurfaceLocation = PathPlanner.generatePath(
+            new PathConstraints( 5, 5), 
+            new PathPoint(new Translation2d(
+                RobotContainer.poseEstimate.getCurrentPose().getX(), 
+                RobotContainer.poseEstimate.getCurrentPose().getY()), 
+                RobotContainer.poseEstimate.getCurrentPose().getRotation()),
+            new PathPoint(new Translation2d(
+                PoleFinder.getNearestPole().getX(), 
+                PoleFinder.getNearestPole().getY()), 
+                PoleFinder.getNearestPole().getRotation()));
+        BooleanSupplier getSticks = new BooleanSupplier() {
+            
+            public boolean getAsBoolean() {
+                // TODO Auto-generated method stub
+                return 
+                    ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.1))> 0) || 
+                    ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))> 0) || 
+                    Math.pow((Math.pow(PoleFinder.getNearestPole().getX(), 2) + Math.pow(PoleFinder.getNearestPole().getY(), 2)), .5) < .08;
+            }
+        };
+        
+        // Add your commands in the addCommands() call, e.g.
+        // addCommands(new FooCommand(), new BarCommand());
+        addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
+        until(getSticks); 
+    }
 }

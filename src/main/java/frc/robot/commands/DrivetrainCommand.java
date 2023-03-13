@@ -32,8 +32,6 @@ public class DrivetrainCommand extends CommandBase {
     @Override
     public void initialize() {
         m_swerve.resetGyro();
-        
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.

@@ -58,7 +58,6 @@ public class SlideSubsystem extends SubsystemBase {
     public void setSlide(double percentOutput) {
         m_leftSlide.set(ControlMode.PercentOutput, percentOutput);
         m_rightSlide.set(ControlMode.PercentOutput, -percentOutput);
-      
     }
 
     // public double getLeftPosition(){
@@ -75,10 +74,7 @@ public class SlideSubsystem extends SubsystemBase {
     
     public double getSlideOutput(){
         return 0; //TODO              
-
     }
-
-
 
     // make a function that gets the number of ticks
     // make a functon that set motor to number of ticks

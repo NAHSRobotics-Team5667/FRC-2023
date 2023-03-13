@@ -8,8 +8,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.WristSubsystem;
 
 public class WristCommand extends CommandBase {
-  WristSubsystem wrist;
-    // these will be the heights of the slide at different points. The wrist angle will be set as Setpoints[bumperPos]
+    WristSubsystem wrist;
+    // these will be the heights of the slide at different points. The wrist angle
+    // will be set as Setpoints[bumperPos]
     
 
   /** Creates a new WristCommand. */

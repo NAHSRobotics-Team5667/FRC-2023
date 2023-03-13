@@ -19,8 +19,7 @@ public class SlideDefaultCommand extends CommandBase {
         0,
         0
         // these will be the heights of the slide at different points. The height will be set as Setpoints[bumperPos]
-        
-    };
+    }; // TODO: put thes in constants
 
     /** Creates a new SlideCommand. */
     public SlideDefaultCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {
@@ -35,7 +34,6 @@ public class SlideDefaultCommand extends CommandBase {
     @Override
     public void initialize() {
         slide.setSlide(0);
-        
     }     
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -48,10 +46,8 @@ public class SlideDefaultCommand extends CommandBase {
        
 
     }
-    public void joystickControl() {
-      
-        
-    }
+    
+    public void joystickControl() {}
 
     // Called once the command ends or is interrupted.
     @Override
@@ -59,7 +55,6 @@ public class SlideDefaultCommand extends CommandBase {
         // make or call a function to set slide to zero sets slide back to zero
         bumperPos = 0;
         slide.setSlide(0);
-         
     }
 
     // Returns true when the command should end.

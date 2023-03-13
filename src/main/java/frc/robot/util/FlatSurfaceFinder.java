@@ -13,62 +13,54 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class FlatSurfaceFinder extends SubsystemBase {
-  
-  public static boolean isBlue = true;
-  public static final class FieldConstants{
-    public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
-    public static final List<Pose2d> REDFLATSURFACES_POSE2DS = new ArrayList<Pose2d>(){{
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D));  
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
-      add(new Pose2d(0,0, REDANGLE_ROTATION2D)); 
+    public static boolean isBlue = true;
+
+    public static final class FieldConstants {
+        public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
+        public static final List<Pose2d> REDFLATSURFACES_POSE2DS = new ArrayList<Pose2d>() {
+            {
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+                add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
+
+            }
+        };
+        public static final Rotation2d BLUE_ROTATION2D = new Rotation2d(0);
+        public static final List<Pose2d> BLUEFLATSURFACES_POSE2DS = new ArrayList<Pose2d>() {
+            {
+
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+                add(new Pose2d(0, 0, BLUE_ROTATION2D));
+
+            }
+        };
 
     }
-  };
-    public static final Rotation2d BLUE_ROTATION2D = new Rotation2d(0);
-    public static final List<Pose2d> BLUEFLATSURFACES_POSE2DS = new ArrayList<Pose2d>() {{
 
-      add(new Pose2d(0,0, BLUE_ROTATION2D)); 
-      add(new Pose2d(0,0, BLUE_ROTATION2D)); 
-      add(new Pose2d(0,0, BLUE_ROTATION2D));
-      add(new Pose2d(0,0,BLUE_ROTATION2D));
-      add(new Pose2d(0,0, BLUE_ROTATION2D));
-      add(new Pose2d(0,0, BLUE_ROTATION2D));
-      add(new Pose2d(0,0, BLUE_ROTATION2D));
-      add(new Pose2d(0,0, BLUE_ROTATION2D));
-      add(new Pose2d(0,0, BLUE_ROTATION2D)) ;
+    /** Creates a new PoleFinder. */
+    public FlatSurfaceFinder() {}
 
-      
-
+    public static Pose2d getNearestPole() {
+        if (isBlue) {
+            return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.BLUEFLATSURFACES_POSE2DS);
+        } else {
+            return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.REDFLATSURFACES_POSE2DS);
+        }
     }
-  };
 
-    
-   
-
-
-}
-  /** Creates a new PoleFinder. */
-  public FlatSurfaceFinder() {
-
-  }
-  public static Pose2d getNearestPole(){
-   if (isBlue){
-    return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.BLUEFLATSURFACES_POSE2DS);
-   }
-   else{
-    return RobotContainer.poseEstimate.getCurrentPose().nearest(FieldConstants.REDFLATSURFACES_POSE2DS);
-   }
-
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    @Override
+    public void periodic() {}
 }

@@ -11,13 +11,11 @@ package frc.robot.util;
  * Current Spike Counter that can help identify when current is spiking
  */
 public class CurrentSpikeCounter {
-    private double threshold;
-    private double deadband;
-    private double off_val;
+    private double threshold, deadband, off_val;
 
-    private boolean isSpiking = false;
-    private boolean ramped = false;
-    private boolean isRamping = false;
+    private boolean isSpiking = false,
+            ramped = false,
+            isRamping = false;
 
     /**
      * Create a spike counter
