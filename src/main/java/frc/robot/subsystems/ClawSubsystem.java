@@ -43,7 +43,6 @@ public class ClawSubsystem extends SubsystemBase {
     
     public boolean isPieceIntaken(){
         return spikeCounter.update(m_claw.getStatorCurrent(), false); 
-
     }
 
     public double getMotorSpeed() {
@@ -54,14 +53,12 @@ public class ClawSubsystem extends SubsystemBase {
         return m_claw.getBusVoltage();
     }
 
-    
-
     @Override
     public void periodic() {
         SmartDashboard.putNumber("ClawVoltage", m_claw.getMotorOutputVoltage());
         SmartDashboard.putNumber("ClawTempurature", m_claw.getTemperature());
         SmartDashboard.putNumber("ClawCurrent", m_claw.getStatorCurrent());
 
-        // This method will be called once per scheduler run
+        // This method will be called once per scheduler run.
     }
 }
