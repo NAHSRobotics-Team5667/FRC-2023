@@ -128,7 +128,7 @@ public class Lights extends SubsystemBase {
     }
 
     public enum period {
-        AUTO, TELEOP, DISABLED, TEST
+        AUTO, TELEOP, DISABLED, TEST, ENDGAME
     }
 
     private period currentPeriod = Lights.period.DISABLED;
@@ -137,10 +137,14 @@ public class Lights extends SubsystemBase {
         return currentPeriod;
     }
 
+    long teleop_start_time = Long.MAX_VALUE;
     public void setPeriod(Lights.period p) {
         currentPeriod = p;
-        scheduler.setDefaultLightEffect(.5);
-    }
+        scheduler.setDefaultLightEffect();
+        if (p == period.TELEOP) {
+            teleop_start_time = System.currentTimeMillis();
+        }
+    }   
 
     @FunctionalInterface
     public static interface LightEffect {
@@ -158,7 +162,7 @@ public class Lights extends SubsystemBase {
         private int ticks_per_call = 1, tick_counter = 0, test_index = 0;
         private double time_left = 0, fade_time_left = 0; // in seconds
         private Color[] fade_from, fade_to;
-        LightEffect default_disabled, defualt_teleop, defualt_auto;
+        LightEffect default_disabled, defualt_teleop, defualt_auto, default_endgame;
         
         LightEffect[] tests = new LightEffect[] { 
             //() -> {Lights.this.setSolidRGB(0, 0, 0);},
@@ -175,8 +179,9 @@ public class Lights extends SubsystemBase {
             this.defualt_auto = () -> {
                 Lights.this.carnival(new Color[] {new Color(255,0,0), new Color(0,0,255), new Color(0,255,0)}, 5);
             };
+            this.default_endgame = () -> {Lights.this.flashingRGB(255, 0, 0);};
         
-            this.setDefaultLightEffect(0);
+            this.setDefaultLightEffect();
         }
 
         /**
@@ -227,22 +232,34 @@ public class Lights extends SubsystemBase {
         }
 
         /** Sets the default light effect for the current period */
-        public void setDefaultLightEffect(double fade_duration) {
+        public void setDefaultLightEffect() {
             period period = Lights.this.getPeriod();
             switch (period) {
                 case DISABLED:
-                    this.setLightEffect(default_disabled, 0, 1,fade_duration);
+                    if (this.current_effect != default_disabled){
+                        this.setLightEffect(default_disabled, 0, 1,.25);
+                    }
                     break;
                 case AUTO:
-                    this.setLightEffect(defualt_auto, 0, 1,fade_duration);
+                    if (this.current_effect != defualt_auto){
+                        this.setLightEffect(defualt_auto, 0, 1,.25);
+                    }
                     break;
                 case TELEOP:
-                    this.setLightEffect(defualt_teleop, 0, 1, fade_duration);
+                    if (this.current_effect != defualt_teleop){
+                        this.setLightEffect(defualt_teleop, 0, 1,.25);
+                    }
                     break;
                 case TEST:
-                    SmartDashboard.putBoolean("TEST", true);
-                    this.setLightEffect(this.tests[test_index], 7,1, 1);
+                    if (this.current_effect != tests[test_index]){
+                        this.setLightEffect(tests[test_index], 7, 1, 1);
+                    }
                     test_index++; test_index %= tests.length;
+                    break;
+                case ENDGAME:
+                    if (this.current_effect != default_endgame) {
+                        this.setLightEffect(default_endgame, 0, 25, .25);
+                    }
                     break;
             }
         }
@@ -257,18 +274,26 @@ public class Lights extends SubsystemBase {
             }
             if (this.time_left <= 0) { 
                 if (this.fade_time_left <= 0) {
-                    this.tick_counter = 0; // not really necessary but might help debugging
-                    this.setDefaultLightEffect(0); // if no time is left for whatever effect, set the default light effect for the current period.
+                    this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect for the current period.
                 }
             } else {
                 this.time_left-=.02; // 0.02 seconds is usually the period of the periodic function
             }
+
+            if (this.tick_counter == Integer.MAX_VALUE) {
+                this.tick_counter = 0;
+            }
         }
     }
-
+    
     @Override
     public void periodic() {
         this.scheduler.periodic();
         this.m_led.setData(m_ledBuffer);
+
+        // After 1:45 (105000ms) of teleop, set the period to endgame
+        if (System.currentTimeMillis() - teleop_start_time >= 5000 && this.currentPeriod == period.TELEOP) {
+            setPeriod(period.ENDGAME);
+        }
     }
 }
