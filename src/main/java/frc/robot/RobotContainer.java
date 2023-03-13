@@ -186,8 +186,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         bButton.onTrue(new AlignFlatSurface(this));
         xButton.onTrue(new AlignPoleAgain(this));
-        RightTrigger.onTrue(new IntakeAndOuttakeProcedure(this, false));
-        LeftTrigger.onTrue(new IntakeAndOuttakeProcedure(this, true));
+        aButton.onTrue(new IntakeAndOuttakeProcedure(this, false));
+        yButton.onTrue(new IntakeAndOuttakeProcedure(this, true));
     }
 
     /**

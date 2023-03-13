@@ -29,7 +29,8 @@ public class IntakeAndOuttakeProcedure extends SequentialCommandGroup {
     this.m_RobotContainer = m_RobotContainer;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands( new IntakeOuttakeProcessWrist(m_RobotContainer.m_wrist, isCube, m_RobotContainer.m_claw), new ClawIntakeAndOuttakeCommand(m_RobotContainer.m_claw, m_RobotContainer.m_wrist));
+    //addCommands( new IntakeOuttakeProcessWrist(m_RobotContainer.m_wrist, isCube, m_RobotContainer.m_claw), new ClawIntakeAndOuttakeCommand(m_RobotContainer.m_claw, m_RobotContainer.m_wrist));
+    addCommands( new ClawIntakeAndOuttakeCommand(m_RobotContainer.m_claw, m_RobotContainer.m_wrist));
     until(getSticks);
   }
 }

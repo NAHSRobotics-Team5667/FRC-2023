@@ -4,11 +4,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.WristSubsystem;
 
 public class WristCommand extends CommandBase {
     WristSubsystem wrist;
+    XboxController m_Controller = RobotContainer.m_controller;
     // these will be the heights of the slide at different points. The wrist angle
     // will be set as Setpoints[bumperPos]
     
@@ -43,6 +46,10 @@ public class WristCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (m_Controller.getAButtonPressed() || m_Controller.getYButton()){
+      return true;
+    } else{
     return false;
+    }
   }
 }
