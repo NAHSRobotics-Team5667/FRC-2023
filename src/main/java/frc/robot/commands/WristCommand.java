@@ -14,42 +14,41 @@ public class WristCommand extends CommandBase {
     XboxController m_Controller = RobotContainer.m_controller;
     // these will be the heights of the slide at different points. The wrist angle
     // will be set as Setpoints[bumperPos]
-    
 
-  /** Creates a new WristCommand. */
-  public WristCommand(WristSubsystem wrist) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.wrist = wrist;
-    addRequirements(wrist);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    wrist.setWrist(0);
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    // wrist.maintainSafePosition();
-    wrist.setWrist(0);
-   
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    wrist.setWrist(0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    if (m_Controller.getAButtonPressed() || m_Controller.getYButton()){
-      return true;
-    } else{
-    return false;
+    /** Creates a new WristCommand. */
+    public WristCommand(WristSubsystem wrist) {
+        // Use addRequirements() here to declare subsystem dependencies.
+        this.wrist = wrist;
+        addRequirements(wrist);
     }
-  }
+
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+        wrist.setWrist(0);
+    }
+
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        // wrist.maintainSafePosition();
+        wrist.setWrist(0);
+
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+        wrist.setWrist(0);
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        if (m_Controller.getAButtonPressed() || m_Controller.getYButton()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
