@@ -24,7 +24,6 @@ public class Lights extends SubsystemBase {
         // Set the data
         this.m_led.setData(m_ledBuffer);
 
-
         this.m_led.start();
         scheduler = new Light_Scheduler();
     }
@@ -123,7 +122,6 @@ public class Lights extends SubsystemBase {
             }
         }
         carnival_index++;
-
     }
 
     public enum period {
@@ -268,9 +266,11 @@ public class Lights extends SubsystemBase {
             if (this.tick_counter++ % this.ticks_per_call == 0 && this.fade_time_left <= 0) {
                 this.current_effect.apply();
             }
+            
             if (this.fade_time_left > 0){
                 this.fadeLightEffect();
             }
+            
             if (this.time_left <= 0) { 
                 if (this.fade_time_left <= 0) {
                     this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light effect for the current period.
