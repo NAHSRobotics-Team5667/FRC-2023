@@ -157,6 +157,8 @@ public final class Constants {
         public static final int levelOneHeight = -1;
         public static final int levelTwoHeight = -1;
         public static final int levelThreeHeight = -1;
+
+        public static final int kLimitSwitchId = 4;
     }
 
     public static final class WristConstants {

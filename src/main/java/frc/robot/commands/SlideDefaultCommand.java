@@ -4,7 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
@@ -14,6 +16,7 @@ public class SlideDefaultCommand extends CommandBase {
     @SuppressWarnings("unused")
     private WristSubsystem wrist;
     public int bumperPos = 0;
+    DigitalInput bottomlimitSwitch = new DigitalInput(Constants.SlideConstants.kLimitSwitchId);
 
     // these will be the heights of the slide at different points. The height will be set as SlideConstants.slideSetpoints[bumperPos]
 
@@ -35,8 +38,14 @@ public class SlideDefaultCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        //slide.moveSlide(Setpoints[wrist.bumperPos]);
-        slide.setSlide(0);
+        if(slide.getVelocity() > 0){
+             if(bottomlimitSwitch.get()){
+                slide.setSlide(0);
+            }
+        } else{
+           //slide.moveSlide(Setpoints[wrist.bumperPos]);
+        }
+        
     }
     
     public void joystickControl() {}

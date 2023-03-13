@@ -61,6 +61,11 @@ public class SlideSubsystem extends SubsystemBase {
         m_rightSlide.set(ControlMode.PercentOutput, -percentOutput);
     }
 
+    public double getVelocity(){
+        return m_leftSlide.getSelectedSensorVelocity();
+    }
+
+
     // public double getLeftPosition(){
     // return (m_leftSlide.getSelectedSensorPosition() *
     // Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
