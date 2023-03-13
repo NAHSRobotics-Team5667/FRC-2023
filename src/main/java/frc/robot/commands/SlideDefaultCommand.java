@@ -14,13 +14,8 @@ public class SlideDefaultCommand extends CommandBase {
     @SuppressWarnings("unused")
     private WristSubsystem wrist;
     public int bumperPos = 0;
-    public static double[] Setpoints = { 
-        0,
-        0,
-        0,
-        0
-        // these will be the heights of the slide at different points. The height will be set as Setpoints[bumperPos]
-    }; // TODO: put thes in constants
+
+    // these will be the heights of the slide at different points. The height will be set as SlideConstants.slideSetpoints[bumperPos]
 
     /** Creates a new SlideCommand. */
     public SlideDefaultCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {

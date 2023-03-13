@@ -144,7 +144,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         DrivetrainSubsystem.m_backRight.getPosition()
     };
     private Translation2d // Create the locations of the wheels
-    m_frontLeftLocation = new Translation2d(0.257, -0.306), // TODO: Get actual wheel positions
+    m_frontLeftLocation = new Translation2d(0.257, -0.306), 
     // 0.306
     // 0.257
     m_frontRightLocation = new Translation2d(0.257, 0.306),

@@ -15,19 +15,14 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     public boolean finished = false;
     public WristSubsystem wrist;
     public boolean isDoneCheck;
-    public static double[] Setpoints = { 
-        0,
-        0,
-        0,
-        0
-        // these will be the heights of the slide at different points. The height will be set as Setpoints[bumperPos]
-    }; // TODO: put thes in constants
+
+        // these will be the heights of the slide at different points. The height will be set as ClawConstants.ClawSetpoints[bumperPos]
     
     /** Creates a new SlideIntakeAndOuttakeCommand. */
     public ClawIntakeAndOuttakeCommand( ClawSubsystem clawSubsystem, WristSubsystem wrist) {
         this.clawSubsystem = clawSubsystem;
         this.wrist = wrist; 
-        isDoneCheck = clawSubsystem.isPieceIntaken(); // TODO: This may not update constantly because its not in execute(), it is only called once in the constructor.
+        isDoneCheck = clawSubsystem.isPieceIntaken();
         
         addRequirements(clawSubsystem);
         

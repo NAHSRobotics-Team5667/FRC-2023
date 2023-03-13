@@ -29,7 +29,6 @@ import frc.robot.commands.AlignPoleAgain;
 import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.commands.IntakeAndOuttakeProcedure;
-import frc.robot.commands.SlideDefaultCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -78,7 +77,7 @@ public class RobotContainer {
         aButton = new JoystickButton(m_controller, XboxController.Button.kA.value),
         xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
 
-    
+    @SuppressWarnings("unused")
     private SlideSubsystem m_slide;
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     public WristSubsystem m_wrist;
@@ -210,7 +209,6 @@ public class RobotContainer {
     return new BooleanSupplier() {
             
             public boolean getAsBoolean() {
-                // TODO Auto-generated method stub
                 boolean extra = false;
                 switch (mode){
                     case POLE:
