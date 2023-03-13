@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -292,7 +291,7 @@ public class Lights extends SubsystemBase {
         this.m_led.setData(m_ledBuffer);
 
         // After 1:45 (105000ms) of teleop, set the period to endgame
-        if (System.currentTimeMillis() - teleop_start_time >= 5000 && this.currentPeriod == period.TELEOP) {
+        if (System.currentTimeMillis() - teleop_start_time >= 105000 && this.currentPeriod == period.TELEOP) {
             setPeriod(period.ENDGAME);
         }
     }
