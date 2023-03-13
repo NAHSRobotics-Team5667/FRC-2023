@@ -74,7 +74,8 @@ public class IntakeOuttakeProcessWrist extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_wrist.m_wristMotor.setVoltage(0);
+    m_wrist.m_wristMotorFirst.setVoltage(0);
+    m_wrist.m_wristMotorSecond.setVoltage(0);
   }
 
   // Returns true when the command should end.

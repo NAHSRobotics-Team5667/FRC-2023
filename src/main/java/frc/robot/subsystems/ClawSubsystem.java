@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,10 +23,12 @@ public class ClawSubsystem extends SubsystemBase {
     public ClawSubsystem() {
         m_claw = new WPI_TalonFX(Constants.ClawConstants.kClawID);
         m_claw.setNeutralMode(NeutralMode.Brake);
+        // m_claw.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 100, 0.5));
+        // m_claw.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 100, 0.5));
     }
 
     /**
-     * Purpose: To rotate motor
+     * Purpose: spin intake wheels
      *  
      * @param percentOutput: Percent of output using Motor Controller
      */
@@ -38,9 +42,18 @@ public class ClawSubsystem extends SubsystemBase {
     public double getMotorOutputVoltage(){
         return m_claw.getMotorOutputVoltage();
     }
+    
     public boolean isPieceIntaken(){
         return spikeCounter.update(m_claw.getStatorCurrent(), false); 
 
+    }
+
+    public double getMotorSpeed() {
+        return m_claw.getSelectedSensorVelocity();
+    }
+
+    public double getMotorInput() {
+        return m_claw.getBusVoltage();
     }
 
     
@@ -49,6 +62,7 @@ public class ClawSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("ClawVoltage", m_claw.getMotorOutputVoltage());
         SmartDashboard.putNumber("ClawTempurature", m_claw.getTemperature());
+        SmartDashboard.putNumber("ClawCurrent", m_claw.getStatorCurrent());
 
         // This method will be called once per scheduler run
     }

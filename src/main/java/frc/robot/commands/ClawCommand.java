@@ -25,8 +25,12 @@ public class ClawCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        claw.setIntake(.05);
-   
+        // if (claw.getMotorInput() > 0 && !(claw.getMotorSpeed() == 0)) {
+        //     claw.setIntake(-1);
+        // } else if (claw.getMotorInput() > 0 && (claw.getMotorSpeed() == 0)) {
+        //     claw.setIntake(0);
+        // }
+        claw.setIntake(0);
     }
     // Called once the command ends or is interrupted.
     @Override

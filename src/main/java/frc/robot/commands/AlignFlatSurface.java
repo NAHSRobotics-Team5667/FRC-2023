@@ -20,13 +20,13 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AlignFlatSurfaceAgain extends ParallelRaceGroup {
+public class AlignFlatSurface extends ParallelRaceGroup {
   PathPlannerTrajectory FlatSurfaceLocation;
   BooleanSupplier getSticks;
 
   
   /** Creates a new AlignFlatSurfaceAgain. */
-  public AlignFlatSurfaceAgain(RobotContainer m_RobotContainer) {
+  public AlignFlatSurface(RobotContainer m_RobotContainer) {
 
 
     PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints( 5, 5), 

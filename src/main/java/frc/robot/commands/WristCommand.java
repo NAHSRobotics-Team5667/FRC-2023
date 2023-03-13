@@ -15,6 +15,7 @@ public class WristCommand extends CommandBase {
   /** Creates a new WristCommand. */
   public WristCommand(WristSubsystem wrist) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.wrist = wrist;
     addRequirements(wrist);
   }
 
@@ -27,7 +28,8 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    wrist.maintainSafePosition();
+    // wrist.maintainSafePosition();
+    wrist.setWrist(0);
    
   }
 

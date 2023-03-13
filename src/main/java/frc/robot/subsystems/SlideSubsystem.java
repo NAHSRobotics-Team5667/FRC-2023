@@ -18,8 +18,8 @@ import frc.robot.Constants;
 
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide;
-    private DutyCycleEncoder absEncoderHeight = new DutyCycleEncoder(Constants.SlideConstants.EncoderId);
-    private double trueHeightOffset = absEncoderHeight.getAbsolutePosition() - Constants.SlideConstants.EncoderOffset;
+    //private DutyCycleEncoder absEncoderHeight = new DutyCycleEncoder(Constants.SlideConstants.EncoderId);
+   // private double trueHeightOffset = absEncoderHeight.getAbsolutePosition() - Constants.SlideConstants.EncoderOffset;
     private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0,0,0);
    
 
@@ -44,16 +44,16 @@ public class SlideSubsystem extends SubsystemBase {
     public double getDriveRate(){
         return m_leftSlide.getSelectedSensorVelocity();
     }
-    public void    moveSlide(double desiredState){
-        double currentLeftPosition = getLeftPosition();
-        double outputLeft = controllerLeft.calculate(currentLeftPosition, desiredState);
-        double slideFeedForward = m_slideFeedForward.calculate(getDriveRate());
-        m_leftSlide.setVoltage(outputLeft + slideFeedForward);
-        double currentRightPosition = getRightPosition();
-        double outputRight = controllerLeft.calculate(currentRightPosition, desiredState);
-        m_leftSlide.setVoltage(outputRight + slideFeedForward);
+    // public void    moveSlide(double desiredState){
+    //     double currentLeftPosition = getLeftPosition();
+    //     double outputLeft = controllerLeft.calculate(currentLeftPosition, desiredState);
+    //     double slideFeedForward = m_slideFeedForward.calculate(getDriveRate());
+    //     m_leftSlide.setVoltage(outputLeft + slideFeedForward);
+    //     double currentRightPosition = getRightPosition();
+    //     double outputRight = controllerLeft.calculate(currentRightPosition, desiredState);
+    //     m_leftSlide.setVoltage(outputRight + slideFeedForward);
 
-    }
+    // }
 
     public void setSlide(double percentOutput) {
         m_leftSlide.set(ControlMode.PercentOutput, percentOutput);
@@ -61,17 +61,17 @@ public class SlideSubsystem extends SubsystemBase {
       
     }
 
-    public double getLeftPosition(){
-        return (m_leftSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
+    // public double getLeftPosition(){
+    //     return (m_leftSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
 
-    }
-    public double getRightPosition(){
-        return (m_rightSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
+    // }
+    // public double getRightPosition(){
+    //     return (m_rightSlide.getSelectedSensorPosition() * Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
 
-    }
-    public boolean isLeftAndRightBalanced(){
-        return (Math.abs(getLeftPosition()-getRightPosition()) < .01);
-    }
+    // }
+    // public boolean isLeftAndRightBalanced(){
+    //     return (Math.abs(getLeftPosition()-getRightPosition()) < .01);
+    // }
     
     public double getSlideOutput(){
         return 0; //TODO              
@@ -86,7 +86,7 @@ public class SlideSubsystem extends SubsystemBase {
     // try to optimize
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Balance", isLeftAndRightBalanced());
+        //SmartDashboard.putBoolean("Balance", isLeftAndRightBalanced());
         // This method will be called once per scheduler run
     }
 }

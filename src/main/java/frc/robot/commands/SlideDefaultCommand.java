@@ -41,7 +41,8 @@ public class SlideDefaultCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        slide.moveSlide(Setpoints[wrist.bumperPos]);
+        //slide.moveSlide(Setpoints[wrist.bumperPos]);
+        slide.setSlide(0);
 
         
        

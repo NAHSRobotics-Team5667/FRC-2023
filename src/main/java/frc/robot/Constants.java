@@ -126,7 +126,7 @@ public final class Constants {
     }
 
     public static final class ClawConstants {
-        public static final int kClawID = -1;
+        public static final int kClawID = 3;
 
         public static final int kVoltageLimit = -1;//TODO Find the limit it reaches before and after getting a game piece
     } 
@@ -138,14 +138,14 @@ public final class Constants {
             0,
             0
         };
-        public static final int kLSlideID = -1;
-        public static final int kRSlideID = -1;
+        public static final int kLSlideID = 2;
+        public static final int kRSlideID = 4;
         public static final int kSlideConstant = -1; //TODO: Find gear ratio
 
         public static final int EncoderId = -1;
         public static final int EncoderOffset = -1;
-        public static final double CurrentThreshold = -1;
-        public static final double CurrentDeadband = -1;
+        public static final double CurrentThreshold = 70;
+        public static final double CurrentDeadband = 0;
 
         public static final int levelZeroHeight = -1;
         public static final int levelOneHeight = -1;
@@ -154,7 +154,8 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-         public static final int kWristID = -1;
+         public static final int kWristIDLeft = 0;
+         public static final int kWristIDRight = 1;
          public static final int kWristConeSetpoint = -1;
          public static final int kWristConeOuttakeSetpoint = -1;
          public static final int kWristSafePostion = -1;

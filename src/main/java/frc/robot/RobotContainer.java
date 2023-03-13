@@ -23,16 +23,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlignFlatSurfaceAgain;
+import frc.robot.commands.AlignFlatSurface;
 import frc.robot.commands.AlignPoleAgain;
 import frc.robot.commands.ClawCommand;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.commands.IntakeAndOuttakeProcedure;
+import frc.robot.commands.SlideDefaultCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
@@ -74,7 +76,7 @@ public class RobotContainer {
         xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
 
     
-    
+    private SlideSubsystem m_slide;
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     public WristSubsystem m_wrist;
     public ClawSubsystem m_claw; // declares claw subsystem
@@ -93,6 +95,7 @@ public class RobotContainer {
     private Command fullAuto;
 
     public RobotContainer(Robot robot) {
+        m_slide = new SlideSubsystem();
         this.robot = robot;
         m_wrist = new WristSubsystem();
         m_drive = new DrivetrainSubsystem();
@@ -102,10 +105,10 @@ public class RobotContainer {
         //removing everything that isnt the drive train for now to make troubleshooting easier
         //why are we insantiating the robot in robot container? doesnt the hierarchy go from robot to robot container?
         m_claw = new ClawSubsystem();
+
         m_claw.setDefaultCommand(new ClawCommand(m_claw));
         m_wrist.setDefaultCommand(new WristCommand(m_wrist));
-        
-        
+        // m_slide.setDefaultCommand(new SlideDefaultCommand(m_slide, m_wrist, this));
         
 
 
@@ -114,8 +117,7 @@ public class RobotContainer {
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
-        PathPlannerTrajectory pathGroup = PathPlanner.loadPath("New Path", new PathConstraints(5
-, 5));
+        PathPlannerTrajectory pathGroup = PathPlanner.loadPath("New Path", new PathConstraints(5, 5));
 
         // This is just an example event map. It would be better to have a constant,
         // global event map
@@ -182,7 +184,7 @@ public class RobotContainer {
         return autoBuilder;
     }
     private void configureButtonBindings() {
-        bButton.onTrue(new AlignFlatSurfaceAgain(this));
+        bButton.onTrue(new AlignFlatSurface(this));
         xButton.onTrue(new AlignPoleAgain(this));
         RightTrigger.onTrue(new IntakeAndOuttakeProcedure(this, false));
         LeftTrigger.onTrue(new IntakeAndOuttakeProcedure(this, true));
