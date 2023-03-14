@@ -13,6 +13,7 @@ public class ClawCommand extends CommandBase {
     public ClawSubsystem claw;
     boolean done;
     int counter = 0;
+    double isCube;
     double meWhenLiam = -1000000;
     RobotContainer robotContainer;
     /** Creates a new ClawCommand. */
@@ -26,6 +27,11 @@ public class ClawCommand extends CommandBase {
     @Override
     public void initialize() {
         claw.setIntake(0);
+        if (robotContainer.getCubeOrCone() == "cube"){
+            isCube = -1;
+        } else{
+            isCube = 1;
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -35,7 +41,7 @@ public class ClawCommand extends CommandBase {
         //     claw.setIntake(-1);
         // } else if (claw.getMotorInput() > 0 && (claw.getMotorSpeed() == 0)) {
         //     claw.setIntake(0);    // }
-    if (robotContainer.getCubeOrCone() == "cone"){
+    
     if (claw.isPieceIntaken() || counter > 0){
         counter += 1;
         
@@ -44,10 +50,9 @@ public class ClawCommand extends CommandBase {
         
 
 
-        claw.setIntake(.075);
+        claw.setIntake(.075*isCube);
         }
-    } 
-}else {
+    } else {
     counter += 1;
         
     if (claw.getPosition() > meWhenLiam){
@@ -55,7 +60,7 @@ public class ClawCommand extends CommandBase {
     
 
 
-    claw.setIntake(-.075);
+    claw.setIntake(-.075*isCube);
     }
 } 
 

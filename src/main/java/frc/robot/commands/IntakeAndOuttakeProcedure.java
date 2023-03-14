@@ -34,7 +34,7 @@ public class IntakeAndOuttakeProcedure extends SequentialCommandGroup {
         // m_RobotContainer.m_claw, m_RobotContainer), new
         // ClawIntakeAndOuttakeCommand(m_RobotContainer.m_claw,
         // m_RobotContainer.m_wrist));
-        addCommands(new ClawIntakeAndOuttakeCommand(m_RobotContainer.m_claw, m_RobotContainer.m_wrist));
+       // addCommands(new ClawIntakeAndOuttakeCommand(m_RobotContainer.m_claw, m_RobotContainer.m_wrist));
         until(getSticks);
     }
 }

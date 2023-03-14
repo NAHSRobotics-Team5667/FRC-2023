@@ -85,6 +85,7 @@ public class RobotContainer {
     public ClawSubsystem m_claw; // declares claw subsystem
 
      //deal with it liam
+    public double inOrOut = 0;
     public String coneOrCube; 
     public Lights lightstrip;
     public static LimelightSubsystem Limelight;
@@ -97,6 +98,8 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     private Command fullAuto;
+
+    public boolean intakeFinish = false;
 
     public RobotContainer(Robot robot) {
         this.coneOrCube = "cube";
@@ -192,6 +195,14 @@ public class RobotContainer {
     public String getCubeOrCone(){
         return this.coneOrCube;
     }
+    public boolean coneOrCubeBoolean(){
+        if (coneOrCube == "cube") {
+            return true;
+            
+        } else {
+            return false;
+        }
+    }
     public SwerveAutoBuilder getBuild(){
         return autoBuilder;
     }
@@ -228,8 +239,8 @@ public class RobotContainer {
                 //surface align
 
 
-       aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist)/*.until(getSticks(getSticksMode.NONE)).andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
-       bButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist).until(getSticks(getSticksMode.NONE)).andThen(new IntakeOuttakeProcessWrist(m_wrist, true,m_claw, this)));
+    //    aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, false, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE))/* .andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
+       bButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.INTAKE))/*.andThen(new IntakeOuttakeProcessWrist(m_wrist, true, m_claw, this))*/);
        
     }
 
@@ -244,7 +255,7 @@ public class RobotContainer {
         
     }
     public static enum getSticksMode{
-        POLE, SURFACE, NONE
+        POLE, SURFACE, NONE, INTAKE
     }
     public BooleanSupplier getSticks(getSticksMode mode){
     return new BooleanSupplier() {
@@ -261,11 +272,15 @@ public class RobotContainer {
                     case NONE:
                         extra = false;
                         break;
+                    case INTAKE:
+                        extra = intakeFinish;
+                        break;
                 }
                 return 
                     (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.1)))> 0) || 
                     (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1)))> 0) || 
-                    extra;
+                    extra
+                    ;
                     
             }
         };

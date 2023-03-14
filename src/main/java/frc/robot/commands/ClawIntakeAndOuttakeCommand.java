@@ -4,8 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.CurrentSpikeCounter;
@@ -16,14 +18,23 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     public boolean finished = false;
     public WristSubsystem wrist;
     public boolean isDoneCheck;
+    public double test;
+    public boolean intakeOrOuttake;
+    public boolean isCube;
+    public Timer timer;
+    public double time;
 
+    public RobotContainer robotContainer;
         // these will be the heights of the slide at different points. The height will be set as ClawConstants.ClawSetpoints[bumperPos]
     
     /** Creates a new SlideIntakeAndOuttakeCommand. */
-    public ClawIntakeAndOuttakeCommand( ClawSubsystem clawSubsystem, WristSubsystem wrist) {
+    public ClawIntakeAndOuttakeCommand( ClawSubsystem clawSubsystem, WristSubsystem wrist, boolean isCube, RobotContainer robotContainer, boolean isIntaking) {
         this.clawSubsystem = clawSubsystem;
         this.wrist = wrist; 
-        isDoneCheck = clawSubsystem.isPieceIntaken();
+        this.robotContainer = robotContainer;
+        this.intakeOrOuttake = isIntaking;
+        
+       
         
         
         
@@ -33,37 +44,59 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+      time = Timer.getFPGATimestamp();
+      isDoneCheck = clawSubsystem.isPieceIntaken();
+      test = 0;
+      if (isCube){
+        test = -1;
+        robotContainer.coneOrCubeChange("cube");
+        
+      } else {
+        test = 1;
+        robotContainer.coneOrCubeChange("cone");
+      }
+      
         
     }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-      clawSubsystem.isPieceIntaken();
-      System.out.println("dick and balls");
+    
+      
+      SmartDashboard.putBoolean("abdjasbdjas", isDoneCheck);
+      if (intakeOrOuttake){
         // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
         //you right. it is also spelled Bangiman.
         //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
-        if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == false){
-            clawSubsystem.setIntake(.7);
+        if (clawSubsystem.isPieceIntaken() == isDoneCheck){
+            clawSubsystem.setIntake(.45 * test);
             
-        } if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == true){
-            clawSubsystem.setIntake(-.7);
-            
-        } else {
-            finished = true;
+        }  else {
+            robotContainer.intakeFinish = true;
         }
+      } else {
+        if (time < 4){
+          clawSubsystem.setIntake(-.45 * test);
+          time += .02;
+
+        }else {
+          robotContainer.intakeFinish = true;
+        }
+      }
          
     }
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
+        robotContainer.inOrOut += 1;
     }
     
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return finished;
+        return false;
     }
 }
