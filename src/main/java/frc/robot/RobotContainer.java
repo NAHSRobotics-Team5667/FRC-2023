@@ -29,11 +29,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignFlatSurface;
 import frc.robot.commands.AlignPoleAgain;
 import frc.robot.commands.ClawCommand;
-import frc.robot.commands.ClawIntakeAndOuttakeCommand;
+import frc.robot.commands.ClawCubeIntake;
+import frc.robot.commands.ClawCubeOuttake;
 import frc.robot.commands.DrivetrainCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.IntakeAndOuttakeProcedure;
-import frc.robot.commands.IntakeOuttakeProcessWrist;
+import frc.robot.commands.WristConeIntake;
+import frc.robot.commands.WristCubeIntake;
 import frc.robot.commands.SlideDefaultCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -206,6 +208,16 @@ public class RobotContainer {
     public SwerveAutoBuilder getBuild(){
         return autoBuilder;
     }
+    public Command cubeChooser(){
+        if (inOrOut % 2 == 0){
+            return new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE)).andThen(new WristCubeIntake()).until(getSticks(getSticksMode.NONE))
+            
+        } else{
+            return new ClawCubeOuttake(m_claw, this).until(getSticks((getSticksMode.NONE))).andThen(new WristCubeIntake()).until(getSticks(getSticksMode.NONE))
+        }
+    }
+
+
     private void configureButtonBindings() {
         final Trigger 
         LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
@@ -237,11 +249,12 @@ public class RobotContainer {
                         FlatSurfaceFinder.getNearestPole().getY()),
                 FlatSurfaceFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.SURFACE)));
                 //surface align
-
+        aButton.onTrue(cubeChooser);
+    
 
     //    aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, false, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE))/* .andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
-       bButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.INTAKE))/*.andThen(new IntakeOuttakeProcessWrist(m_wrist, true, m_claw, this))*/);
-       
+     //  bButton.onTrue(new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.INTAKE))/*.andThen(new IntakeOuttakeProcessWrist(m_wrist, true, m_claw, this))*/);
+        
     }
 
     /**

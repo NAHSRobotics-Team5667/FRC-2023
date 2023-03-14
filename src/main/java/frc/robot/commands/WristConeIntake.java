@@ -12,7 +12,7 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
-public class IntakeOuttakeProcessWrist extends CommandBase {
+public class WristConeIntake extends CommandBase {
     boolean isPieceIntaken;
     ClawSubsystem m_claw;
     SlideSubsystem m_slide;
@@ -23,7 +23,7 @@ public class IntakeOuttakeProcessWrist extends CommandBase {
     RobotContainer m_RobotContainer;
     Lights lightstrip;
     /** Creates a new IntakeOuttakeProcessCube. */
-    public IntakeOuttakeProcessWrist(WristSubsystem wrist, boolean isCube, ClawSubsystem claw, RobotContainer m_RobotContainer) {
+    public WristConeIntake(WristSubsystem wrist, boolean isCube, ClawSubsystem claw, RobotContainer m_RobotContainer) {
         this.isPieceIntaken = claw.isPieceIntaken();
         this.m_wrist = wrist;
         this.isCube = isCube;

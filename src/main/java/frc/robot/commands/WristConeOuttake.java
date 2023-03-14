@@ -5,12 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ClawSubsystem;
 
-public class IntakeOuttakeProcessClaw extends CommandBase {
-  ClawSubsystem claw;
-  /** Creates a new IntakeOuttakeProcessClaw. */
-  public IntakeOuttakeProcessClaw(ClawSubsystem claw, boolean isPieceIntaken) {
+public class WristConeOuttake extends CommandBase {
+  /** Creates a new WristConeOuttake. */
+  public WristConeOuttake() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

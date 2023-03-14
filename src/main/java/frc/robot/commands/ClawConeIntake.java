@@ -12,7 +12,7 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.CurrentSpikeCounter;
 
-public class ClawIntakeAndOuttakeCommand extends CommandBase {
+public class ClawConeIntake extends CommandBase {
     public ClawSubsystem clawSubsystem;
     public CurrentSpikeCounter spikeCounter;
     public boolean finished = false;
@@ -28,7 +28,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
         // these will be the heights of the slide at different points. The height will be set as ClawConstants.ClawSetpoints[bumperPos]
     
     /** Creates a new SlideIntakeAndOuttakeCommand. */
-    public ClawIntakeAndOuttakeCommand( ClawSubsystem clawSubsystem, WristSubsystem wrist, boolean isCube, RobotContainer robotContainer, boolean isIntaking) {
+    public ClawConeIntake( ClawSubsystem clawSubsystem, WristSubsystem wrist, boolean isCube, RobotContainer robotContainer, boolean isIntaking) {
         this.clawSubsystem = clawSubsystem;
         this.wrist = wrist; 
         this.robotContainer = robotContainer;
@@ -47,15 +47,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
       time = Timer.getFPGATimestamp();
       isDoneCheck = clawSubsystem.isPieceIntaken();
       test = 0;
-      if (isCube){
-        test = -1;
-        robotContainer.coneOrCubeChange("cube");
-        
-      } else {
-        test = 1;
-        robotContainer.coneOrCubeChange("cone");
-      }
-      
+  
         
     }
     
@@ -65,25 +57,17 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     
       
       SmartDashboard.putBoolean("abdjasbdjas", isDoneCheck);
-      if (intakeOrOuttake){
+     
         // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
         //you right. it is also spelled Bangiman.
         //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
         if (clawSubsystem.isPieceIntaken() == isDoneCheck){
-            clawSubsystem.setIntake(.45 * test);
+            clawSubsystem.setIntake(.45);
             
         }  else {
             robotContainer.intakeFinish = true;
         }
-      } else {
-        if (time < 4){
-          clawSubsystem.setIntake(-.45 * test);
-          time += .02;
-
-        }else {
-          robotContainer.intakeFinish = true;
-        }
-      }
+   
          
     }
     // Called once the command ends or is interrupted.
