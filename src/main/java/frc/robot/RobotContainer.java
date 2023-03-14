@@ -190,32 +190,34 @@ public class RobotContainer {
      */
     public void coneOrCubeChange(String coneOrCube){
         this.coneOrCube = coneOrCube;
-
     }
+
     public String getCubeOrCone(){
         return this.coneOrCube;
     }
+
     public boolean coneOrCubeBoolean(){
         if (coneOrCube == "cube") {
             return true;
-            
         } else {
             return false;
         }
     }
+
     public SwerveAutoBuilder getBuild(){
         return autoBuilder;
     }
+
     private void configureButtonBindings() {
         final Trigger 
-        LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
-        RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value),
-        yButton = commandController.y(),
-        bButton = new JoystickButton(m_controller, XboxController.Button.kB.value),
-        aButton = new JoystickButton(m_controller, XboxController.Button.kA.value),
-        xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
-       // bButton.onTrue(new ClawCommand(m_claw, this));
-       // bButton.onTrue(new AlignFlatSurface(this));
+            LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
+            RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value),
+            yButton = commandController.y(),
+            bButton = new JoystickButton(m_controller, XboxController.Button.kB.value),
+            aButton = new JoystickButton(m_controller, XboxController.Button.kA.value),
+            xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
+        // bButton.onTrue(new ClawCommand(m_claw, this));
+        // bButton.onTrue(new AlignFlatSurface(this));
         xButton.onTrue(autoBuilder.followPath(PathPlanner.generatePath(
             new PathConstraints(5, 5),
             new PathPoint(new Translation2d(
@@ -225,7 +227,7 @@ public class RobotContainer {
             new PathPoint(new Translation2d(
                     PoleFinder.getNearestPole().getX(),
                     PoleFinder.getNearestPole().getY()),
-                    PoleFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.POLE)));
+                    PoleFinder.getNearestPole().getRotation()))).until(getState(StickMode.POLE)));
                     //pole align
         yButton.onTrue(autoBuilder.followPath(PathPlanner.generatePath(new PathConstraints(5, 5),
         new PathPoint(
@@ -235,12 +237,12 @@ public class RobotContainer {
         new PathPoint(
                 new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
                         FlatSurfaceFinder.getNearestPole().getY()),
-                FlatSurfaceFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.SURFACE)));
+                FlatSurfaceFinder.getNearestPole().getRotation()))).until(getState(StickMode.SURFACE)));
                 //surface align
 
 
-    //    aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, false, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE))/* .andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
-       bButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.INTAKE))/*.andThen(new IntakeOuttakeProcessWrist(m_wrist, true, m_claw, this))*/);
+        aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, false, this, inOrOut % 2 == 0).until(getState(StickMode.NONE))/* .andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
+        bButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getState(StickMode.INTAKE))/*.andThen(new IntakeOuttakeProcessWrist(m_wrist, true, m_claw, this))*/);
        
     }
 
@@ -254,12 +256,13 @@ public class RobotContainer {
         return this.fullAuto;
         
     }
-    public static enum getSticksMode{
+
+    public static enum StickMode {
         POLE, SURFACE, NONE, INTAKE
     }
-    public BooleanSupplier getSticks(getSticksMode mode){
-    return new BooleanSupplier() {
-            
+
+    public BooleanSupplier getState(StickMode mode){
+        return new BooleanSupplier() {
             public boolean getAsBoolean() {
                 boolean extra = false;
                 switch (mode){
@@ -276,13 +279,13 @@ public class RobotContainer {
                         extra = intakeFinish;
                         break;
                 }
+
                 return 
                     (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.1)))> 0) || 
                     (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1)))> 0) || 
-                    extra
-                    ;
+                    extra;
                     
             }
         };
-}
+    }
 }

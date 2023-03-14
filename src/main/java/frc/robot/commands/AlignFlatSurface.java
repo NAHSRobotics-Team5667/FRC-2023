@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.getSticksMode;
+import frc.robot.RobotContainer.StickMode;
 import java.util.function.BooleanSupplier;
 
 import frc.robot.util.FlatSurfaceFinder;
@@ -37,7 +37,7 @@ public class AlignFlatSurface extends ParallelRaceGroup {
                                 FlatSurfaceFinder.getNearestPole().getY()),
                         FlatSurfaceFinder.getNearestPole().getRotation()));
         this.FlatSurfaceLocation = FlatSurfaceLocation;
-        BooleanSupplier getSticks = m_RobotContainer.getSticks(getSticksMode.SURFACE);
+        BooleanSupplier getSticks = m_RobotContainer.getState(StickMode.SURFACE);
 
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());

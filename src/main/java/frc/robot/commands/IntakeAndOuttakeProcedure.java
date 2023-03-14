@@ -8,7 +8,7 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.getSticksMode;
+import frc.robot.RobotContainer.StickMode;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,7 +20,7 @@ public class IntakeAndOuttakeProcedure extends SequentialCommandGroup {
 
     /** Creates a new IntakeAndOuttakeProcedure. */
     public IntakeAndOuttakeProcedure(RobotContainer m_RobotContainer, boolean isCube) {
-        BooleanSupplier getSticks = m_RobotContainer.getSticks(getSticksMode.NONE);
+        BooleanSupplier getSticks = m_RobotContainer.getState(StickMode.NONE);
         this.isCube = isCube;
         this.m_RobotContainer = m_RobotContainer;
         if (this.isCube == true){

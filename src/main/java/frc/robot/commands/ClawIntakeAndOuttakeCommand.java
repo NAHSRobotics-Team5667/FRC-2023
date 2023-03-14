@@ -18,8 +18,8 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     public boolean finished = false;
     public WristSubsystem wrist;
     public boolean isDoneCheck;
-    public double test;
-    public boolean intakeOrOuttake;
+    public double direction;
+    public boolean isIntaking;
     public boolean isCube;
     public Timer timer;
     public double time;
@@ -32,7 +32,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
         this.clawSubsystem = clawSubsystem;
         this.wrist = wrist; 
         this.robotContainer = robotContainer;
-        this.intakeOrOuttake = isIntaking;
+        this.isIntaking = isIntaking;
         
        
         
@@ -46,44 +46,58 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     public void initialize() {
       time = Timer.getFPGATimestamp();
       isDoneCheck = clawSubsystem.isPieceIntaken();
-      test = 0;
-      if (isCube){
-        test = -1;
+      direction = 0;
+
+      if (isCube) {
+        direction = -1;
         robotContainer.coneOrCubeChange("cube");
-        
       } else {
-        test = 1;
+        direction = 1;
         robotContainer.coneOrCubeChange("cone");
       }
-      
-        
     }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-    
-      
-      SmartDashboard.putBoolean("abdjasbdjas", isDoneCheck);
-      if (intakeOrOuttake){
-        // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
-        //you right. it is also spelled Bangiman.
-        //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
-        if (clawSubsystem.isPieceIntaken() == isDoneCheck){
-            clawSubsystem.setIntake(.45 * test);
-            
-        }  else {
-            robotContainer.intakeFinish = true;
+      double output = 0;
+
+      if (!clawSubsystem.isPieceIntaken()) {
+        if (isIntaking) {
+          output = 0.4 * direction;
+        } else {
+          output = -0.4 * direction;
         }
       } else {
-        if (time < 4){
-          clawSubsystem.setIntake(-.45 * test);
-          time += .02;
-
-        }else {
-          robotContainer.intakeFinish = true;
-        }
+        
       }
+
+      if (clawSubsystem.isPieceIntaken()) { // previous if statement could have changed piece intaking status
+        robotContainer.intakeFinish = true;
+      }
+
+      clawSubsystem.setIntake(output);
+      
+      // SmartDashboard.putBoolean("abdjasbdjas", isDoneCheck);
+      // if (intakeOrOuttake){
+      //   // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
+      //   //you right. it is also spelled Bangiman.
+      //   //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
+      //   if (clawSubsystem.isPieceIntaken() == isDoneCheck){ // isPieceIntaken() returns true if current increases- does not switch boolean vals depending on direction
+      //       clawSubsystem.setIntake(.45 * test);
+            
+      //   }  else {
+      //       robotContainer.intakeFinish = true;
+      //   }
+      // } else {
+      //   if (time < 4){
+      //     clawSubsystem.setIntake(-.45 * test);
+      //     time += .02;
+
+      //   }else {
+      //     robotContainer.intakeFinish = true;
+      //   }
+      // }
          
     }
     // Called once the command ends or is interrupted.
