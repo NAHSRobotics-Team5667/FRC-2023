@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +25,9 @@ public class ClawSubsystem extends SubsystemBase {
         m_claw.setNeutralMode(NeutralMode.Brake);
         // m_claw.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 100, 0.5));
         // m_claw.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 100, 0.5));
+    }
+    public double getPosition(){
+        return m_claw.getSelectedSensorPosition();
     }
 
     /**
@@ -58,6 +63,7 @@ public class ClawSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("ClawVoltage", m_claw.getMotorOutputVoltage());
         SmartDashboard.putNumber("ClawTempurature", m_claw.getTemperature());
         SmartDashboard.putNumber("ClawCurrent", m_claw.getStatorCurrent());
+        isPieceIntaken();
 
         // This method will be called once per scheduler run.
     }

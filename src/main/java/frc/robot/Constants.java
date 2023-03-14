@@ -150,7 +150,7 @@ public final class Constants {
 
         public static final int EncoderId = -1;
         public static final int EncoderOffset = -1;
-        public static final double CurrentThreshold = 70;
+        public static final double CurrentThreshold = 40;
         public static final double CurrentDeadband = 0;
 
         public static final int levelZeroHeight = -1;

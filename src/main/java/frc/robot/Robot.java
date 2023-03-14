@@ -91,7 +91,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        this.m_robotContainer.lightstrip.setPeriod(Lights.period.TELEOP);
+        // this.m_robotContainer.lightstrip.setPeriod(Lights.period.TELEOP);
+
+        this.m_robotContainer.lightstrip.setSolidRGB(51, 255, 146);
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove

@@ -12,11 +12,13 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,8 +29,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignFlatSurface;
 import frc.robot.commands.AlignPoleAgain;
 import frc.robot.commands.ClawCommand;
+import frc.robot.commands.ClawIntakeAndOuttakeCommand;
 import frc.robot.commands.DrivetrainCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.IntakeAndOuttakeProcedure;
+import frc.robot.commands.IntakeOuttakeProcessWrist;
+import frc.robot.commands.SlideDefaultCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -69,13 +75,8 @@ public class RobotContainer {
     
     // The robot's subsystems and commands are defined here...
     public static final XboxController m_controller = new XboxController(0); // creates xboxController object
-    public static Trigger 
-        LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
-        RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value),
-        yButton = new JoystickButton(m_controller, XboxController.Button.kY.value),
-        bButton = new JoystickButton(m_controller, XboxController.Button.kB.value),
-        aButton = new JoystickButton(m_controller, XboxController.Button.kA.value),
-        xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
+    public static final CommandXboxController commandController = new CommandXboxController(0);
+
 
     @SuppressWarnings("unused")
     private SlideSubsystem m_slide;
@@ -84,6 +85,7 @@ public class RobotContainer {
     public ClawSubsystem m_claw; // declares claw subsystem
 
      //deal with it liam
+    public String coneOrCube; 
     public Lights lightstrip;
     public static LimelightSubsystem Limelight;
     public static PoseEstimator poseEstimate;
@@ -97,6 +99,7 @@ public class RobotContainer {
     private Command fullAuto;
 
     public RobotContainer(Robot robot) {
+        this.coneOrCube = "cube";
         m_slide = new SlideSubsystem();
         this.robot = robot;
         m_wrist = new WristSubsystem();
@@ -108,9 +111,9 @@ public class RobotContainer {
         //why are we insantiating the robot in robot container? doesnt the hierarchy go from robot to robot container?
         m_claw = new ClawSubsystem();
 
-        m_claw.setDefaultCommand(new ClawCommand(m_claw));
+        m_claw.setDefaultCommand(new ClawCommand(m_claw, this));
         m_wrist.setDefaultCommand(new WristCommand(m_wrist));
-        // m_slide.setDefaultCommand(new SlideDefaultCommand(m_slide, m_wrist, this));
+        m_slide.setDefaultCommand(new SlideDefaultCommand(m_slide, m_wrist, this));
         
 
 
@@ -182,14 +185,52 @@ public class RobotContainer {
      * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
+    public void coneOrCubeChange(String coneOrCube){
+        this.coneOrCube = coneOrCube;
+
+    }
+    public String getCubeOrCone(){
+        return this.coneOrCube;
+    }
     public SwerveAutoBuilder getBuild(){
         return autoBuilder;
     }
     private void configureButtonBindings() {
-        bButton.onTrue(new AlignFlatSurface(this));
-        xButton.onTrue(new AlignPoleAgain(this));
-        aButton.onTrue(new IntakeAndOuttakeProcedure(this, false));
-        yButton.onTrue(new IntakeAndOuttakeProcedure(this, true));
+        final Trigger 
+        LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
+        RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value),
+        yButton = commandController.y(),
+        bButton = new JoystickButton(m_controller, XboxController.Button.kB.value),
+        aButton = new JoystickButton(m_controller, XboxController.Button.kA.value),
+        xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
+       // bButton.onTrue(new ClawCommand(m_claw, this));
+       // bButton.onTrue(new AlignFlatSurface(this));
+        xButton.onTrue(autoBuilder.followPath(PathPlanner.generatePath(
+            new PathConstraints(5, 5),
+            new PathPoint(new Translation2d(
+                    RobotContainer.poseEstimate.getCurrentPose().getX(),
+                    RobotContainer.poseEstimate.getCurrentPose().getY()),
+                    RobotContainer.poseEstimate.getCurrentPose().getRotation()),
+            new PathPoint(new Translation2d(
+                    PoleFinder.getNearestPole().getX(),
+                    PoleFinder.getNearestPole().getY()),
+                    PoleFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.POLE)));
+                    //pole align
+        yButton.onTrue(autoBuilder.followPath(PathPlanner.generatePath(new PathConstraints(5, 5),
+        new PathPoint(
+                new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(),
+                        RobotContainer.poseEstimate.getCurrentPose().getY()),
+                RobotContainer.poseEstimate.getCurrentPose().getRotation()),
+        new PathPoint(
+                new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
+                        FlatSurfaceFinder.getNearestPole().getY()),
+                FlatSurfaceFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.SURFACE)));
+                //surface align
+
+
+       aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist)/*.until(getSticks(getSticksMode.NONE)).andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
+       bButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist).until(getSticks(getSticksMode.NONE)).andThen(new IntakeOuttakeProcessWrist(m_wrist, true,m_claw, this)));
+       
     }
 
     /**
@@ -222,8 +263,8 @@ public class RobotContainer {
                         break;
                 }
                 return 
-                    ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX(), 0.1))> 0) || 
-                    ((MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY(), 0.1))> 0) || 
+                    (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.1)))> 0) || 
+                    (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1)))> 0) || 
                     extra;
                     
             }

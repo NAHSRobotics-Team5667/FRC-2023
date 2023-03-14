@@ -4,15 +4,21 @@
 
 package frc.robot.commands;
 
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClawSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ClawCommand extends CommandBase {
     public ClawSubsystem claw;
+    boolean done;
+    int counter = 0;
+    double meWhenLiam = -1000000;
+    RobotContainer robotContainer;
     /** Creates a new ClawCommand. */
-    public ClawCommand(ClawSubsystem claw) {
+    public ClawCommand(ClawSubsystem claw, RobotContainer robotContainer) {
         this.claw = claw;
+        this.robotContainer = robotContainer;
         addRequirements(claw);
     }
 
@@ -28,19 +34,49 @@ public class ClawCommand extends CommandBase {
         // if (claw.getMotorInput() > 0 && !(claw.getMotorSpeed() == 0)) {
         //     claw.setIntake(-1);
         // } else if (claw.getMotorInput() > 0 && (claw.getMotorSpeed() == 0)) {
-        //     claw.setIntake(0);
-        // }
-        claw.setIntake(0);
+        //     claw.setIntake(0);    // }
+    if (robotContainer.getCubeOrCone() == "cone"){
+    if (claw.isPieceIntaken() || counter > 0){
+        counter += 1;
+        
+        if (claw.getPosition() < meWhenLiam){
+
+        
+
+
+        claw.setIntake(.075);
+        }
+    } 
+}else {
+    counter += 1;
+        
+    if (claw.getPosition() > meWhenLiam){
+
+    
+
+
+    claw.setIntake(-.075);
+    }
+} 
+
+
+    if (counter == 1){
+       meWhenLiam = claw.getPosition(); 
+    }
     }
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        claw.setIntake(0);
+        double meWhenLiam = 0;
+        this.counter = 0;
+        claw.setIntake(.2);
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+    
+
         return false;
     }
 }

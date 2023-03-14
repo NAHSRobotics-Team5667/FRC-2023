@@ -23,6 +23,11 @@ public class IntakeAndOuttakeProcedure extends SequentialCommandGroup {
         BooleanSupplier getSticks = m_RobotContainer.getSticks(getSticksMode.NONE);
         this.isCube = isCube;
         this.m_RobotContainer = m_RobotContainer;
+        if (this.isCube == true){
+          m_RobotContainer.coneOrCube = "cube";
+        }else {
+          m_RobotContainer.coneOrCube = "cone";
+        }
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         // addCommands( new IntakeOuttakeProcessWrist(m_RobotContainer.m_wrist, isCube,

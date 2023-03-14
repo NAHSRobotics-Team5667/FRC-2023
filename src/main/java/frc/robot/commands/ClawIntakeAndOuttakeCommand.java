@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.WristSubsystem;
@@ -24,7 +25,7 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
         this.wrist = wrist; 
         isDoneCheck = clawSubsystem.isPieceIntaken();
         
-        addRequirements(clawSubsystem);
+        
         
         // Use addRequirements() here to declare subsystem dependencies.
     }
@@ -38,14 +39,16 @@ public class ClawIntakeAndOuttakeCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        
+      clawSubsystem.isPieceIntaken();
+      System.out.println("dick and balls");
         // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
         //you right. it is also spelled Bangiman.
+        //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
         if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == false){
-            clawSubsystem.setIntake(.1);
+            clawSubsystem.setIntake(.7);
             
         } if (clawSubsystem.isPieceIntaken() == isDoneCheck && clawSubsystem.isPieceIntaken() == true){
-            clawSubsystem.setIntake(.4);
+            clawSubsystem.setIntake(-.7);
             
         } else {
             finished = true;
