@@ -29,13 +29,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignFlatSurface;
 import frc.robot.commands.AlignPoleAgain;
 import frc.robot.commands.ClawCommand;
+import frc.robot.commands.ClawConeIntake;
+import frc.robot.commands.ClawConeOuttake;
 import frc.robot.commands.ClawCubeIntake;
 import frc.robot.commands.ClawCubeOuttake;
 import frc.robot.commands.DrivetrainCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.IntakeAndOuttakeProcedure;
 import frc.robot.commands.WristConeIntake;
+import frc.robot.commands.WristConeOuttake;
 import frc.robot.commands.WristCubeIntake;
+import frc.robot.commands.WristCubeOuttake;
 import frc.robot.commands.SlideDefaultCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -81,12 +85,15 @@ public class RobotContainer {
 
 
     @SuppressWarnings("unused")
+    
     private SlideSubsystem m_slide;
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     public WristSubsystem m_wrist;
     public ClawSubsystem m_claw; // declares claw subsystem
 
      //deal with it liam
+    public boolean done;
+    public boolean outtakeFinish = false;
     public double inOrOut = 0;
     public String coneOrCube; 
     public Lights lightstrip;
@@ -210,10 +217,18 @@ public class RobotContainer {
     }
     public Command cubeChooser(){
         if (inOrOut % 2 == 0){
-            return new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE)).andThen(new WristCubeIntake()).until(getSticks(getSticksMode.NONE))
+            return new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE)).andThen(new WristCubeIntake()).until(getSticks(getSticksMode.NONE));
             
         } else{
-            return new ClawCubeOuttake(m_claw, this).until(getSticks((getSticksMode.NONE))).andThen(new WristCubeIntake()).until(getSticks(getSticksMode.NONE))
+            return new ClawCubeOuttake(m_claw, this).until(getSticks((getSticksMode.NONE))).andThen(new WristCubeOuttake(m_wrist)).until(getSticks(getSticksMode.NONE));
+        }
+    }
+    public Command coneChooser(){
+        if (inOrOut % 2 == 0){
+            return new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE)).andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE));
+            
+        } else{
+            return new ClawConeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE)).andThen(new WristConeOuttake()).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE));
         }
     }
 
@@ -249,7 +264,8 @@ public class RobotContainer {
                         FlatSurfaceFinder.getNearestPole().getY()),
                 FlatSurfaceFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.SURFACE)));
                 //surface align
-        aButton.onTrue(cubeChooser);
+        aButton.onTrue(cubeChooser());
+        bButton.onTrue(coneChooser());
     
 
     //    aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, false, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE))/* .andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
@@ -270,6 +286,28 @@ public class RobotContainer {
     public static enum getSticksMode{
         POLE, SURFACE, NONE, INTAKE
     }
+    public static enum intakeOrOuttake{
+        INTAKE, OUTTAKE
+    }
+    public BooleanSupplier doneIntakeOuttake(intakeOrOuttake mode){
+    return new BooleanSupplier() {
+        
+    
+     public boolean getAsBoolean(){
+        switch (mode){
+            case INTAKE:
+             done = intakeFinish;
+             break;
+            case OUTTAKE:
+                done = outtakeFinish;
+                break;
+
+                    }
+                return done;
+        }
+
+    };
+};
     public BooleanSupplier getSticks(getSticksMode mode){
     return new BooleanSupplier() {
             

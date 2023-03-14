@@ -165,15 +165,38 @@ public final class Constants {
         public static final int kWristIDLeft = 0;
         public static final int kWristIDRight = 1;
         public static final int kWristConeSetpoint = -1;
-        public static final int kWristConeOuttakeSetpoint = -1;
+                
         public static final int kWristSafePostion = -1;
-        public static final double[] kWristCubeSetpoint = {
+        public static final double[] kWristCubeOuttakeSetpoint = {
                 0, // intake pos
                 0, // heights 1-4
                 0,
                 0,
                 0
         };
+        public static final double[] kWristConeOuttakeSetpoint = {
+                0, 
+                0,
+                0,
+                0,
+                0
+        };
+                
+        public static final double[] kWristCubeIntakeSetpoint = {
+                0, // intake pos
+                0, // heights 1-4
+                0,
+                0,
+                0
+        };
+        public static final double[] kWristConeIntakeSetpoint = {
+                0, 
+                0,
+                0,
+                0,
+                0
+        };
+
     }
 
     // Have to add mirrored trajectories if alliance is switched

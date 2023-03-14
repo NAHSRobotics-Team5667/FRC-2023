@@ -45,32 +45,23 @@ public class WristConeIntake extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (isPieceIntaken && isCube){
-            m_wrist.cubeAngled(Constants.WristConstants.kWristCubeSetpoint[0]);
+      
+
+      
+         
+            m_wrist.coneIntakeAngled();
             if (Math.abs(m_wrist.pidError()) < .1){
                 isDone = true;
-            }   
-        }else if(isPieceIntaken && !isCube){
-            m_wrist.coneIntakeAngled(); //might need driver control here, in case cone is in odd position
-            if (Math.abs(m_wrist.pidError()) < .1){
-                isDone = true;
+                m_RobotContainer.intakeFinish = true;
             } 
-        }else if (!isPieceIntaken && isCube){
-            m_wrist.cubeAngled(Constants.WristConstants.kWristCubeSetpoint[m_wrist.bumperPos + 1]);
-            if (Math.abs(m_wrist.pidError()) < .1){
-                isDone = true;
-            } 
-        }else if (!isPieceIntaken && !isCube){
-            m_wrist.coneOuttakeAngled();
-            if (Math.abs(m_wrist.pidError()) < .1){
-                isDone = true;
-            } 
-        }   
+           
     }
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+
+        m_RobotContainer.intakeFinish = false;
         m_wrist.m_wristMotorFirst.setVoltage(0);
     m_wrist.m_wristMotorSecond.setVoltage(0);
     }
@@ -78,6 +69,6 @@ public class WristConeIntake extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() { 
-        return isDone;  
+        return false;  
     }
 }

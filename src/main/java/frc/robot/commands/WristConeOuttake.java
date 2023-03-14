@@ -5,10 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.WristSubsystem;
+import frc.robot.RobotContainer;
+
 
 public class WristConeOuttake extends CommandBase {
+  WristSubsystem wrist;
+  RobotContainer robotContainer;
   /** Creates a new WristConeOuttake. */
-  public WristConeOuttake() {
+  public WristConeOuttake(WristSubsystem wrist, RobotContainer robotContainer) {
+    this.wrist = wrist;
+    this.robotContainer = robotContainer;
+
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -18,11 +26,19 @@ public class WristConeOuttake extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  
+      wrist.coneOuttakeAngled(); //might need driver control here, in case cone is in odd position
+      if (Math.abs(wrist.pidError()) < .1){
+          robotContainer.outtakeFinish = true;
+        }
+      }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    robotContainer.outtakeFinish = false;
+  }
 
   // Returns true when the command should end.
   @Override

@@ -13,6 +13,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.ClawConstants;
+import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -60,10 +62,10 @@ public class WristSubsystem extends SubsystemBase {
         m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
 
     }
-
+    //make these dependent on bumperPos, array of setPoints
     public void coneIntakeAngled() {
         double currentPosition = getPosition();
-        double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeSetpoint);
+        double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeIntakeSetpoint[bumperPos]);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
         m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
@@ -73,20 +75,30 @@ public class WristSubsystem extends SubsystemBase {
 
     public void coneOuttakeAngled() {
         double currentPosition = getPosition();
-        double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeOuttakeSetpoint);
+        double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeOuttakeSetpoint[bumperPos]);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
         m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
     }
 
-    public void cubeAngled(double wristPoint) {
+    public void cubeIntakeAngled() {
         double currentPosition = getPosition();
-        double outputWrist = wristPID.calculate(currentPosition, wristPoint);
+        double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristCubeIntakeSetpoint[bumperPos]);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
         m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
         // Wrist Angled for Cube intake
     }
+    
+    public void cubeOuttakeAngled() {
+        double currentPosition = getPosition();
+        double outputWrist = wristPID.calculate(currentPosition, WristConstants.kWristCubeOuttakeSetpoint[bumperPos]);
+        double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
+        m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
+        m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
+        // Wrist Angled for Cube intake
+    }
+
 
     @Override
     public void periodic() {

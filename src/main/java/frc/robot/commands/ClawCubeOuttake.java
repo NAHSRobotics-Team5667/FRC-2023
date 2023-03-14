@@ -36,14 +36,14 @@ public class ClawCubeOuttake extends CommandBase {
       stopClock += .02;
 
     }else{
-      robotContainer.intakeFinish = true;
+      robotContainer.outtakeFinish = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    robotContainer.intakeFinish = false;
+    robotContainer.outtakeFinish = false;
         claw.setIntake(0);
         robotContainer.inOrOut += 1;
   }
