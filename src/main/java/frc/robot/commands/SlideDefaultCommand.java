@@ -16,12 +16,14 @@ public class SlideDefaultCommand extends CommandBase {
     @SuppressWarnings("unused")
     private WristSubsystem wrist;
     public int bumperPos = 0;
+    RobotContainer m_RobotContainer;
     DigitalInput bottomlimitSwitch = new DigitalInput(Constants.SlideConstants.kLimitSwitchId);
 
     // these will be the heights of the slide at different points. The height will be set as SlideConstants.slideSetpoints[bumperPos]
 
     /** Creates a new SlideCommand. */
     public SlideDefaultCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {
+        this.m_RobotContainer = m_RobotContainer;
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         this.wrist = wrist;
@@ -44,6 +46,10 @@ public class SlideDefaultCommand extends CommandBase {
             }
         } else{
            //slide.moveSlide(Setpoints[wrist.bumperPos]);
+        }
+        if (m_RobotContainer.m_controller.getAButtonPressed()|| m_RobotContainer.m_controller.getBButtonPressed()){
+            m_RobotContainer.configureButtonBindings();
+
         }
         
     }

@@ -38,6 +38,7 @@ public class WristCubeIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     robotContainer.intakeFinish = false;
+   
   }
 
   // Returns true when the command should end.

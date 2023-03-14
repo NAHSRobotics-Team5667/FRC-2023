@@ -54,14 +54,16 @@ public class ClawCubeIntake extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+      clawSubsystem.isPieceIntaken();
     
       
       SmartDashboard.putBoolean("abdjasbdjas", isDoneCheck);
+      isDoneCheck = clawSubsystem.isPieceIntaken();
      
         // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
         //you right. it is also spelled Bangiman.
         //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
-        if (clawSubsystem.isPieceIntaken() == isDoneCheck){
+        if (!isDoneCheck){
             clawSubsystem.setIntake(-.45);
             
         }  else {
@@ -76,6 +78,7 @@ public class ClawCubeIntake extends CommandBase {
         robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
         robotContainer.inOrOut += 1;
+
     }
     
     // Returns true when the command should end.

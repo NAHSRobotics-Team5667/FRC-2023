@@ -32,7 +32,7 @@ public class ClawConeOuttake extends CommandBase {
   @Override
   public void execute() {
     if (stopClock < 4){
-      claw.setIntake(.45);
+      claw.setIntake(-.45);
       stopClock += .02;
 
     }else{
@@ -46,6 +46,7 @@ public class ClawConeOuttake extends CommandBase {
     robotContainer.outtakeFinish = false;
         claw.setIntake(0);
         robotContainer.inOrOut += 1;
+        
   }
 
   // Returns true when the command should end.

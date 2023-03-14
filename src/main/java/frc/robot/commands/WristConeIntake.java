@@ -64,6 +64,7 @@ public class WristConeIntake extends CommandBase {
         m_RobotContainer.intakeFinish = false;
         m_wrist.m_wristMotorFirst.setVoltage(0);
     m_wrist.m_wristMotorSecond.setVoltage(0);
+    
     }
     
     // Returns true when the command should end.

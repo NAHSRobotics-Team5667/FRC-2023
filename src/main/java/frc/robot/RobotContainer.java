@@ -216,24 +216,27 @@ public class RobotContainer {
         return autoBuilder;
     }
     public Command cubeChooser(){
+        
         if (inOrOut % 2 == 0){
-            return new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE)).andThen(new WristCubeIntake()).until(getSticks(getSticksMode.NONE));
+            return new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE)).andThen(new WristCubeIntake(m_wrist, this)).until(getSticks(getSticksMode.NONE));
             
         } else{
-            return new ClawCubeOuttake(m_claw, this).until(getSticks((getSticksMode.NONE))).andThen(new WristCubeOuttake(m_wrist)).until(getSticks(getSticksMode.NONE));
+            return new ClawCubeOuttake(m_claw, this).until(getSticks((getSticksMode.NONE))).andThen(new WristCubeOuttake(m_wrist, this)).until(getSticks(getSticksMode.NONE));
         }
     }
     public Command coneChooser(){
         if (inOrOut % 2 == 0){
-            return new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE)).andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE));
+            return new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))/* .andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/;
+            //return new ClawConeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE));
             
         } else{
-            return new ClawConeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE)).andThen(new WristConeOuttake()).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE));
+           return new ClawConeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))/* .andThen(new WristConeOuttake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))*/;
+            //return new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE));/* .andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/
         }
     }
 
 
-    private void configureButtonBindings() {
+    public void configureButtonBindings() {
         final Trigger 
         LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
         RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value),

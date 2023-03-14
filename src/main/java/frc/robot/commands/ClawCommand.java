@@ -37,44 +37,45 @@ public class ClawCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        claw.setIntake(0);
         // if (claw.getMotorInput() > 0 && !(claw.getMotorSpeed() == 0)) {
         //     claw.setIntake(-1);
         // } else if (claw.getMotorInput() > 0 && (claw.getMotorSpeed() == 0)) {
         //     claw.setIntake(0);    // }
     
-    if (claw.isPieceIntaken() || counter > 0){
-        counter += 1;
+//     if (claw.isPieceIntaken() || counter > 0){
+//         counter += 1;
         
-        if (claw.getPosition() < meWhenLiam){
+//         if (claw.getPosition() < meWhenLiam){
 
         
 
 
-        claw.setIntake(.075*isCube);
-        }
-    } else {
-    counter += 1;
+//         claw.setIntake(.075*isCube);
+//         }
+//     } else {
+//     counter += 1;
         
-    if (claw.getPosition() > meWhenLiam){
+//     if (claw.getPosition() > meWhenLiam){
 
     
 
 
-    claw.setIntake(-.075*isCube);
-    }
-} 
+//     claw.setIntake(-.075*isCube);
+//     }
+// } 
 
 
-    if (counter == 1){
-       meWhenLiam = claw.getPosition(); 
-    }
+//     if (counter == 1){
+//        meWhenLiam = claw.getPosition(); 
+//     }
     }
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         double meWhenLiam = 0;
         this.counter = 0;
-        claw.setIntake(.2);
+        claw.setIntake(0);
     }
 
     // Returns true when the command should end.

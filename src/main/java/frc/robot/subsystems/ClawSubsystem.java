@@ -60,6 +60,7 @@ public class ClawSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
         SmartDashboard.putNumber("ClawVoltage", m_claw.getMotorOutputVoltage());
         SmartDashboard.putNumber("ClawTempurature", m_claw.getTemperature());
         SmartDashboard.putNumber("ClawCurrent", m_claw.getStatorCurrent());
