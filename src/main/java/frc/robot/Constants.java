@@ -159,6 +159,13 @@ public final class Constants {
         public static final int levelThreeHeight = -1;
 
         public static final int kLimitSwitchId = 4;
+
+        public static final double kWinchRadius = 1.25;
+        public static final double kGearRatio = 8;
+
+        public static double rawUnitsToInches(double raw) {
+                return ((raw / 8) / 2048) * (Math.PI * kWinchRadius);
+        }
     }
 
     public static final class WristConstants {
@@ -167,6 +174,9 @@ public final class Constants {
         public static final int kWristConeSetpoint = -1;
                 
         public static final int kWristSafePostion = -1;
+
+        public static final double kEncoderOffset = 0.44;
+        
         public static final double[] kWristCubeOuttakeSetpoint = {
                 0, // intake pos
                 0, // heights 1-4
@@ -197,6 +207,13 @@ public final class Constants {
                 0
         };
 
+
+        public static final double kGearRatio = 128;
+
+        public static double convertTicksToRadians(double ticks, double offset) {
+                double revolutions = (ticks / kGearRatio) / DriveConstants.kEncoderResolution;
+                return (revolutions * 360) + offset; 
+        }
     }
 
     // Have to add mirrored trajectories if alliance is switched

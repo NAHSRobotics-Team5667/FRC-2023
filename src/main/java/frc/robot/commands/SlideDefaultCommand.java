@@ -17,7 +17,6 @@ public class SlideDefaultCommand extends CommandBase {
     private WristSubsystem wrist;
     public int bumperPos = 0;
     RobotContainer m_RobotContainer;
-    DigitalInput bottomlimitSwitch = new DigitalInput(Constants.SlideConstants.kLimitSwitchId);
 
     // these will be the heights of the slide at different points. The height will be set as SlideConstants.slideSetpoints[bumperPos]
 
@@ -40,21 +39,13 @@ public class SlideDefaultCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(slide.getVelocity() > 0){
-             if(bottomlimitSwitch.get()){
-                slide.setSlide(0);
-            }
-        } else{
-           //slide.moveSlide(Setpoints[wrist.bumperPos]);
-        }
-        if (m_RobotContainer.m_controller.getAButtonPressed()|| m_RobotContainer.m_controller.getBButtonPressed()){
-            m_RobotContainer.configureButtonBindings();
+        // max right slide = 277000
 
-        }
+        slide.setSlide(-0.3);
+        // slide.setSlidePIDInches(30);
+        // slide.setSlidePIDEncoder(113000);
         
     }
-    
-    public void joystickControl() {}
 
     // Called once the command ends or is interrupted.
     @Override

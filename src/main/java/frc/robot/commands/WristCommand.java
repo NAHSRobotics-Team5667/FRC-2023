@@ -32,7 +32,18 @@ public class WristCommand extends CommandBase {
     @Override
     public void execute() {
         // wrist.maintainSafePosition();
-        wrist.setWrist(0);
+
+        // if (wrist.getEncoder() <= 0.1) {
+        //     wrist.setWrist(0.1);
+        // } else if (wrist.getEncoder() >= (225 / 360)) {
+        //     wrist.setWrist(-0.1);
+        // } else {
+        //     wrist.setWrist(0.1);
+        // }
+
+        wrist.setPosition(-125);
+
+        // wrist.setWrist(-0.1);
 
     }
 

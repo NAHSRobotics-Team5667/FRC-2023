@@ -8,8 +8,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -21,11 +25,20 @@ public class WristSubsystem extends SubsystemBase {
     public int bumperPos = 0;
     public WPI_TalonFX m_wristMotorFirst;
     public WPI_TalonFX m_wristMotorSecond;
-    private PIDController wristPID = new PIDController(.5, 0, 0);
+    private PIDController wristPID = new PIDController(.02, 0, 0);
     private SimpleMotorFeedforward m_wristFeedForward = new SimpleMotorFeedforward(0, 0, 0);
+
+    private DutyCycleEncoder m_encoder;
+
+    private double angleOffset = 0;
+
+    private int counter = 0;
 
     /** Creates a new WristSubsystem. */
     public WristSubsystem() {
+        m_encoder = new DutyCycleEncoder(5);
+
+        wristPID.setTolerance(2.5);
 
         m_wristMotorFirst = new WPI_TalonFX(Constants.WristConstants.kWristIDLeft);
         m_wristMotorSecond = new WPI_TalonFX(Constants.WristConstants.kWristIDRight);
@@ -35,11 +48,28 @@ public class WristSubsystem extends SubsystemBase {
 
         m_wristMotorSecond.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
         m_wristMotorSecond.setSelectedSensorPosition(0);
+
+        //angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
     }
 
     public void setWrist(double percentOutput) {
+        if (getAngleDegrees() < -125) {
+            percentOutput = Math.max(percentOutput, 0);
+        } else if (getAngleDegrees() > 90) {
+            percentOutput = Math.min(percentOutput, 0);
+        }
+
         m_wristMotorFirst.set(ControlMode.PercentOutput, percentOutput);
-        m_wristMotorSecond.set(ControlMode.PercentOutput, -percentOutput);
+        m_wristMotorSecond.set(ControlMode.PercentOutput, percentOutput);
+    }
+
+    public double getEncoder() {
+        return m_encoder.getAbsolutePosition();
+    }
+
+    public void setPosition(double position){
+        double output = MathUtil.clamp(wristPID.calculate(getAngleDegrees(), position), -0.5, 0.5);
+        setWrist(output);
     }
 
     public double getPosition() {
@@ -99,9 +129,23 @@ public class WristSubsystem extends SubsystemBase {
         // Wrist Angled for Cube intake
     }
 
+    public double getAngleDegrees() {
+        return WristConstants.convertTicksToRadians(m_wristMotorFirst.getSelectedSensorPosition(), angleOffset);
+    }
 
     @Override
     public void periodic() {
+        if (counter <= 30) {
+            counter++;
+        }
+        
+        if (counter == 30) {
+            angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        }
+
+        SmartDashboard.putNumber("Wrist Encoder", getEncoder());
+        SmartDashboard.putNumber("Wrist Angle", getAngleDegrees());
+        SmartDashboard.putNumber("Angle Offset", angleOffset);
         // placed here because i need it updated constantly and dont want to deal with
         // putting it in a command properly
         if (RobotContainer.m_controller.getLeftBumperPressed()) {
