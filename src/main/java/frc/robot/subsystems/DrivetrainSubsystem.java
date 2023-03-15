@@ -144,12 +144,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         DrivetrainSubsystem.m_backRight.getPosition()
     };
     private Translation2d // Create the locations of the wheels
-    m_frontLeftLocation = new Translation2d(0.257, -0.306), 
+    m_frontRightLocation = new Translation2d(0.257, -0.306), 
     // 0.306
     // 0.257
-    m_frontRightLocation = new Translation2d(0.257, 0.306),
-    m_backLeftLocation = new Translation2d(-0.257, -0.306),
-    m_backRightLocation = new Translation2d(-0.257, 0.306);
+    m_backRightLocation = new Translation2d(0.257, 0.306),
+    m_frontLeftLocation = new Translation2d(-0.257, -0.306),
+    m_backLeftLocation = new Translation2d(-0.257, 0.306);
     
     public SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
     m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -324,10 +324,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("BR Offset", m_backRight.getOffset());
         // SmartDashboard.putNumber("BL Offset", m_backLeft.getOffset());
         
-        // SmartDashboard.putNumber("BR Abs Position Error", m_backRight.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("FR Abs Position Error", m_frontRight.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("BL Abs Position Error", m_backLeft.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("FL Abs Position Error", m_frontLeft.getTurningPID().getPositionError());
+         SmartDashboard.putNumber("BR Abs Position Error", m_backRight.getTurningPID().getPositionError());
+         SmartDashboard.putNumber("FR Abs Position Error", m_frontRight.getTurningPID().getPositionError());
+         SmartDashboard.putNumber("BL Abs Position Error", m_backLeft.getTurningPID().getPositionError());
+         SmartDashboard.putNumber("FL Abs Position Error", m_frontLeft.getTurningPID().getPositionError());
         
         SmartDashboard.putNumber("FL Error + Encoder",
         m_frontLeft.getTurnEncoderDistance() + m_frontLeft.getTurningPID().getPositionError());
