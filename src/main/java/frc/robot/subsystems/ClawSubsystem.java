@@ -16,7 +16,7 @@ import frc.robot.Constants;
 import frc.robot.util.CurrentSpikeCounter;
 
 public class ClawSubsystem extends SubsystemBase {
-    private WPI_TalonFX m_claw; // intake motor
+    public WPI_TalonFX m_claw; // intake motor
     private CurrentSpikeCounter spikeCounter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,Constants.SlideConstants.CurrentDeadband);
 
     /** Creates a new IntakeSubsystem. */

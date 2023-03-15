@@ -63,7 +63,7 @@ public class ClawCubeIntake extends CommandBase {
         // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
         //you right. it is also spelled Bangiman.
         //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
-        if (!isDoneCheck){
+        if (clawSubsystem.m_claw.getStatorCurrent()< 30 ){
             clawSubsystem.setIntake(-.45);
             
         }  else {

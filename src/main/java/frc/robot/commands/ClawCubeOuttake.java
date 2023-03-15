@@ -31,7 +31,7 @@ public class ClawCubeOuttake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (stopClock < 4){
+    if (stopClock < 2){
       claw.setIntake(.45);
       stopClock += .02;
 

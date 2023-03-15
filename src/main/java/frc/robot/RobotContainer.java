@@ -234,6 +234,7 @@ public class RobotContainer {
             //return new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE));/* .andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/
         }
     }
+   
 
 
     public void configureButtonBindings() {
@@ -267,9 +268,11 @@ public class RobotContainer {
                         FlatSurfaceFinder.getNearestPole().getY()),
                 FlatSurfaceFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.SURFACE)));
                 //surface align
-        aButton.onTrue(cubeChooser());
-        bButton.onTrue(coneChooser());
-    
+        aButton.onTrue( new ClawCubeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE)).andThen(new WristCubeOuttake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE)));
+        bButton.onTrue(new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))/* .andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/);
+        xButton.onTrue(new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE)).andThen(new WristCubeIntake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE)));
+        yButton.onTrue(new ClawConeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))/* .andThen(new WristConeOuttake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))*/);
+     
 
     //    aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, false, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE))/* .andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
      //  bButton.onTrue(new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.INTAKE))/*.andThen(new IntakeOuttakeProcessWrist(m_wrist, true, m_claw, this))*/);
@@ -291,6 +294,13 @@ public class RobotContainer {
     }
     public static enum intakeOrOuttake{
         INTAKE, OUTTAKE
+    }
+    public BooleanSupplier inOrOutCheck(double inOrOut){
+        return new BooleanSupplier() {
+            public boolean getAsBoolean(){
+                return inOrOut % 2 == 0;
+            }
+        };
     }
     public BooleanSupplier doneIntakeOuttake(intakeOrOuttake mode){
     return new BooleanSupplier() {
