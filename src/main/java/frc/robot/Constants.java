@@ -5,6 +5,9 @@
 package frc.robot;
 
 import java.util.List;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.VecBuilder;
@@ -136,7 +139,7 @@ public final class Constants {
         };
         public static final int kVoltageLimit = -1;
     }
-
+    
     public static final class SlideConstants {
         public static double[] SlideSetpoints = {
                 0,
@@ -144,6 +147,7 @@ public final class Constants {
                 0,
                 0
         };
+
         public static final int kLSlideID = 2;
         public static final int kRSlideID = 4;
         public static final double kSlideConstant = 1/16384; // TODO: do somethin
@@ -158,7 +162,16 @@ public final class Constants {
         public static final int levelTwoHeight = -1;
         public static final int levelThreeHeight = -1;
 
+        public static final double kGearRatio = 8;
+        public static final double kWinchDiameter = 1.25;
+
         public static final int kLimitSwitchId = 4;
+
+        public static final double rawUnitsToInches(double raw) {
+                double winchRevolutions = ((raw / kGearRatio) / DriveConstants.kEncoderResolution);
+                // kWinchDiameter += ((int) (winchRevolutions)) * 0.25;
+                return winchRevolutions * (Math.PI * kWinchDiameter);
+        }
     }
 
     public static final class WristConstants {
@@ -197,6 +210,12 @@ public final class Constants {
                 0
         };
 
+
+        public static final double kGearRatio = 128;
+
+        public static double convertTicksToDegrees(double ticks, double offset) {
+                return (((ticks / kGearRatio) / DriveConstants.kEncoderResolution) * 360) + offset; 
+        }
     }
 
     // Have to add mirrored trajectories if alliance is switched

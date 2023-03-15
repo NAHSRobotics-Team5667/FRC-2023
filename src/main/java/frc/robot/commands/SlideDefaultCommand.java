@@ -40,6 +40,11 @@ public class SlideDefaultCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        // max right slide = 277000
+
+        slide.setSlide(0.1);
+        // slide.setSlidePIDInches(30);
+        // slide.setSlidePIDEncoder(113000);
         if(slide.getVelocity() > 0){
              if(bottomlimitSwitch.get()){
                 slide.setSlide(0);
@@ -54,7 +59,9 @@ public class SlideDefaultCommand extends CommandBase {
         
     }
     
-    public void joystickControl() {}
+    public void joystickControl() {
+        
+    }
 
     // Called once the command ends or is interrupted.
     @Override
