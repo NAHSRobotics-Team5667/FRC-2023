@@ -230,7 +230,7 @@ public class SwerveModule {
 
     public double getAbsTurnEncoder() {
         // return filter.calculate(this.Encoder.getAbsolutePosition() - angleOffset);
-        return this.Encoder.getAbsolutePosition() - angleOffset;
+        return this.Encoder.getAbsolutePosition() /*- angleOffset*/;
     }
 
     public double getAbsTurnEncoderRadians() {
@@ -261,13 +261,14 @@ public class SwerveModule {
         return Math.abs(m_turningPIDController.getSetpoint() - getTurnEncoderDistance()) < 0.1;
     }
 
-    public void collectEncoderSample() {
+    public double collectEncoderSample() {
         if (sampleCounter < 50.0) {
             m_encoderSampleSum += getAbsTurnEncoder();
             sampleCounter++;
         } else if (sampleCounter == 50) {
             trueEncoderOffset = m_encoderSampleSum / sampleCounter;
         }
+        return trueEncoderOffset;
     }
 
     public double getOffset() {

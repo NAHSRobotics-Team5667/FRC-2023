@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.SlideConstants;
+import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
@@ -41,7 +43,29 @@ public class SlideDefaultCommand extends CommandBase {
     public void execute() {
         // max right slide = 277000
 
-        slide.setSlide(-0.3);
+        // slide.setSlide(-0.3);
+
+        double position = 0;
+
+        if (wrist.getBumperPos() == 0) {
+            position = 0;
+        } else {
+            if (m_RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
+                position = SlideConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
+
+            } else if (m_RobotContainer.getTargetElement().equals(GamePiece.CUBE)) {
+                position = SlideConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
+
+            } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+                position = SlideConstants.coneOuttakeSetpoint[wrist.getBumperPos() - 1];
+
+            } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+                position = SlideConstants.cubeOuttakeSetpoint[wrist.getBumperPos() - 1];
+            }
+        }
+
+        slide.setSlidePIDInches(position);
+
         // slide.setSlidePIDInches(30);
         // slide.setSlidePIDEncoder(113000);
         

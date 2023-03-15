@@ -110,11 +110,15 @@ public class RobotContainer {
 
     public boolean intakeFinish = false;
 
+    private GamePiece currentElement;
+
+    private GamePiece targetElement;
+
     public RobotContainer(Robot robot) {
         this.coneOrCube = "cube";
         m_slide = new SlideSubsystem();
         this.robot = robot;
-        m_wrist = new WristSubsystem();
+        m_wrist = new WristSubsystem(this);
         m_drive = new DrivetrainSubsystem();
         m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
         poseEstimate = new PoseEstimator(null, m_drive);
@@ -124,10 +128,11 @@ public class RobotContainer {
         m_claw = new ClawSubsystem();
 
         m_claw.setDefaultCommand(new ClawCommand(m_claw, this));
-        m_wrist.setDefaultCommand(new WristCommand(m_wrist));
+        m_wrist.setDefaultCommand(new WristCommand(m_wrist, this));
         m_slide.setDefaultCommand(new SlideDefaultCommand(m_slide, m_wrist, this));
         
-
+        currentElement = GamePiece.NONE;
+        targetElement = GamePiece.NONE;
 
         lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
@@ -189,6 +194,26 @@ public class RobotContainer {
         this.fullAuto = autoBuilder.fullAuto(pathGroup);
     }
 
+    public void setCurrentElement(GamePiece element) {
+        currentElement = element;
+    }
+
+    public int getBumperPos() {
+        return m_wrist.getBumperPos();
+    }
+
+    public GamePiece getCurrentElement() {
+        return currentElement;
+    }
+
+    public void setTargetElement(GamePiece element) {
+        targetElement = element;
+    }
+
+    public GamePiece getTargetElement() {
+        return targetElement;
+    }
+
     /**
      * Use this method to define your button->command mappings. Buttons can be
      * created by
@@ -201,9 +226,11 @@ public class RobotContainer {
         this.coneOrCube = coneOrCube;
 
     }
+
     public String getCubeOrCone(){
         return this.coneOrCube;
     }
+
     public boolean coneOrCubeBoolean(){
         if (coneOrCube == "cube") {
             return true;
@@ -215,6 +242,7 @@ public class RobotContainer {
     public SwerveAutoBuilder getBuild(){
         return autoBuilder;
     }
+
     public Command cubeChooser(){
         
         if (inOrOut % 2 == 0){
@@ -224,6 +252,7 @@ public class RobotContainer {
             return new ClawCubeOuttake(m_claw, this).until(getSticks((getSticksMode.NONE))).andThen(new WristCubeOuttake(m_wrist, this)).until(getSticks(getSticksMode.NONE));
         }
     }
+
     public Command coneChooser(){
         if (inOrOut % 2 == 0){
             return new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))/* .andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/;
@@ -268,10 +297,24 @@ public class RobotContainer {
                         FlatSurfaceFinder.getNearestPole().getY()),
                 FlatSurfaceFinder.getNearestPole().getRotation()))).until(getSticks(getSticksMode.SURFACE)));
                 //surface align
-        aButton.onTrue( new ClawCubeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE)).andThen(new WristCubeOuttake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE)));
-        bButton.onTrue(new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))/* .andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/);
-        xButton.onTrue(new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0).until(doneIntakeOuttake(intakeOrOuttake.INTAKE)).andThen(new WristCubeIntake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE)));
-        yButton.onTrue(new ClawConeOuttake(m_claw, this).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))/* .andThen(new WristConeOuttake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))*/);
+
+
+        aButton.onTrue( 
+            new ClawCubeOuttake(m_claw, this)
+            .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))
+            /*.andThen(new WristCubeOuttake(m_wrist, this))
+            .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))*/);
+        bButton.onTrue(
+            new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0)
+            .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))/* .andThen(new WristConeIntake(m_wrist, intakeFinish, m_claw, this)).until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/);
+        xButton.onTrue(
+            new ClawCubeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0)
+            .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))
+            /*.andThen(new WristCubeIntake(m_wrist, this))
+            .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))*/);
+        yButton.onTrue(
+            new ClawConeOuttake(m_claw, this)
+            .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))/* .andThen(new WristConeOuttake(m_wrist, this)).until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))*/);
      
 
     //    aButton.onTrue(new ClawIntakeAndOuttakeCommand(m_claw, m_wrist, false, this, inOrOut % 2 == 0).until(getSticks(getSticksMode.NONE))/* .andThen(new IntakeOuttakeProcessWrist(m_wrist, false,m_claw, this)*/)/* )*/;
@@ -292,9 +335,17 @@ public class RobotContainer {
     public static enum getSticksMode{
         POLE, SURFACE, NONE, INTAKE
     }
+
     public static enum intakeOrOuttake{
         INTAKE, OUTTAKE
     }
+
+    public static enum GamePiece {
+        NONE, 
+        CUBE,
+        CONE
+    }
+
     public BooleanSupplier inOrOutCheck(double inOrOut){
         return new BooleanSupplier() {
             public boolean getAsBoolean(){

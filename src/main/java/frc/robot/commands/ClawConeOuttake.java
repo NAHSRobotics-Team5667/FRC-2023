@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.ClawSubsystem;
 
 public class ClawConeOuttake extends CommandBase {
@@ -31,7 +32,7 @@ public class ClawConeOuttake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (stopClock < 2){
+    if (stopClock < 0.5){
       claw.setIntake(-.45);
       stopClock += .02;
 
@@ -46,7 +47,8 @@ public class ClawConeOuttake extends CommandBase {
     robotContainer.outtakeFinish = false;
         claw.setIntake(0);
         robotContainer.inOrOut += 1;
-        
+      
+    robotContainer.setCurrentElement(GamePiece.NONE);
   }
 
   // Returns true when the command should end.

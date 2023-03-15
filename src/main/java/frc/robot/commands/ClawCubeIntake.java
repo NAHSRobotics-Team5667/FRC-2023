@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.CurrentSpikeCounter;
@@ -47,8 +48,8 @@ public class ClawCubeIntake extends CommandBase {
       time = Timer.getFPGATimestamp();
       isDoneCheck = clawSubsystem.isPieceIntaken();
       test = 0;
-  
-        
+      
+      robotContainer.setTargetElement(GamePiece.CUBE);
     }
     
     // Called every time the scheduler runs while the command is scheduled.
@@ -63,7 +64,7 @@ public class ClawCubeIntake extends CommandBase {
         // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
         //you right. it is also spelled Bangiman.
         //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
-        if (clawSubsystem.m_claw.getStatorCurrent()< 30 ){
+        if (clawSubsystem.m_claw.getStatorCurrent() < 30){
             clawSubsystem.setIntake(-.45);
             
         }  else {
@@ -79,6 +80,10 @@ public class ClawCubeIntake extends CommandBase {
         clawSubsystem.setIntake(0);
         robotContainer.inOrOut += 1;
 
+        robotContainer.setCurrentElement(GamePiece.CUBE);
+        robotContainer.setTargetElement(GamePiece.NONE);
+
+        wrist.setBumperPos(0);
     }
     
     // Returns true when the command should end.

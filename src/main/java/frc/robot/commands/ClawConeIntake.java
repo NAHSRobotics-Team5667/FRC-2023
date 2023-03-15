@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.CurrentSpikeCounter;
@@ -34,10 +35,7 @@ public class ClawConeIntake extends CommandBase {
         this.robotContainer = robotContainer;
         this.intakeOrOuttake = isIntaking;
         
-       
-        
-        
-        
+        addRequirements(clawSubsystem, wrist);
         // Use addRequirements() here to declare subsystem dependencies.
     }
     
@@ -47,8 +45,8 @@ public class ClawConeIntake extends CommandBase {
       time = Timer.getFPGATimestamp();
       isDoneCheck = clawSubsystem.isPieceIntaken();
       test = 0;
-  
-        
+
+      robotContainer.setTargetElement(GamePiece.CONE);
     }
     
     // Called every time the scheduler runs while the command is scheduled.
@@ -81,7 +79,9 @@ public class ClawConeIntake extends CommandBase {
         robotContainer.inOrOut += 1;
         SmartDashboard.putNumber("sdkfdoisf", robotContainer.inOrOut);
         
-        
+        robotContainer.setCurrentElement(GamePiece.CONE);
+
+        wrist.setBumperPos(0);
         
     }
     

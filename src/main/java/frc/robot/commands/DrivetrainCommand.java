@@ -57,7 +57,7 @@ public class DrivetrainCommand extends CommandBase {
      * the drive subsystem
      */
     private void joystickDrive() {
-        if (RobotContainer.m_controller.getXButtonPressed()) {
+        if (RobotContainer.m_controller.getRightStickButton()) {
             this.m_swerve.resetGyro();
         }
 
@@ -102,6 +102,6 @@ public class DrivetrainCommand extends CommandBase {
         SmartDashboard.putNumber("Left X", RobotContainer.m_controller.getLeftX());
         SmartDashboard.putNumber("Right X", RobotContainer.m_controller.getRightX());
         
-        this.m_swerve.drive(xSpeed, ySpeed, rot, true);
+        this.m_swerve.drive(xSpeed, ySpeed, rot, false);
     }
 }

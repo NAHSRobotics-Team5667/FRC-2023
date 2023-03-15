@@ -94,10 +94,6 @@ public final class Constants {
         public static final int BREncoderID = 1;
         public static final int BLEncoderID = 2;
 
-        public static final double BLEncoderOffset = 0.43267 - .25;
-        public static final double FLEncoderOffset = 0.40751 - .25;
-        public static final double BREncoderOffset = 0.66494 - .25;
-        public static final double FREncoderOffset = 0.90833 - .25;
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
 
     }
@@ -138,12 +134,30 @@ public final class Constants {
     }
 
     public static final class SlideConstants {
-        public static double[] SlideSetpoints = {
-                0,
-                0,
-                0,
-                0
+
+        public static final double[] coneIntakeSetpoints = {
+                10, // 0 - floor intake (flipped)
+                20, // 1 - floor intake (upright)
+                30  // 2 - human player intake
         };
+
+        public static final double[] cubeIntakeSetpoints = {
+                0, // 1 - floor intake
+                20  // 2 - human player intake
+        };
+
+        public static final double[] cubeOuttakeSetpoint = {
+                10, // 0 - ground level (hybrid)
+                20, // 1 - first platform
+                30 // 2 - second platform (highest)
+        };
+
+        public static final double[] coneOuttakeSetpoint = {
+                0, // 0 - ground level (hybrid)
+                0, // 1 - first pole
+                0, // 2 - second pole (highest)
+        };
+
         public static final int kLSlideID = 2;
         public static final int kRSlideID = 4;
         public static final double kSlideConstant = 1/16384; // TODO: do somethin
@@ -173,39 +187,36 @@ public final class Constants {
         public static final int kWristIDRight = 1;
         public static final int kWristConeSetpoint = -1;
                 
-        public static final int kWristSafePostion = -1;
+        public static final int kWristSafePosition = -125;
 
         public static final double kEncoderOffset = 0.44;
-        
-        public static final double[] kWristCubeOuttakeSetpoint = {
-                0, // intake pos
-                0, // heights 1-4
-                0,
-                0,
-                0
+
+        // OUTTAKE SETPOINTS -------------------------------------
+
+        public static final double[] coneIntakeSetpoints = {
+                0, // 0 - floor intake (flipped)
+                0, // 1 - floor intake (upright)
+                0  // 2 - human player intake
         };
+
+        public static final double[] cubeIntakeSetpoints = {
+                -30, // 1 - floor intake
+                0  // 2 - human player intake
+        };
+
+        public static final double[] kWristCubeOuttakeSetpoint = {
+                0, // 0 - ground level (hybrid)
+                0, // 1 - first platform
+                0, // 2 - second platform (highest)
+        };
+
         public static final double[] kWristConeOuttakeSetpoint = {
-                0, 
-                0,
-                0,
-                0,
-                0
+                0, // 0 - ground level (hybrid)
+                0, // 1 - first pole
+                0, // 2 - second pole (highest)
         };
                 
-        public static final double[] kWristCubeIntakeSetpoint = {
-                0, // intake pos
-                0, // heights 1-4
-                0,
-                0,
-                0
-        };
-        public static final double[] kWristConeIntakeSetpoint = {
-                0, 
-                0,
-                0,
-                0,
-                0
-        };
+        // INTAKE SETPOINTS -------------------------------------
 
 
         public static final double kGearRatio = 128;

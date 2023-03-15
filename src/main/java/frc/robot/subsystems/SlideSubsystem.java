@@ -23,6 +23,7 @@ import frc.robot.Constants.SlideConstants;
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide;
     private DigitalInput m_bottomLimitSwitch;
+    private WristSubsystem m_wrist;
     // private DutyCycleEncoder absEncoderHeight = new
     // DutyCycleEncoder(Constants.SlideConstants.EncoderId);
     // private double trueHeightOffset = absEncoderHeight.getAbsolutePosition() -
@@ -109,8 +110,15 @@ public class SlideSubsystem extends SubsystemBase {
         setSlide(output);
     }
 
+    public void setPosition(double inchesSetpoint) {
+        setSlidePIDInches(inchesSetpoint);
+    }
+
     public double getVelocity(){
         return m_leftSlide.getSelectedSensorVelocity();
+    }
+
+    public void setPosition(int bumperPos) {
     }
 
 
