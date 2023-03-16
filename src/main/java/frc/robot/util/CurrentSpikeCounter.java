@@ -41,10 +41,7 @@ public class CurrentSpikeCounter {
     public boolean update(double current, boolean skipRamp) {
         if (!ramped && current > threshold) {
             isRamping = true;
-            if (skipRamp)
-                return false;
-            else
-                return true;
+            return !skipRamp;
         } else if (isRamping && current < off_val) {
             ramped = true;
             isRamping = false;

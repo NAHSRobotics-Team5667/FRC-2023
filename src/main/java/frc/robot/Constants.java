@@ -41,7 +41,8 @@ public final class Constants {
 
         public static final double kMaxSpeed = 5; // should be 5 meters per second, 2 rn so ian keeps his ankles
 
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // is currently 1, will be 1/2 eventually (don't
+        public static final double kMaxAngularSpeed = 2 * Math.PI; // is currently 1, will be 1/2 eventually
+                                                                   // (don't
                                                                    // change)
         public static final double kMaxAngularAcceleration = Math.PI;
 
@@ -93,13 +94,13 @@ public final class Constants {
         public static final double kDriveGearRatio = 6.54;
         public static final double kTurnGearRatio = 15.43;
 
-        public static final int FREncoderID = 0;
-        public static final int FLEncoderID = 3;
-        public static final int BREncoderID = 1;
-        public static final int BLEncoderID = 2;
+        public static final int FREncoderID = 0, FLEncoderID = 3, BREncoderID = 1, BLEncoderID = 2;
 
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
-
+        public static final double BLEncoderOffset = 0.43267 - .25;
+        public static final double FLEncoderOffset = 0.40751 - .25;
+        public static final double BREncoderOffset = 0.66494 - .25;
+        public static final double FREncoderOffset = 0.90833 - .25;
     }
 
     public static final class FieldConstants {
@@ -142,12 +143,12 @@ public final class Constants {
         public static final double[] coneIntakeSetpoints = {
                 10, // 0 - floor intake (flipped)
                 20, // 1 - floor intake (upright)
-                30  // 2 - human player intake
+                30 // 2 - human player intake
         };
 
         public static final double[] cubeIntakeSetpoints = {
                 0, // 1 - floor intake
-                20  // 2 - human player intake
+                20 // 2 - human player intake
         };
 
         public static final double[] cubeOuttakeSetpoint = {
@@ -164,17 +165,14 @@ public final class Constants {
 
         public static final int kLSlideID = 2;
         public static final int kRSlideID = 4;
-        public static final double kSlideConstant = 1/16384; // TODO: do somethin
+        public static final double kSlideConstant = 1 / 16384; // TODO: do somethin
 
         public static final int EncoderId = -1;
         public static final int EncoderOffset = -1;
         public static final double CurrentThreshold = 30;
         public static final double CurrentDeadband = 0;
 
-        public static final int levelZeroHeight = -1;
-        public static final int levelOneHeight = -1;
-        public static final int levelTwoHeight = -1;
-        public static final int levelThreeHeight = -1;
+        public static final int levelZeroHeight = -1, levelOneHeight = -1, levelTwoHeight = -1, levelThreeHeight = -1;
 
         public static final int kLimitSwitchId = 4;
 
@@ -182,16 +180,12 @@ public final class Constants {
         public static final double kGearRatio = 8;
 
         public static double rawUnitsToInches(double raw) {
-                return ((raw / 8) / 2048) * (Math.PI * kWinchRadius);
+            return ((raw / 8) / 2048) * (Math.PI * kWinchRadius);
         }
     }
 
     public static final class WristConstants {
-        public static final int kWristIDLeft = 0;
-        public static final int kWristIDRight = 1;
-        public static final int kWristConeSetpoint = -1;
-                
-        public static final int kWristSafePosition = -125;
+        public static final int kWristIDLeft = 0, kWristIDRight = 1, kWristConeSetpoint = -1, kWristSafePosition = -125;
 
         public static final double kEncoderOffset = 0.44;
 
@@ -200,12 +194,12 @@ public final class Constants {
         public static final double[] coneIntakeSetpoints = {
                 0, // 0 - floor intake (flipped)
                 0, // 1 - floor intake (upright)
-                0  // 2 - human player intake
+                0 // 2 - human player intake
         };
 
         public static final double[] cubeIntakeSetpoints = {
                 -30, // 1 - floor intake
-                0  // 2 - human player intake
+                0 // 2 - human player intake
         };
 
         public static final double[] kWristCubeOuttakeSetpoint = {
@@ -219,15 +213,14 @@ public final class Constants {
                 0, // 1 - first pole
                 0, // 2 - second pole (highest)
         };
-                
-        // INTAKE SETPOINTS -------------------------------------
 
+        // INTAKE SETPOINTS -------------------------------------
 
         public static final double kGearRatio = 128;
 
         public static double convertTicksToRadians(double ticks, double offset) {
-                double revolutions = (ticks / kGearRatio) / DriveConstants.kEncoderResolution;
-                return (revolutions * 360) + offset; 
+            double revolutions = (ticks / kGearRatio) / DriveConstants.kEncoderResolution;
+            return (revolutions * 360) + offset;
         }
     }
    
@@ -235,34 +228,47 @@ public final class Constants {
     // Have to add mirrored trajectories if alliance is switched
 
     public static final class VisionConstants {
-
         private static final double fieldLength = Units.inchesToMeters((54 * 12) + 3.25);
         private static final double fieldWidth = Units.inchesToMeters((26 * 12) + 3.5);
-
         static double wallY1 = Units.inchesToMeters(351);
         static double wallY2 = Units.inchesToMeters(97);
         public static final AprilTagFieldLayout tagLayout = new AprilTagFieldLayout(
                 List.of(
-
                         new AprilTag(1,
-                                new Pose3d(Units.inchesToMeters(120.25 + 300), wallY1, Units.inchesToMeters(23.75),
-                                        new Rotation3d(VecBuilder.fill(0, 0, 1), Units.degreesToRadians(270)))),
+                                new Pose3d(Units.inchesToMeters(120.25 + 300), wallY1,
+                                        Units.inchesToMeters(23.75),
+                                        new Rotation3d(VecBuilder.fill(0, 0, 1),
+                                                Units.degreesToRadians(
+                                                        270)))),
                         new AprilTag(2,
                                 new Pose3d(0, 0, Units.inchesToMeters(51.5),
-                                        new Rotation3d(VecBuilder.fill(0, 0, 1), Units.degreesToRadians(90)))),
+                                        new Rotation3d(VecBuilder.fill(0, 0, 1),
+                                                Units.degreesToRadians(
+                                                        90)))),
                         new AprilTag(3,
-                                new Pose3d(Units.inchesToMeters(214.375 + 300), Units.inchesToMeters(29.25),
+                                new Pose3d(Units.inchesToMeters(214.375 + 300),
+                                        Units.inchesToMeters(29.25),
                                         Units.inchesToMeters(26.25),
-                                        new Rotation3d(VecBuilder.fill(0, 0, 1), Units.degreesToRadians(180)))),
+                                        new Rotation3d(VecBuilder.fill(0, 0, 1),
+                                                Units.degreesToRadians(
+                                                        180)))),
                         new AprilTag(5,
-                                new Pose3d(Units.inchesToMeters(208.125), wallY1, Units.inchesToMeters(44),
-                                        new Rotation3d(VecBuilder.fill(0, 0, 1), Units.degreesToRadians(270)))),
+                                new Pose3d(Units.inchesToMeters(208.125), wallY1,
+                                        Units.inchesToMeters(44),
+                                        new Rotation3d(VecBuilder.fill(0, 0, 1),
+                                                Units.degreesToRadians(
+                                                        270)))),
                         new AprilTag(6,
                                 new Pose3d(0, 0, Units.inchesToMeters(57.0625),
-                                        new Rotation3d(VecBuilder.fill(0, 0, 1), Units.degreesToRadians(90)))),
+                                        new Rotation3d(VecBuilder.fill(0, 0, 1),
+                                                Units.degreesToRadians(
+                                                        90)))),
                         new AprilTag(7,
-                                new Pose3d(Units.inchesToMeters(30.5), wallY1, Units.inchesToMeters(43),
-                                        new Rotation3d(VecBuilder.fill(0, 0, 1), Units.degreesToRadians(270))))),
+                                new Pose3d(Units.inchesToMeters(30.5), wallY1,
+                                        Units.inchesToMeters(43),
+                                        new Rotation3d(VecBuilder.fill(0, 0, 1),
+                                                Units.degreesToRadians(
+                                                        270))))),
                 VisionConstants.fieldLength, VisionConstants.fieldWidth);
 
         public static final Transform3d robotToCamera = new Transform3d(
@@ -273,8 +279,7 @@ public final class Constants {
         public static final double camPitch = robotToCamera.getRotation().getX();
         public static final double camHeight = robotToCamera.getTranslation().getZ();
         public static final double maxLEDRange = 0;
-        public static final int camResolutionWidth = 1280;
-        public static final int camResolutionHeight = 720;
+        public static final int camResolutionWidth = 1280, camResolutionHeight = 720;
         public static final double minTargetArea = 10;
         public static final String kCameraName = "USB Camera 0";
     }
@@ -282,7 +287,6 @@ public final class Constants {
     public static final class LightConstants {
         public static final int lightstrip1Port = 9;
         public static final int lightstrip1Length = 150;
-
     }
 
 }

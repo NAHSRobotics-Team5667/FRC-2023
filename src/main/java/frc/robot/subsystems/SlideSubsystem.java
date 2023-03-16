@@ -23,6 +23,8 @@ import frc.robot.Constants.SlideConstants;
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide;
     private DigitalInput m_bottomLimitSwitch;
+    
+    @SuppressWarnings("unused")
     private WristSubsystem m_wrist;
     // private DutyCycleEncoder absEncoderHeight = new
     // DutyCycleEncoder(Constants.SlideConstants.EncoderId);
@@ -31,12 +33,12 @@ public class SlideSubsystem extends SubsystemBase {
     @SuppressWarnings("unused")
     private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0, 0, 0);
 
-    @SuppressWarnings("unused")
     private PIDController controller = new PIDController(.25, 0, 0);
 
+    @SuppressWarnings("unused")
     private ProfiledPIDController slideController = new ProfiledPIDController(0.5, 0, 0,
-        new TrapezoidProfile.Constraints(
-            15, 5));
+            new TrapezoidProfile.Constraints(
+                    15, 5));
 
     // maybe add a feed forward? May be unnecessary though
     /** Creates a new SlideSubsystem. */
@@ -105,8 +107,11 @@ public class SlideSubsystem extends SubsystemBase {
     }
 
     public void setSlidePIDInches(double inchesSetpoint) {
-        // double output = slideController.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint);
-        double output = MathUtil.clamp(controller.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint), -0.9, 0.9);
+        // double output =
+        // slideController.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()),
+        // inchesSetpoint);
+        double output = MathUtil.clamp(
+                controller.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint), -0.9, 0.9);
         setSlide(output);
     }
 
@@ -114,13 +119,12 @@ public class SlideSubsystem extends SubsystemBase {
         setSlidePIDInches(inchesSetpoint);
     }
 
-    public double getVelocity(){
+    public double getVelocity() {
         return m_leftSlide.getSelectedSensorVelocity();
     }
 
     public void setPosition(int bumperPos) {
     }
-
 
     // public double getLeftPosition(){
     // return (m_leftSlide.getSelectedSensorPosition() *

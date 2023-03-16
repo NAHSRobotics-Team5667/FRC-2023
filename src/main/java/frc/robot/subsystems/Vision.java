@@ -21,14 +21,9 @@ public class Vision {
         currentFieldPose = Optional.empty();
     }
     
-    /**
-    * @return
-    */
-    
     public Optional<EstimatedRobotPose> getCurrentPoseEstimate() {
         return currentFieldPose;
     }
-    
     
     public void setReferencePose(Pose2d pose) {
         poseEstimator.setReferencePose(pose);

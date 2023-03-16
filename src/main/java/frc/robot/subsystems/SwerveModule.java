@@ -18,12 +18,11 @@ import frc.robot.Constants.DriveConstants;
 public class SwerveModule {
     public static final double kDriveEncoderConstant = (2 * DriveConstants.kWheelRadius * Math.PI)
             / (DriveConstants.kEncoderResolution * DriveConstants.kDriveGearRatio);
-            
+
     @SuppressWarnings("unused")
-    private static final double
-            kModuleMaxAngularVelocity = DriveConstants.kMaxAngularSpeed,
+    private static final double kModuleMaxAngularVelocity = DriveConstants.kMaxAngularSpeed,
             kModuleMaxAngularAcceleration = DriveConstants.kMaxAngularAcceleration; // radians per second squared
-   
+
     private final WPI_TalonFX m_driveMotor, m_turningMotor;
     private final PIDController m_drivePIDController = new PIDController(.031576, 0, 0);
 
@@ -35,33 +34,36 @@ public class SwerveModule {
     double trueEncoderOffset = 100, trueEncoderOffsetTest = 0;
     double[] averageOffsetBoi;
     @SuppressWarnings("unused")
-    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398); // TODO: do something idk
+    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398); // TODO:
+                                                                                                                      // do
+                                                                                                                      // something
+                                                                                                                      // idk
     DutyCycleEncoder Encoder;
     double angleOffset = 0;
 
     @SuppressWarnings("unused")
     private final LinearFilter filter = LinearFilter.movingAverage(10000); // average over last 5 samples
 
-    private double sampleCounter = 0,  m_encoderSampleSum = 0;
+    private double sampleCounter = 0, m_encoderSampleSum = 0;
 
     /**
      * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
      * and turning encoder.
      *
-     * @param driveMotorChannel      PWM output for the drive motor.
-     * @param turningMotorChannel    PWM output for the turning motor.
-     * @param angleOffset            Offset for the turning encoder
-     * @param Encoder                Encoder for the turning motor
+     * @param driveMotorChannel   PWM output for the drive motor.
+     * @param turningMotorChannel PWM output for the turning motor.
+     * @param angleOffset         Offset for the turning encoder
+     * @param Encoder             Encoder for the turning motor
      */
     public SwerveModule(int driveMotorChannel, int turningMotorChannel, double angleOffset, DutyCycleEncoder Encoder) {
-        this (
-            driveMotorChannel, 
-            turningMotorChannel, 
-            angleOffset, 
-            Encoder, 
-            DriveConstants.kTurnKp, 
-            DriveConstants.kTurnKi, 
-            DriveConstants.kTurnKd);
+        this(
+                driveMotorChannel,
+                turningMotorChannel,
+                angleOffset,
+                Encoder,
+                DriveConstants.kTurnKp,
+                DriveConstants.kTurnKi,
+                DriveConstants.kTurnKd);
     }
 
     /**
@@ -92,12 +94,11 @@ public class SwerveModule {
         if (trueEncoderOffset > 1) {
             trueEncoderOffset = this.Encoder.getAbsolutePosition() - angleOffset;
         }
-        
 
         // m_turningPIDController = new ProfiledPIDController(turnKp, turnKi, turnKd,
         // new TrapezoidProfile.Constraints(
-        //     kModuleMaxAngularVelocity,
-        //     kModuleMaxAngularAcceleration));
+        // kModuleMaxAngularVelocity,
+        // kModuleMaxAngularAcceleration));
 
         this.m_turningPIDController = new PIDController(turnKp, turnKi, turnKd);
 
@@ -123,7 +124,7 @@ public class SwerveModule {
      */
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
+                getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
     }
 
     /**
@@ -133,21 +134,21 @@ public class SwerveModule {
      */
     public edu.wpi.first.math.kinematics.SwerveModulePosition getPosition() {
         return new edu.wpi.first.math.kinematics.SwerveModulePosition(
-            getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
+                getDriveEncoderDistance(), new Rotation2d(getTurnEncoderDistance()));
     }
     // private double angleOffset = this.angleOffset;
 
     // public ProfiledPIDController getTurningPID() {
-    //     return this.m_turningPIDController;
+    // return this.m_turningPIDController;
     // }
 
     public PIDController getTurningPID() {
         return this.m_turningPIDController;
     }
+
     public PIDController getDrivePID() {
         return this.m_drivePIDController;
     }
-
 
     /**
      * Sets the desired state for the module.
@@ -157,28 +158,27 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         // SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-        //     new Rotation2d(getTurnEncoderDistance()));
+        // new Rotation2d(getTurnEncoderDistance()));
 
         SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-            new Rotation2d(getTurnEncoderDistance()));
+                new Rotation2d(getTurnEncoderDistance()));
         // Calculate the drive output from the drive PID controller.
-       
 
         final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
         // Calculate the turning motor output from the turning PID controller.
         final double turnOutput = m_turningPIDController.calculate(getTurnEncoderDistance(),
-            state.angle.getRadians());
+                state.angle.getRadians());
 
         final double turnFeedforward = 0; // m_turnFeedforward.calculate(state.angle.getRadians());
 
         m_turningMotor.setVoltage(turnOutput + turnFeedforward);
         final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
         // double driveOutput = 0;
-         m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+        m_driveMotor.setVoltage(driveOutput + driveFeedforward);
 
         m_turningPIDController.getPositionError();
-       
+
     }
 
     public void updateTurnPID(double kP, double kI, double kD) {
@@ -191,7 +191,6 @@ public class SwerveModule {
         m_driveMotor.setVoltage(voltage);
         m_turningMotor.setVoltage(voltage);
     }
-
 
     /**
      * Get the drive motor encoder's rate
@@ -216,17 +215,16 @@ public class SwerveModule {
     }
 
     /**
-     * @return get the turn motor angle   
+     * @return get the turn motor angle
      */
     public double getTurnEncoderDistance() {
-        
-        trueEncoderOffsetTest = this.Encoder.getAbsolutePosition() - angleOffset;
-    
-        
-        // return ((this.Encoder.getDistance()- angleOffset)*2*Math.PI);
-        return (m_turningMotor.getSelectedSensorPosition() * DriveConstants.kTurnEncoderConstant)-  (trueEncoderOffset * 2 * Math.PI);
-    }
 
+        trueEncoderOffsetTest = this.Encoder.getAbsolutePosition() - angleOffset;
+
+        // return ((this.Encoder.getDistance()- angleOffset)*2*Math.PI);
+        return (m_turningMotor.getSelectedSensorPosition() * DriveConstants.kTurnEncoderConstant)
+                - (trueEncoderOffset * 2 * Math.PI);
+    }
 
     public double getAbsTurnEncoder() {
         // return filter.calculate(this.Encoder.getAbsolutePosition() - angleOffset);
@@ -238,7 +236,7 @@ public class SwerveModule {
     }
 
     // public double getAngleSetpoint() {
-    //     return m_turningPIDController.getSetpoint().position;
+    // return m_turningPIDController.getSetpoint().position;
     // }
 
     public double getAngleSetpoint() {
@@ -254,7 +252,8 @@ public class SwerveModule {
     }
 
     // public boolean turnAtSetpoint() {
-    //     return Math.abs(m_turningPIDController.getSetpoint().position - getTurnEncoderDistance()) < 0.1;
+    // return Math.abs(m_turningPIDController.getSetpoint().position -
+    // getTurnEncoderDistance()) < 0.1;
     // }
 
     public boolean turnAtSetpoint() {
@@ -275,5 +274,4 @@ public class SwerveModule {
         return trueEncoderOffset;
     }
 
-   
 }

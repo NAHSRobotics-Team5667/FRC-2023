@@ -4,10 +4,12 @@
 
 package frc.robot.commands;
 
+<<<<<<< HEAD
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+=======
+>>>>>>> 714163e41e0b1bb3dc967718383352367aa723db
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.SlideConstants;
 import frc.robot.RobotContainer.GamePiece;

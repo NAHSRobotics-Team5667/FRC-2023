@@ -11,22 +11,18 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.RobotContainer.GamePiece;
-import frc.robot.commands.WristCommand;
 
 public class WristSubsystem extends SubsystemBase {
 
     public int bumperPos = 0;
-    public WPI_TalonFX m_wristMotorFirst;
-    public WPI_TalonFX m_wristMotorSecond;
+    public WPI_TalonFX m_wristMotorFirst, m_wristMotorSecond;
     private PIDController wristPID = new PIDController(.02, 0, 0);
     private SimpleMotorFeedforward m_wristFeedForward = new SimpleMotorFeedforward(0, 0, 0);
 
@@ -59,7 +55,7 @@ public class WristSubsystem extends SubsystemBase {
 
         this.m_robotContainer = m_robotContainer;
 
-        //angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
     }
 
     public void setWrist(double percentOutput) {
@@ -111,12 +107,14 @@ public class WristSubsystem extends SubsystemBase {
 
     }
 
-    //make these dependent on bumperPos, array of setPoints
-    public void coneIntakeAngled() {
+    // make these dependent on bumperPos, array of setPoints
+    public void coneIntakeAngled() { // TODO: this method doesnt do shit
+        @SuppressWarnings("unused")
         double currentPosition = getPosition();
-        // double outputWrist = 
-        
-        // wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeIntakeSetpoint);
+        // double outputWrist =
+
+        // wristPID.calculate(currentPosition,
+        // Constants.WristConstants.kWristConeIntakeSetpoint);
         // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
         // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
@@ -126,7 +124,8 @@ public class WristSubsystem extends SubsystemBase {
 
     public void coneOuttakeAngled() {
         double currentPosition = getPosition();
-        double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristConeOuttakeSetpoint[bumperPos]);
+        double outputWrist = wristPID.calculate(currentPosition,
+                Constants.WristConstants.kWristConeOuttakeSetpoint[bumperPos]);
         double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
         m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
@@ -134,13 +133,14 @@ public class WristSubsystem extends SubsystemBase {
 
     public void cubeIntakeAngled() {
         // double currentPosition = getPosition();
-        // double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristCubeIntakeSetpoint[bumperPos]);
+        // double outputWrist = wristPID.calculate(currentPosition,
+        // Constants.WristConstants.kWristCubeIntakeSetpoint[bumperPos]);
         // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
         // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
         // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
         // Wrist Angled for Cube intake
     }
-    
+
     public void cubeOuttakeAngled() {
         double currentPosition = getPosition();
         double outputWrist = wristPID.calculate(currentPosition, WristConstants.kWristCubeOuttakeSetpoint[bumperPos]);
@@ -165,14 +165,14 @@ public class WristSubsystem extends SubsystemBase {
         }
 
         // if (counter % 5 == 0 && counter >= 30) {
-        //     angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
         // }
 
         // if (Math.abs((getEncoder() * 360) - getAngleDegrees()) > 1) {
-        //     angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
 
-        //     m_wristMotorFirst.setSelectedSensorPosition(0);
-        //     m_wristMotorSecond.setSelectedSensorPosition(0);
+        // m_wristMotorFirst.setSelectedSensorPosition(0);
+        // m_wristMotorSecond.setSelectedSensorPosition(0);
         // }
 
         // placed here because i need it updated constantly and dont want to deal with
@@ -209,11 +209,11 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Angle Offset", angleOffset);
 
         // if (RobotContainer.m_controller.getYButton()) {
-        //     bumperPos = 0;
+        // bumperPos = 0;
         // }
 
         // if (RobotContainer.m_controller.getXButton()) {
-        //     bumperPos = 3;
+        // bumperPos = 3;
         // }
 
         // This method will be called once per scheduler run

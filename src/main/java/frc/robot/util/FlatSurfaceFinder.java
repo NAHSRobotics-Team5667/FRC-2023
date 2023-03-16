@@ -9,12 +9,12 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class FlatSurfaceFinder extends SubsystemBase {
-    public static boolean isBlue = true;
-
+    public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue); // TODO: Check if this works
     public static final class FieldConstants {
         public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
         public static final List<Pose2d> REDFLATSURFACES_POSE2DS = new ArrayList<Pose2d>() {
@@ -51,7 +51,8 @@ public class FlatSurfaceFinder extends SubsystemBase {
     }
 
     /** Creates a new PoleFinder. */
-    public FlatSurfaceFinder() {}
+    public FlatSurfaceFinder() {
+    }
 
     public static Pose2d getNearestPole() {
         if (isBlue) {
@@ -62,5 +63,6 @@ public class FlatSurfaceFinder extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+    }
 }
