@@ -83,6 +83,10 @@ public final class Constants {
          */
 
         // next lines are for the Swerve Module object
+        public static final double BLEncoderOffset = 0.43267 - .25;
+        public static final double FLEncoderOffset = 0.40751 - .25;
+        public static final double BREncoderOffset = 0.66494 - .25;
+        public static final double FREncoderOffset = 0.90833 - .25;
         public static final double kWheelRadius = 0.0508; // meters
         public static final double kEncoderResolution = 2048;
 
@@ -226,6 +230,7 @@ public final class Constants {
                 return (revolutions * 360) + offset; 
         }
     }
+   
 
     // Have to add mirrored trajectories if alliance is switched
 

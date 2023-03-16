@@ -44,28 +44,29 @@ public class WristCommand extends CommandBase {
         // } else {
         //     wrist.setWrist(0.1);
         // }
-        double position = 0;
 
-        if (wrist.getBumperPos() == 0) {
-            position = WristConstants.kWristSafePosition;
-        } else {
-            if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                position = WristConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
+        // double position = 0;
 
-            } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
+        // if (wrist.getBumperPos() == 0) {
+        //     position = WristConstants.kWristSafePosition;
+        // } else {
+        //     if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
+        //         position = WristConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
 
-            } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                position = WristConstants.kWristConeOuttakeSetpoint[wrist.getBumperPos() - 1];
+        //     } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
+        //         position = WristConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
 
-            } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-                position = WristConstants.kWristCubeOuttakeSetpoint[wrist.getBumperPos() - 1];
-            }
-        }
+        //     } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+        //         position = WristConstants.kWristConeOuttakeSetpoint[wrist.getBumperPos() - 1];
 
-        wrist.setPosition(position);
+        //     } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+        //         position = WristConstants.kWristCubeOuttakeSetpoint[wrist.getBumperPos() - 1];
+        //     }
+        // }
 
-        // wrist.setWrist(0.1);
+        // wrist.setPosition(position);
+
+        wrist.setWrist(robotContainer.m_controller.getRightX());
 
     }
 

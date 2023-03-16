@@ -120,7 +120,7 @@ public class RobotContainer {
         this.robot = robot;
         m_wrist = new WristSubsystem(this);
         m_drive = new DrivetrainSubsystem();
-        m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
+        // m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
         poseEstimate = new PoseEstimator(null, m_drive);
         Limelight = new LimelightSubsystem();
         //removing everything that isnt the drive train for now to make troubleshooting easier

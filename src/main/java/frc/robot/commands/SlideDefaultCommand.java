@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -43,11 +44,11 @@ public class SlideDefaultCommand extends CommandBase {
     public void execute() {
         // max right slide = 277000
 
-        // slide.setSlide(-0.3);
+        slide.setSlide(MathUtil.clamp(m_RobotContainer.m_controller.getLeftY(), -0.5, 0.5));
 
         double position = 0;
-
-        if (wrist.getBumperPos() == 0) {
+        
+        /*if (wrist.getBumperPos() == 0) {
             position = 0;
         } else {
             if (m_RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
@@ -62,9 +63,9 @@ public class SlideDefaultCommand extends CommandBase {
             } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
                 position = SlideConstants.cubeOuttakeSetpoint[wrist.getBumperPos() - 1];
             }
-        }
+        }*/
 
-        slide.setSlidePIDInches(position);
+       // slide.setSlidePIDInches(position);
 
         // slide.setSlidePIDInches(30);
         // slide.setSlidePIDEncoder(113000);
