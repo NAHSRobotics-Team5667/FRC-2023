@@ -105,14 +105,12 @@ public class RobotContainer {
         this.robot = robot;
         this.coneOrCube = "cube";
         m_drive = new DrivetrainSubsystem();
-        // m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
+        m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
         poseEstimate = new PoseEstimator(null, m_drive);
         Limelight = new LimelightSubsystem();
-        // removing everything that isnt the drive train for now to make troubleshooting
-        // easier
-        // why are we insantiating the robot in robot container? doesnt the hierarchy go
-        // from robot to robot container?
+        m_wrist = new WristSubsystem(this);
         m_claw = new ClawSubsystem();
+        m_slide = new SlideSubsystem();
 
         m_claw.setDefaultCommand(new ClawCommand(m_claw, this));
         m_wrist.setDefaultCommand(new WristCommand(m_wrist, this));
@@ -232,7 +230,7 @@ public class RobotContainer {
                     .until(getSticks(getSticksMode.NONE)).andThen(new WristCubeIntake(m_wrist, this))
                     .until(getSticks(getSticksMode.NONE));
         } else {
-            return new ClawCubeOuttake(m_claw, this).until(getSticks((getSticksMode.NONE)))
+            return new ClawCubeOuttake(m_claw, m_wrist, this).until(getSticks((getSticksMode.NONE)))
                     .andThen(new WristCubeOuttake(m_wrist, this)).until(getSticks(getSticksMode.NONE));
         }
     }
@@ -268,38 +266,40 @@ public class RobotContainer {
                 xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
         // bButton.onTrue(new ClawCommand(m_claw, this));
         // bButton.onTrue(new AlignFlatSurface(this));
-        xButton.onTrue(autoBuilder.followPath(PathPlanner.generatePath(
-                new PathConstraints(5, 5),
-                new PathPoint(new Translation2d(
-                        poseEstimate.getCurrentPose().getX(),
-                        poseEstimate.getCurrentPose().getY()),
-                        poseEstimate.getCurrentPose().getRotation()),
-                new PathPoint(new Translation2d(
-                        PoleFinder.getNearestPole().getX(),
-                        PoleFinder.getNearestPole().getY()),
-                        PoleFinder.getNearestPole().getRotation())))
-                .until(getSticks(getSticksMode.POLE)));
-        // pole align
-        yButton.onTrue(autoBuilder.followPath(PathPlanner.generatePath(new PathConstraints(5, 5),
-                new PathPoint(
-                        new Translation2d(poseEstimate.getCurrentPose().getX(),
-                                poseEstimate.getCurrentPose().getY()),
-                        poseEstimate.getCurrentPose().getRotation()),
-                new PathPoint(
-                        new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
-                                FlatSurfaceFinder.getNearestPole().getY()),
-                        FlatSurfaceFinder.getNearestPole().getRotation())))
-                .until(getSticks(getSticksMode.SURFACE)));
+
+        // xButton.onT`q1rue(autoBuilder.followPath(PathPlanner.generatePath(
+        // new PathConstraints(5, 5),
+        // new PathPoint(new Translation2d(
+        // poseEstimate.getCurrentPose().getX(),
+        // poseEstimate.getCurrentPose().getY()),
+        // poseEstimate.getCurrentPose().getRotation()),
+        // new PathPoint(new Translation2d(
+        // PoleFinder.getNearestPole().getX(),
+        // PoleFinder.getNearestPole().getY()),
+        // PoleFinder.getNearestPole().getRotation())))
+        // .until(getSticks(getSticksMode.POLE)));
+        // // pole align
+        // yButton.onTrue(autoBuilder.followPath(PathPlanner.generatePath(new
+        // PathConstraints(5, 5),
+        // new PathPoint(
+        // new Translation2d(poseEstimate.getCurrentPose().getX(),
+        // poseEstimate.getCurrentPose().getY()),
+        // poseEstimate.getCurrentPose().getRotation()),
+        // new PathPoint(
+        // new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
+        // FlatSurfaceFinder.getNearestPole().getY()),
+        // FlatSurfaceFinder.getNearestPole().getRotation())))
+        // .until(getSticks(getSticksMode.SURFACE)));
         // surface align
 
         aButton.onTrue(
-                new ClawCubeOuttake(m_claw, this)
+                new ClawCubeOuttake(m_claw, m_wrist, this)
                         .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))
         /*
          * .andThen(new WristCubeOuttake(m_wrist, this))
          * .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))
          */);
-        bButton.onTrue(
+        yButton.onTrue(
                 new ClawConeIntake(m_claw, m_wrist, true, this, inOrOut % 2 == 0)
                         .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))/*
                                                                           * .andThen(new WristConeIntake(m_wrist,
@@ -314,7 +314,7 @@ public class RobotContainer {
          * .andThen(new WristCubeIntake(m_wrist, this))
          * .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))
          */);
-        yButton.onTrue(
+        bButton.onTrue(
                 new ClawConeOuttake(m_claw, this)
                         .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))/*
                                                                            * .andThen(new WristConeOuttake(m_wrist,
@@ -338,7 +338,8 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return this.fullAuto;
+        // return this.fullAuto;
+        return null;
 
     }
 

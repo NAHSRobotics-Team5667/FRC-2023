@@ -4,11 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.WristConstants;
+import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
+import frc.robot.RobotContainer.GamePiece;
+import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.WristSubsystem;
 
 public class WristCommand extends CommandBase {
@@ -35,38 +39,43 @@ public class WristCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // wrist.maintainSafePosition();
 
-        // if (wrist.getEncoder() <= 0.1) {
-        // wrist.setWrist(0.1);
-        // } else if (wrist.getEncoder() >= (225 / 360)) {
-        // wrist.setWrist(-0.1);
-        // } else {
-        // wrist.setWrist(0.1);
-        // }
+        double position = 0;
+        String safe = "";
 
-        // double position = 0;
+        if (wrist.getBumperPos() == 0) {
+            if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+                position = -90;
+            } else {
+                position = WristConstants.kWristSafePosition;
+                safe = "safe";
+            }
+        } else {
+            if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
+                position = WristConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
 
-        // if (wrist.getBumperPos() == 0) {
-        //     position = WristConstants.kWristSafePosition;
-        // } else {
-        //     if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-        //         position = WristConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
+            } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
+                position = WristConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
 
-        //     } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-        //         position = WristConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
+            } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+                position = WristConstants.kWristConeOuttakeSetpoint[wrist.getBumperPos() -
+                        1];
 
-        //     } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-        //         position = WristConstants.kWristConeOuttakeSetpoint[wrist.getBumperPos() - 1];
+            } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
 
-        //     } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-        //         position = WristConstants.kWristCubeOuttakeSetpoint[wrist.getBumperPos() - 1];
-        //     }
-        // }
+                position = WristConstants.kWristCubeOuttakeSetpoint[wrist.getBumperPos() -
+                        1];
+            }
+            safe = "not";
+        }
 
-        // wrist.setPosition(position);
+        SmartDashboard.putString("Safe", safe);
 
-        wrist.setWrist(robotContainer.m_controller.getRightX());
+        wrist.setPosition(position);
+
+        // wrist.setWrist(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX()
+        // // TESTING
+        // / 2, 0.2));
 
     }
 

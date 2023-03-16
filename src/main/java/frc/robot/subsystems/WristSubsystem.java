@@ -74,7 +74,7 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public void setPosition(double position) {
-        double output = MathUtil.clamp(wristPID.calculate(getAngleDegrees(), position), -0.1, 0.1);
+        double output = MathUtil.clamp(wristPID.calculate(getAngleDegrees(), position), -0.4, 0.4);
         setWrist(output);
     }
 
@@ -98,14 +98,15 @@ public class WristSubsystem extends SubsystemBase {
         return wristPID.getPositionError();
     }
 
-    public void maintainSafePosition() {
-        double currentPosition = getPosition();
-        double outputWrist = wristPID.calculate(currentPosition, Constants.WristConstants.kWristSafePosition);
-        double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-        m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
+    // public void maintainSafePosition() {
+    // double currentPosition = getPosition();
+    // double outputWrist = wristPID.calculate(currentPosition,
+    // Constants.WristConstants.kWristSafePosition);
+    // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
+    // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
+    // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
 
-    }
+    // }
 
     // make these dependent on bumperPos, array of setPoints
     public void coneIntakeAngled() { // TODO: this method doesnt do shit
@@ -122,33 +123,34 @@ public class WristSubsystem extends SubsystemBase {
         // Wrist Angled for Cone intake
     }
 
-    public void coneOuttakeAngled() {
-        double currentPosition = getPosition();
-        double outputWrist = wristPID.calculate(currentPosition,
-                Constants.WristConstants.kWristConeOuttakeSetpoint[bumperPos]);
-        double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-        m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-    }
+    // public void coneOuttakeAngled() {
+    // double currentPosition = getPosition();
+    // double outputWrist = wristPID.calculate(currentPosition,
+    // Constants.WristConstants.kWristConeOuttakeSetpoint[bumperPos]);
+    // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
+    // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
+    // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
+    // }
 
-    public void cubeIntakeAngled() {
-        // double currentPosition = getPosition();
-        // double outputWrist = wristPID.calculate(currentPosition,
-        // Constants.WristConstants.kWristCubeIntakeSetpoint[bumperPos]);
-        // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-        // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-        // Wrist Angled for Cube intake
-    }
+    // public void cubeIntakeAngled() {
+    // // double currentPosition = getPosition();
+    // // double outputWrist = wristPID.calculate(currentPosition,
+    // // Constants.WristConstants.kWristCubeIntakeSetpoint[bumperPos]);
+    // // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
+    // // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
+    // // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
+    // // Wrist Angled for Cube intake
+    // }
 
-    public void cubeOuttakeAngled() {
-        double currentPosition = getPosition();
-        double outputWrist = wristPID.calculate(currentPosition, WristConstants.kWristCubeOuttakeSetpoint[bumperPos]);
-        double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-        m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-        // Wrist Angled for Cube intake
-    }
+    // public void cubeOuttakeAngled() {
+    // double currentPosition = getPosition();
+    // double outputWrist = wristPID.calculate(currentPosition,
+    // WristConstants.kWristCubeOuttakeSetpoint[bumperPos]);
+    // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
+    // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
+    // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
+    // // Wrist Angled for Cube intake
+    // }
 
     public double getAngleDegrees() {
         return WristConstants.convertTicksToRadians(m_wristMotorFirst.getSelectedSensorPosition(), angleOffset);
@@ -163,6 +165,8 @@ public class WristSubsystem extends SubsystemBase {
         if (counter == 50) {
             angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
         }
+
+        SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint());
 
         // if (counter % 5 == 0 && counter >= 30) {
         // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
@@ -208,6 +212,9 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist Angle", getAngleDegrees());
         SmartDashboard.putNumber("Angle Offset", angleOffset);
 
+        SmartDashboard.putString("Target Element", m_robotContainer.getTargetElement().toString());
+        SmartDashboard.putString("Current Element", m_robotContainer.getCurrentElement().toString());
+
         // if (RobotContainer.m_controller.getYButton()) {
         // bumperPos = 0;
         // }
@@ -217,5 +224,8 @@ public class WristSubsystem extends SubsystemBase {
         // }
 
         // This method will be called once per scheduler run
+    }
+
+    public void coneOuttakeAngled() {
     }
 }

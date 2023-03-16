@@ -84,10 +84,10 @@ public final class Constants {
          */
 
         // next lines are for the Swerve Module object
-        public static final double BLEncoderOffset = 0.43267 - .25;
-        public static final double FLEncoderOffset = 0.40751 - .25;
-        public static final double BREncoderOffset = 0.66494 - .25;
-        public static final double FREncoderOffset = 0.90833 - .25;
+        public static final double BLEncoderOffset = 0.4364 - .25;
+        public static final double FLEncoderOffset = 0.4032 - .25;
+        public static final double BREncoderOffset = 0.662 - .25;
+        public static final double FREncoderOffset = 0.9068955 - .25;
         public static final double kWheelRadius = 0.0508; // meters
         public static final double kEncoderResolution = 2048;
 
@@ -97,10 +97,6 @@ public final class Constants {
         public static final int FREncoderID = 0, FLEncoderID = 3, BREncoderID = 1, BLEncoderID = 2;
 
         public static final double kTurnEncoderConstant = 2 * Math.PI / (kTurnGearRatio * kEncoderResolution);
-        public static final double BLEncoderOffset = 0.43267 - .25;
-        public static final double FLEncoderOffset = 0.40751 - .25;
-        public static final double BREncoderOffset = 0.66494 - .25;
-        public static final double FREncoderOffset = 0.90833 - .25;
     }
 
     public static final class FieldConstants {
@@ -142,7 +138,7 @@ public final class Constants {
 
         public static final double[] coneIntakeSetpoints = {
                 10, // 0 - floor intake (flipped)
-                20, // 1 - floor intake (upright)
+                21.2979, // 1 - floor intake (upright)
                 30 // 2 - human player intake
         };
 
@@ -152,16 +148,18 @@ public final class Constants {
         };
 
         public static final double[] cubeOuttakeSetpoint = {
-                10, // 0 - ground level (hybrid)
-                20, // 1 - first platform
-                30 // 2 - second platform (highest)
+                0, // 0 - ground level (hybrid)
+                25.267, // 1 - first platform
+                46.1483 // 2 - second platform (highest)
         };
 
         public static final double[] coneOuttakeSetpoint = {
-                0, // 0 - ground level (hybrid)
-                0, // 1 - first pole
-                0, // 2 - second pole (highest)
+                16.1876, // 0 - ground level (hybrid)
+                53.9773, // 1 - first pole
+                57.168 // 2 - second pole (highest)
         };
+
+        public static final double maxEncoderTicks = 400000;
 
         public static final int kLSlideID = 2;
         public static final int kRSlideID = 4;
@@ -172,11 +170,13 @@ public final class Constants {
         public static final double CurrentThreshold = 30;
         public static final double CurrentDeadband = 0;
 
-        public static final int levelZeroHeight = -1, levelOneHeight = -1, levelTwoHeight = -1, levelThreeHeight = -1;
+        public static final int levelZeroHeight = -1, levelOneHeight = -1, levelTwoHeight = -1,
+                levelThreeHeight = -1;
 
-        public static final int kLimitSwitchId = 4;
+        public static final int kBottomLimitSwitchId = 4;
+        public static final int kTopLimitSwitchId = 6;
 
-        public static final double kWinchRadius = 1.25;
+        public static final double kWinchRadius = 0.75;
         public static final double kGearRatio = 8;
 
         public static double rawUnitsToInches(double raw) {
@@ -185,7 +185,8 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final int kWristIDLeft = 0, kWristIDRight = 1, kWristConeSetpoint = -1, kWristSafePosition = -125;
+        public static final int kWristIDLeft = 0, kWristIDRight = 1, kWristConeSetpoint = -1,
+                kWristSafePosition = -125;
 
         public static final double kEncoderOffset = 0.44;
 
@@ -193,25 +194,25 @@ public final class Constants {
 
         public static final double[] coneIntakeSetpoints = {
                 0, // 0 - floor intake (flipped)
-                0, // 1 - floor intake (upright)
+                60.513, // 1 - floor intake (upright)
                 0 // 2 - human player intake
         };
 
         public static final double[] cubeIntakeSetpoints = {
-                -30, // 1 - floor intake
+                -20, // 1 - floor intake
                 0 // 2 - human player intake
         };
 
         public static final double[] kWristCubeOuttakeSetpoint = {
-                0, // 0 - ground level (hybrid)
-                0, // 1 - first platform
-                0, // 2 - second platform (highest)
+                -90, // 0 - ground level (hybrid)
+                -79.666, // 1 - first platform
+                -91.6953, // 2 - second platform (highest)
         };
 
         public static final double[] kWristConeOuttakeSetpoint = {
-                0, // 0 - ground level (hybrid)
-                0, // 1 - first pole
-                0, // 2 - second pole (highest)
+                27.1897, // 0 - ground level (hybrid)
+                49.9116, // 1 - first pole
+                6.0569, // 2 - second pole (highest)
         };
 
         // INTAKE SETPOINTS -------------------------------------
@@ -223,7 +224,6 @@ public final class Constants {
             return (revolutions * 360) + offset;
         }
     }
-   
 
     // Have to add mirrored trajectories if alliance is switched
 

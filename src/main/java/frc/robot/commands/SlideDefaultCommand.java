@@ -4,11 +4,8 @@
 
 package frc.robot.commands;
 
-<<<<<<< HEAD
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DigitalInput;
-=======
->>>>>>> 714163e41e0b1bb3dc967718383352367aa723db
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.SlideConstants;
@@ -23,7 +20,10 @@ public class SlideDefaultCommand extends CommandBase {
     public int bumperPos = 0;
     RobotContainer m_RobotContainer;
 
-    // these will be the heights of the slide at different points. The height will be set as SlideConstants.slideSetpoints[bumperPos]
+    private boolean hasSpool, hasZeroed;
+
+    // these will be the heights of the slide at different points. The height will
+    // be set as SlideConstants.slideSetpoints[bumperPos]
 
     /** Creates a new SlideCommand. */
     public SlideDefaultCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {
@@ -32,6 +32,10 @@ public class SlideDefaultCommand extends CommandBase {
         this.slide = slide;
         this.wrist = wrist;
         wrist = m_RobotContainer.m_wrist;
+
+        hasSpool = !slide.getBottomLimitSwitch();
+        hasZeroed = false;
+
         addRequirements(slide);
     }
 
@@ -39,39 +43,66 @@ public class SlideDefaultCommand extends CommandBase {
     @Override
     public void initialize() {
         slide.setSlide(0);
-    }     
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         // max right slide = 277000
 
-        slide.setSlide(MathUtil.clamp(m_RobotContainer.m_controller.getLeftY(), -0.5, 0.5));
+        // slide.setSlide(MathUtil.applyDeadband(m_RobotContainer.m_controller.getLeftY()
+        // / 2, 0.1));
 
         double position = 0;
-        
-        /*if (wrist.getBumperPos() == 0) {
-            position = 0;
-        } else {
-            if (m_RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                position = SlideConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
 
-            } else if (m_RobotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                position = SlideConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
-
-            } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                position = SlideConstants.coneOuttakeSetpoint[wrist.getBumperPos() - 1];
-
-            } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-                position = SlideConstants.cubeOuttakeSetpoint[wrist.getBumperPos() - 1];
+        if (!hasZeroed) {
+            if (!hasSpool && slide.getBottomLimitSwitch()) {
+                slide.setSlide(0.1);
+            } else if (!hasSpool && !slide.getBottomLimitSwitch()) {
+                hasSpool = true;
+                // slide.setSlide(0.1);
+            } else if (hasSpool && !slide.getBottomLimitSwitch()) {
+                slide.setSlide(-0.1);
+            } else if (hasSpool && slide.getBottomLimitSwitch()) {
+                hasZeroed = true;
             }
-        }*/
+        } else {
+            // slide.setSlide(MathUtil.applyDeadband(m_RobotContainer.m_controller.getLeftY()
+            // // TESTING
+            // / 2, 0.2));
 
-       // slide.setSlidePIDInches(position);
+            if (wrist.getBumperPos() == 0) {
+                position = 0;
+                slide.setSlidePIDInches(position);
+            } else {
+                if (m_RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
+                    position = SlideConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
+
+                } else if (m_RobotContainer.getTargetElement().equals(GamePiece.CUBE)) {
+                    position = SlideConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
+
+                } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+                    position = SlideConstants.coneOuttakeSetpoint[wrist.getBumperPos() - 1];
+
+                } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+                    position = SlideConstants.cubeOuttakeSetpoint[wrist.getBumperPos() - 1];
+                }
+                slide.setSlidePIDInches(position);
+            }
+        }
+
+        if (slide.getTopLimitSwitch())
+
+        {
+            hasZeroed = false;
+            slide.setSlide(0);
+        }
+
+        // SmartDashboard.putNumber("Slide Position", position);
 
         // slide.setSlidePIDInches(30);
         // slide.setSlidePIDEncoder(113000);
-        
+
     }
 
     // Called once the command ends or is interrupted.

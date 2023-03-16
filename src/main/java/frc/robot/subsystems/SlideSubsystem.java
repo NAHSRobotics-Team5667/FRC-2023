@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -23,7 +25,7 @@ import frc.robot.Constants.SlideConstants;
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX m_rightSlide, m_leftSlide;
     private DigitalInput m_bottomLimitSwitch;
-    
+    private DigitalInput m_topLimitSwitch;
     @SuppressWarnings("unused")
     private WristSubsystem m_wrist;
     // private DutyCycleEncoder absEncoderHeight = new
@@ -33,12 +35,13 @@ public class SlideSubsystem extends SubsystemBase {
     @SuppressWarnings("unused")
     private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0, 0, 0);
 
-    private PIDController controller = new PIDController(.25, 0, 0);
+    private PIDController controller = new PIDController(.1, 0, 0);
 
     @SuppressWarnings("unused")
-    private ProfiledPIDController slideController = new ProfiledPIDController(0.5, 0, 0,
-            new TrapezoidProfile.Constraints(
-                    15, 5));
+    // private ProfiledPIDController slideController = new
+    // ProfiledPIDController(0.5, 0, 0,
+    // new TrapezoidProfile.Constraints(
+    // 15, 5));
 
     // maybe add a feed forward? May be unnecessary though
     /** Creates a new SlideSubsystem. */
@@ -46,29 +49,50 @@ public class SlideSubsystem extends SubsystemBase {
         m_leftSlide = new WPI_TalonFX(Constants.SlideConstants.kLSlideID);
         m_leftSlide.setNeutralMode(NeutralMode.Brake);
         m_leftSlide.setSelectedSensorPosition(0);
+        m_leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 175, 0.75));
+        m_leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 175, 0.75));
 
         m_rightSlide = new WPI_TalonFX(Constants.SlideConstants.kRSlideID);
         m_rightSlide.setNeutralMode(NeutralMode.Brake);
         m_rightSlide.setSelectedSensorPosition(0);
+        m_leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 175, 0.75));
+        m_leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 175, 0.75));
 
         m_rightSlide.setInverted(true);
 
         m_leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-        m_bottomLimitSwitch = new DigitalInput(Constants.SlideConstants.kLimitSwitchId);
+        m_bottomLimitSwitch = new DigitalInput(Constants.SlideConstants.kBottomLimitSwitchId);
+        m_topLimitSwitch = new DigitalInput(Constants.SlideConstants.kTopLimitSwitchId);
+
+        controller.setTolerance(0.1);
+
     }
 
     public double getRightRawEncoder() {
         return m_rightSlide.getSelectedSensorPosition();
     }
 
-    public boolean getLimitSwitch() {
+    public void resetSlideEncoders() {
+        m_rightSlide.setSelectedSensorPosition(0);
+        m_leftSlide.setSelectedSensorPosition(0);
+    }
+
+    public boolean getBottomLimitSwitch() {
         if (!m_bottomLimitSwitch.get()) {
             m_leftSlide.setSelectedSensorPosition(0);
             m_rightSlide.setSelectedSensorPosition(0);
         }
 
         return !m_bottomLimitSwitch.get();
+    }
+
+    public boolean getTopLimitSwitch() {
+        // if (!m_topLimitSwitch.get()) {
+        // m_leftSlide.setSelectedSensorPosition(277000);
+        // m_rightSlide.setSelectedSensorPosition(277000);
+        // }
+        return !m_topLimitSwitch.get();
     }
 
     public double getDriveRate() {
@@ -89,10 +113,10 @@ public class SlideSubsystem extends SubsystemBase {
     // }
 
     public void setSlide(double percentOutput) {
-        if (getLimitSwitch()) {
+        if (getBottomLimitSwitch()) {
             percentOutput = Math.max(percentOutput, 0);
         } else {
-            if (getRightRawEncoder() >= 250000) {
+            if (getTopLimitSwitch() || m_rightSlide.getSelectedSensorPosition() >= SlideConstants.maxEncoderTicks) {
                 percentOutput = Math.min(percentOutput, 0);
             }
         }
@@ -123,9 +147,6 @@ public class SlideSubsystem extends SubsystemBase {
         return m_leftSlide.getSelectedSensorVelocity();
     }
 
-    public void setPosition(int bumperPos) {
-    }
-
     // public double getLeftPosition(){
     // return (m_leftSlide.getSelectedSensorPosition() *
     // Constants.SlideConstants.kSlideConstant) - trueHeightOffset;
@@ -150,9 +171,13 @@ public class SlideSubsystem extends SubsystemBase {
     // try to optimize
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Slide Limit Switch", getLimitSwitch());
+        SmartDashboard.putBoolean("Slide Top Limit Switch", getTopLimitSwitch());
+        SmartDashboard.putBoolean("Slide Bottom Limit Switch", getBottomLimitSwitch());
         SmartDashboard.putNumber("Right Slide Encoder", getRightRawEncoder());
         SmartDashboard.putNumber("Right Slide Inches", SlideConstants.rawUnitsToInches(getRightRawEncoder()));
+
+        SmartDashboard.putNumber("Slide Stator", m_rightSlide.getStatorCurrent());
+        SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint());
         // SmartDashboard.putBoolean("Balance", isLeftAndRightBalanced());
         // This method will be called once per scheduler run
     }
