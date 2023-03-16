@@ -15,9 +15,6 @@ public class SwerveModulePosition implements Comparable<SwerveModulePosition> {
     /** Angle of the module. */
     public Rotation2d angle = Rotation2d.fromDegrees(0);
 
-    /** Constructs a SwerveModulePosition with zeros for distance and angle. */
-    public SwerveModulePosition() {
-    }
 
     /**
      * Constructs a SwerveModulePosition.

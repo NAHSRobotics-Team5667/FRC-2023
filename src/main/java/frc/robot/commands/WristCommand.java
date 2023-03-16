@@ -38,11 +38,11 @@ public class WristCommand extends CommandBase {
         // wrist.maintainSafePosition();
 
         // if (wrist.getEncoder() <= 0.1) {
-        //     wrist.setWrist(0.1);
+        // wrist.setWrist(0.1);
         // } else if (wrist.getEncoder() >= (225 / 360)) {
-        //     wrist.setWrist(-0.1);
+        // wrist.setWrist(-0.1);
         // } else {
-        //     wrist.setWrist(0.1);
+        // wrist.setWrist(0.1);
         // }
         double position = 0;
 
@@ -78,10 +78,6 @@ public class WristCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_Controller.getAButtonPressed() || m_Controller.getYButton()) {
-            return true;
-        } else {
-            return false;
-        }
+        return m_Controller.getAButtonPressed() || m_Controller.getYButton();
     }
 }

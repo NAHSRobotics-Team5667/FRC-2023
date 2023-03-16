@@ -14,8 +14,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * call.
  */
 public final class Main {
-    private Main() {
-    }
+    private Main() {}
 
     /**
      * Main initialization function. Do not perform any initialization here.
@@ -26,5 +25,6 @@ public final class Main {
     public static void main(String... args) {
         RobotBase.startRobot(Robot::new);
     }
-    //dude why are you looking in main cmon
+    // dude why are you looking in main cmon
+    // dude shut up I am the janitor
 }

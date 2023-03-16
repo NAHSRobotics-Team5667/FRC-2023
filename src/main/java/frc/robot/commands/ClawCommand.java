@@ -27,11 +27,7 @@ public class ClawCommand extends CommandBase {
     @Override
     public void initialize() {
         claw.setIntake(0);
-        if (robotContainer.getCubeOrCone() == "cube"){
-            isCube = -1;
-        } else{
-            isCube = 1;
-        }
+        isCube = robotContainer.coneOrCubeBoolean() ? -1 : 1;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -73,6 +69,7 @@ public class ClawCommand extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        @SuppressWarnings("unused")
         double meWhenLiam = 0;
         this.counter = 0;
         claw.setIntake(0);
@@ -81,8 +78,6 @@ public class ClawCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-    
-
         return false;
     }
 }

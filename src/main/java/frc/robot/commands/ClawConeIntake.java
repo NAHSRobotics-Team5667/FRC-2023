@@ -26,65 +26,65 @@ public class ClawConeIntake extends CommandBase {
     public double time;
 
     public RobotContainer robotContainer;
-        // these will be the heights of the slide at different points. The height will be set as ClawConstants.ClawSetpoints[bumperPos]
-    
+    // these will be the heights of the slide at different points. The height will
+    // be set as ClawConstants.ClawSetpoints[bumperPos]
+
     /** Creates a new SlideIntakeAndOuttakeCommand. */
-    public ClawConeIntake( ClawSubsystem clawSubsystem, WristSubsystem wrist, boolean isCube, RobotContainer robotContainer, boolean isIntaking) {
+    public ClawConeIntake(ClawSubsystem clawSubsystem, WristSubsystem wrist, boolean isCube,
+            RobotContainer robotContainer, boolean isIntaking) {
         this.clawSubsystem = clawSubsystem;
-        this.wrist = wrist; 
+        this.wrist = wrist;
         this.robotContainer = robotContainer;
         this.intakeOrOuttake = isIntaking;
-        
+
         addRequirements(clawSubsystem, wrist);
         // Use addRequirements() here to declare subsystem dependencies.
     }
-    
+
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-      time = Timer.getFPGATimestamp();
-      isDoneCheck = clawSubsystem.isPieceIntaken();
-      test = 0;
+        time = Timer.getFPGATimestamp();
+        isDoneCheck = clawSubsystem.isPieceIntaken();
+        test = 0;
 
-      robotContainer.setTargetElement(GamePiece.CONE);
+        robotContainer.setTargetElement(GamePiece.CONE);
     }
-    
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-      clawSubsystem.isPieceIntaken();
-      isDoneCheck = clawSubsystem.isPieceIntaken();
-      
-      SmartDashboard.putBoolean("abdjasbdjas", isDoneCheck);
-     
-        // Bejamin since this is in execute() should this be a while loop? Might stall the code/ hog cpu temporarily
-        //you right. it is also spelled Bangiman.
-        //Liam i think you edited my name there. its benjamin. not bangiman or bejamin
-        if (clawSubsystem.m_claw.getStatorCurrent()< 30){
+        clawSubsystem.isPieceIntaken();
+        isDoneCheck = clawSubsystem.isPieceIntaken();
+
+        SmartDashboard.putBoolean("abdjasbdjas", isDoneCheck);
+
+        // Bejamin since this is in execute() should this be a while loop? Might stall
+        // the code/ hog cpu temporarily
+        // you right. it is also spelled Bangiman.
+        // Liam i think you edited my name there. its benjamin. not bangiman or bejamin
+        if (clawSubsystem.m_claw.getStatorCurrent() < 30) {
             clawSubsystem.setIntake(.45);
-            
-        }  else { 
+
+        } else {
             robotContainer.intakeFinish = true;
         }
         SmartDashboard.putNumber("sdkfdoisf", robotContainer.inOrOut);
-   
-         
+
     }
+
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-      
         robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
         robotContainer.inOrOut += 1;
         SmartDashboard.putNumber("sdkfdoisf", robotContainer.inOrOut);
-        
         robotContainer.setCurrentElement(GamePiece.CONE);
-
         wrist.setBumperPos(0);
-        
+
     }
-    
+
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
