@@ -203,9 +203,9 @@ public class WristSubsystem extends SubsystemBase {
             }
         }
 
-        if (RobotContainer.m_controller.getLeftStickButtonPressed()) {
-            bumperPos = 0;
-        }
+        // if (RobotContainer.m_controller.getLeftStickButtonPressed()) {
+        //     bumperPos = 0;
+        // }
 
         SmartDashboard.putNumber("Bumper Pos", getBumperPos());
         SmartDashboard.putNumber("Wrist Encoder", getEncoder());

@@ -63,6 +63,9 @@ public class ClawCubeIntake extends CommandBase {
         // Liam i think you edited my name there. its benjamin. not bangiman or bejamin
         if (clawSubsystem.m_claw.getStatorCurrent() < 30) {
             clawSubsystem.setIntake(-.45);
+        } else if (RobotContainer.m_controller.getPOV() == 0) {
+
+            robotContainer.intakeFinish = true;
         } else {
             robotContainer.intakeFinish = true;
         }

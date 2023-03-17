@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 /** Represents a swerve drive style drivetrain. */
@@ -170,6 +171,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         }
 
+        public Pose2d getPositionPose2d() {
+                return m_odometry.getPoseMeters();
+        }
+
         /**
          * Method to drive the robot using joystick info.
          *
@@ -262,6 +267,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                 DrivetrainSubsystem.m_backLeft.getPosition(),
                                 DrivetrainSubsystem.m_backRight.getPosition()
                 });
+                
+        
 
                 /*
                  * m_frontLeft.updateTurnPID(

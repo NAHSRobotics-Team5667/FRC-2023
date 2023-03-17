@@ -22,6 +22,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -76,13 +78,14 @@ public class RobotContainer {
     public static final CommandXboxController commandController = new CommandXboxController(0);
 
     @SuppressWarnings("unused")
-
+    public SendableChooser<Command> autoChooser = new SendableChooser<Command>();
     private SlideSubsystem m_slide;
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     public WristSubsystem m_wrist;
     public ClawSubsystem m_claw; // declares claw subsystem
 
     // deal with it liam
+
     public boolean done;
     public boolean outtakeFinish = false;
     public double inOrOut = 0;
@@ -106,7 +109,7 @@ public class RobotContainer {
         this.coneOrCube = "cube";
         m_drive = new DrivetrainSubsystem();
         m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
-        poseEstimate = new PoseEstimator(null, m_drive);
+        // poseEstimate = new PoseEstimator(null, m_drive);
         Limelight = new LimelightSubsystem();
         m_wrist = new WristSubsystem(this);
         m_claw = new ClawSubsystem();
@@ -124,7 +127,9 @@ public class RobotContainer {
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
-        PathPlannerTrajectory pathGroup = PathPlanner.loadPath("New Path", new PathConstraints(5, 5));
+        PathPlannerTrajectory CSC = PathPlanner.loadPath("CSC", new PathConstraints(5, 5));
+        PathPlannerTrajectory BSC = PathPlanner.loadPath("BSC", new PathConstraints(5, 5));
+        PathPlannerTrajectory HSC = PathPlanner.loadPath("HSC", new PathConstraints(5, 5));
 
         // This is just an example event map. It would be better to have a constant,
         // global event map
@@ -137,7 +142,7 @@ public class RobotContainer {
         Supplier<Pose2d> poseSupplier = new Supplier<Pose2d>() {
             @Override
             public Pose2d get() {
-                return poseEstimate.getCurrentPose();
+                return m_drive.getPositionPose2d();
             }
         };
 
@@ -175,8 +180,13 @@ public class RobotContainer {
                         // commands
         );
         configureButtonBindings();
+        autoChooser.addOption("CSC", new ClawCubeOuttake(m_claw, m_wrist, this).andThen(autoBuilder.fullAuto(CSC)));
+        autoChooser.addOption("HSC", new ClawCubeOuttake(m_claw, m_wrist, this).andThen(autoBuilder.fullAuto(HSC)));
+        autoChooser.addOption("BSC", new ClawCubeOuttake(m_claw, m_wrist, this).andThen(autoBuilder.fullAuto(BSC)));
+        autoChooser.setDefaultOption("default", new ClawCubeOuttake(m_claw, m_wrist, this));
+        SmartDashboard.putData(autoChooser);
 
-        this.fullAuto = autoBuilder.fullAuto(pathGroup);
+        // this.fullAuto = autoBuilder.fullAuto(pathGroup);
     }
 
     public void setCurrentElement(GamePiece element) {
@@ -337,9 +347,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+
         // An ExampleCommand will run in autonomous
-        // return this.fullAuto;
-        return null;
+        return autoChooser.getSelected();
+        // return null;
 
     }
 

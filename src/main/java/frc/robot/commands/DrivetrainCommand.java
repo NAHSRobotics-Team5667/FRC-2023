@@ -14,6 +14,8 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 /** The DriveTrainCommand class */
 public class DrivetrainCommand extends CommandBase {
     public DrivetrainSubsystem m_swerve;
+    private boolean slowmode = false;
+    public double speedMultiplier = .7;
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // haha changing slewratelimiters go brrrrr
@@ -56,6 +58,14 @@ public class DrivetrainCommand extends CommandBase {
      * the drive subsystem
      */
     private void joystickDrive() {
+        if (RobotContainer.m_controller.getLeftStickButtonPressed() ){
+            slowmode = !slowmode;
+        }
+        if (slowmode){
+            speedMultiplier = .3;
+        }else {
+            speedMultiplier = .7;
+        }
         if (RobotContainer.m_controller.getRightStickButton()) {
             this.m_swerve.resetGyro();
         }
@@ -64,10 +74,10 @@ public class DrivetrainCommand extends CommandBase {
         // negative values when we push forward.
 
         double xSpeed = m_xspeedLimiter
-                .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX() * 0.7, 0.1))
+                .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX() * speedMultiplier, 0.1))
                 * DrivetrainSubsystem.kMaxSpeed;
 
-        xSpeed = MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX() * 0.7, 0.1)
+        xSpeed = MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX() * speedMultiplier, 0.1)
                 * DrivetrainSubsystem.kMaxSpeed;
 
         // Get the y speed or sideways/strafe speed. We are inverting this3 because
