@@ -37,7 +37,7 @@ public class ClawConeIntake extends CommandBase {
         this.robotContainer = robotContainer;
         this.intakeOrOuttake = isIntaking;
 
-        addRequirements(clawSubsystem, wrist);
+        // addRequirements(clawSubsystem, wrist);
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
@@ -79,10 +79,12 @@ public class ClawConeIntake extends CommandBase {
         robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
         robotContainer.inOrOut += 1;
-        SmartDashboard.putNumber("sdkfdoisf", robotContainer.inOrOut);
-        robotContainer.setCurrentElement(GamePiece.CONE);
+        SmartDashboard.putNumber("inOrOut", robotContainer.inOrOut);
+
         wrist.setBumperPos(0);
 
+        robotContainer.setCurrentElement(GamePiece.CONE);
+        robotContainer.setTargetElement(GamePiece.NONE);
     }
 
     // Returns true when the command should end.

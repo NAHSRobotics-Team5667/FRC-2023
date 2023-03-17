@@ -45,6 +45,7 @@ public class ClawConeOuttake extends CommandBase {
         robotContainer.outtakeFinish = false;
         claw.setIntake(0);
         robotContainer.inOrOut += 1;
+
         robotContainer.setCurrentElement(GamePiece.NONE);
     }
 

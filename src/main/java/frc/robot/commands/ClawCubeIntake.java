@@ -45,6 +45,7 @@ public class ClawCubeIntake extends CommandBase {
         time = Timer.getFPGATimestamp();
         isDoneCheck = clawSubsystem.isPieceIntaken();
         test = 0;
+
         robotContainer.setTargetElement(GamePiece.CUBE);
     }
 

@@ -8,16 +8,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 public class ClawCubeOuttake extends CommandBase {
     double stopClock;
     ClawSubsystem claw;
     RobotContainer robotContainer;
+    WristSubsystem wrist;
 
     /** Creates a new IntakeOuttakeProcessClaw. */
-    public ClawCubeOuttake(ClawSubsystem claw, RobotContainer robotContainer) {
+    public ClawCubeOuttake(ClawSubsystem claw, WristSubsystem wrist, RobotContainer robotContainer) {
         this.claw = claw;
         this.robotContainer = robotContainer;
+        this.wrist = wrist;
         addRequirements(claw);
         // Use addRequirements() here to declare subsystem dependencies.
     }
@@ -47,6 +50,8 @@ public class ClawCubeOuttake extends CommandBase {
         robotContainer.outtakeFinish = false;
         claw.setIntake(0);
         robotContainer.inOrOut += 1;
+
+        wrist.setBumperPos(0);
 
         robotContainer.setCurrentElement(GamePiece.NONE);
     }
