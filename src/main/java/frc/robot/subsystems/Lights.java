@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -10,6 +12,7 @@ public class Lights extends SubsystemBase {
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
     public Light_Scheduler scheduler;
+    private Color teamColor;
     public Lights(int ledPort, int ledLength) {
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
@@ -19,6 +22,7 @@ public class Lights extends SubsystemBase {
         // Length is expensive to set, so only set it once, then just update data
         this.m_ledBuffer = new AddressableLEDBuffer(ledLength);
         this.m_led.setLength(m_ledBuffer.getLength());
+        this.teamColor = DriverStation.getAlliance().equals(Alliance.Red) ? new Color(255,0,0) : new Color(0,0,255);
         this.setSolidRGB(0, 255, 0);
 
         // Set the data
@@ -97,12 +101,36 @@ public class Lights extends SubsystemBase {
             }
             this.m_ledBuffer.setHSV(i, hue, saturation, value);
         }
+        this.cylon_center += (cylon_velocity * speed_multiplier);
+        if (this.cylon_center >= this.m_ledBuffer.getLength() || this.cylon_center < 0) {
+            this.cylon_velocity *= -1;
+        } // makes the cylon go back and forth
+    }
+
+    public void cylon_but_two(int hue, int saturation, int speed_multiplier, int hue2, int sat2) { // TODO: make this not awful
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+            int value = 250 - (Math.abs(this.cylon_center - i) * 40);
+            if (value < 0) {
+                value = 0;
+            }
+            this.m_ledBuffer.setHSV(i, hue, saturation, value);
+        }
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+            if (m_ledBuffer.getLED(i).equals(new Color(0,0,0))) {
+                int value = 250
+                        - (Math.abs((m_ledBuffer.getLength()-this.cylon_center) % m_ledBuffer.getLength() - i)
+                                * 40);
+                if (value < 0) {
+                    value = 0;
+                }
+                this.m_ledBuffer.setHSV(i, hue2, sat2, value);
+            }
+        }
 
         this.cylon_center += (cylon_velocity * speed_multiplier);
         if (this.cylon_center >= this.m_ledBuffer.getLength() || this.cylon_center < 0) {
             this.cylon_velocity *= -1;
         } // makes the cylon go back and forth
-
     }
 
     private int carnival_index = 0;
@@ -165,17 +193,15 @@ public class Lights extends SubsystemBase {
             //() -> {Lights.this.setSolidRGB(0, 0, 0);},
             //() -> {Lights.this.setSolidRGB(255, 255, 255);}
             () -> {Lights.this.flashingRGB(255, 0, 0);},
-            () -> {Lights.this.carnival(new Color[] {new Color(255,0,0), new Color(0,0,255), new Color(0,255,0)}, 3);},
+            () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, teamColor.equals(Color.kRed) ? Color.kYellow : Color.kWhite, Color.kBlack}, 3);},
             () -> {Lights.this.rainbow(1);}, 
             () -> {Lights.this.cylon(60, 255, 1);} 
         };
 
         public Light_Scheduler() {
-            this.default_disabled = () -> {Lights.this.cylon(0, 255, 1);};
+            this.default_disabled = () -> {Lights.this.cylon_but_two(8, 255, 1,30,255);};
             this.defualt_teleop = () -> {Lights.this.rainbow(2);};
-            this.defualt_auto = () -> {
-                Lights.this.carnival(new Color[] {new Color(255,0,0), new Color(0,0,255), new Color(0,255,0)}, 5);
-            };
+            this.defualt_auto = () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, teamColor.equals(Color.kRed) ? Color.kYellow : Color.kWhite, Color.kBlack}, 3);};
             this.default_endgame = () -> {Lights.this.flashingRGB(255, 0, 0);};
         
             this.setDefaultLightEffect();
