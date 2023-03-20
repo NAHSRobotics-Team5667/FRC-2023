@@ -188,23 +188,23 @@ public class WristSubsystem extends SubsystemBase {
             maxBumperPos = WristConstants.cubeIntakeSetpoints.length;
 
         } else if (!m_robotContainer.getCurrentElement().equals(GamePiece.NONE)) {
-            maxBumperPos = 3;
+            maxBumperPos = 2;
         }
 
-        if (RobotContainer.m_controller.getRightBumperPressed()) {
+        if (RobotContainer.m_firstController.getRightBumperPressed()) {
             if (bumperPos < maxBumperPos) {
                 bumperPos++;
             }
         }
 
-        if (RobotContainer.m_controller.getLeftBumperPressed()) {
+        if (RobotContainer.m_firstController.getLeftBumperPressed()) {
             if (bumperPos > 0) {
                 bumperPos--;
             }
         }
 
         // if (RobotContainer.m_controller.getLeftStickButtonPressed()) {
-        //     bumperPos = 0;
+        // bumperPos = 0;
         // }
 
         SmartDashboard.putNumber("Bumper Pos", getBumperPos());

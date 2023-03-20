@@ -48,6 +48,11 @@ public class SlideDefaultCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        if (bumperPos > 0) {
+            m_RobotContainer.speedMultiplier = .3;
+        } else {
+            m_RobotContainer.speedMultiplier = .7;
+        }
         // max right slide = 277000
 
         // slide.setSlide(MathUtil.applyDeadband(m_RobotContainer.m_controller.getLeftY()
@@ -73,7 +78,21 @@ public class SlideDefaultCommand extends CommandBase {
 
             if (wrist.getBumperPos() == 0) {
                 position = 0;
-                slide.setSlidePIDInches(position);
+                slide.setSlide(-.35);
+                // if (MathUtil.clamp(
+                // //
+                // slide.controller.calculate(SlideConstants.rawUnitsToInches(slide.getRightRawEncoder()),
+                // // position),
+                // // -0.9, 0.9) < .05) {
+                // // slide.setSlide(-.1);
+                // // } else {
+                // // slide.setSlidePIDInches(position);
+                // // }
+
+                // slide.setSlidePIDInches(position);
+                // if ( slide.controller.atSetpoint() && !slide.getBottomLimitSwitch()) {
+                // hasZeroed = false;
+                // }
             } else {
                 if (m_RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
                     position = SlideConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
@@ -88,16 +107,21 @@ public class SlideDefaultCommand extends CommandBase {
                     position = SlideConstants.cubeOuttakeSetpoint[wrist.getBumperPos() - 1];
                 }
                 slide.setSlidePIDInches(position);
+
             }
         }
 
-        if (slide.getTopLimitSwitch())
-
-        {
+        if (slide.getTopLimitSwitch() && hasZeroed) {
             hasZeroed = false;
-            slide.setSlide(0);
+            hasSpool = false;
         }
 
+        if (slide.getTopLimitSwitch()) {
+            wrist.setBumperPos(0);
+        }
+
+        SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
+        SmartDashboard.putBoolean("Has Spool", hasSpool);
         // SmartDashboard.putNumber("Slide Position", position);
 
         // slide.setSlidePIDInches(30);

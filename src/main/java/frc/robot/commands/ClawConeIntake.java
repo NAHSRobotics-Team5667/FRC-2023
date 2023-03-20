@@ -66,7 +66,7 @@ public class ClawConeIntake extends CommandBase {
         if (clawSubsystem.m_claw.getStatorCurrent() < 30) {
             clawSubsystem.setIntake(.45);
 
-        } else if (RobotContainer.m_controller.getPOV() == 0) {
+        } else if (RobotContainer.m_firstController.getPOV() == 0) {
             robotContainer.intakeFinish = true;
         } else {
             robotContainer.intakeFinish = true;

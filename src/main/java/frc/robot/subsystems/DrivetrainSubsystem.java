@@ -111,6 +111,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                         .withProperties(Map.of("min", 0, "max", 10))
                         .withPosition(2, 3)
                         .getEntry();
+        RobotContainer robotContainer;
 
         public static SwerveModule // Create the Swerve Modules
         m_frontLeft = new SwerveModule(
@@ -144,6 +145,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                         DrivetrainSubsystem.m_backLeft.getPosition(),
                         DrivetrainSubsystem.m_backRight.getPosition()
         };
+
         private Translation2d // Create the locations of the wheels
         m_frontRightLocation = new Translation2d(0.257, -0.306),
                         // 0.306
@@ -157,12 +159,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         public final AHRS m_gyro = new AHRS(Port.kMXP);
         public double gyroOffset = m_gyro.getAngle();
+
         public Pose2d m_pose = new Pose2d(0, 0, getGyro());
         public final SwerveDriveOdometry m_odometry;
 
         // *Constructor for DrivetrainSubsystem - I 'ardly know 'er! */
         // dammit liam i didnt laugh
         public DrivetrainSubsystem() {
+
                 m_gyro.calibrate(); // this probably isn't necessary but idk
                 this.resetGyro(); // this however, is necessary ish
 
@@ -237,6 +241,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         /** Returns the rotation relative to the last resetGyro() called */
+        public Rotation2d getInitGyro() {
+                Rotation2d gyro = new Rotation2d((this.m_gyro.getAngle() - gyroOffset - 90) * (Math.PI) / 180);
+                return gyro;
+        }
+
         public Rotation2d getGyro() {
                 Rotation2d gyro = new Rotation2d((this.m_gyro.getAngle() - gyroOffset) * (Math.PI) / 180);
                 return gyro;
@@ -260,6 +269,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         @Override
         public void periodic() {
+
                 Rotation2d gyroAngle = getGyro();
                 m_pose = m_odometry.update(gyroAngle, new SwerveModulePosition[] {
                                 DrivetrainSubsystem.m_frontLeft.getPosition(),
@@ -267,8 +277,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                 DrivetrainSubsystem.m_backLeft.getPosition(),
                                 DrivetrainSubsystem.m_backRight.getPosition()
                 });
-                
-        
 
                 /*
                  * m_frontLeft.updateTurnPID(

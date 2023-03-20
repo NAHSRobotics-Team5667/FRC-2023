@@ -37,6 +37,7 @@ import frc.robot.commands.DrivetrainCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.WristCubeIntake;
 import frc.robot.commands.WristCubeOuttake;
+import frc.robot.commands.autoGoBrrrrr;
 import frc.robot.commands.SlideDefaultCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ClawSubsystem;
@@ -59,26 +60,29 @@ import frc.robot.subsystems.LimelightSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    public static BooleanSupplier BButtonPressed = new BooleanSupplier() {
-        public boolean getAsBoolean() {
-            return m_controller.getBButtonPressed();
-        }
-    }, XButtonPressed = new BooleanSupplier() {
-        public boolean getAsBoolean() {
-            return m_controller.getXButtonPressed();
-        }
-    }, AButtonPressed = new BooleanSupplier() {
-        public boolean getAsBoolean() {
-            return m_controller.getAButtonPressed();
-        }
-    };
+    // public static BooleanSupplier BButtonPressedFirst = new BooleanSupplier() {
+    // public boolean getAsBoolean() {
+    // return m_firstController.getBButtonPressed();
+    // }
+    // }, XButtonPressedFirst = new BooleanSupplier() {
+    // public boolean getAsBoolean() {
+    // return m_firstController.getXButtonPressed();
+    // }
+    // }, AButtonPressedFirst = new BooleanSupplier() {
+    // public boolean getAsBoolean() {
+    // return m_firstController.getAButtonPressed();
+    // }
+    // };
 
     // The robot's subsystems and commands are defined here...
-    public static final XboxController m_controller = new XboxController(0); // creates xboxController object
-    public static final CommandXboxController commandController = new CommandXboxController(0);
+    public static final XboxController m_firstController = new XboxController(0); // creates xboxController object
+    public static final CommandXboxController firstCommandController = new CommandXboxController(0);
+
+    public static final XboxController m_secondController = new XboxController(1); // creates xboxController object
+    public static final CommandXboxController secondCommandController = new CommandXboxController(1);
 
     @SuppressWarnings("unused")
-    public SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+    public SendableChooser<String> autoChooser = new SendableChooser<String>();
     private SlideSubsystem m_slide;
     private DrivetrainSubsystem m_drive; // declares dt subsystem
     public WristSubsystem m_wrist;
@@ -99,7 +103,12 @@ public class RobotContainer {
     public Robot robot; // uh i dont think we need this -benjamin
     private Command fullAuto;
     public boolean intakeFinish = false;
+    public double speedMultiplier = .9;
+
     private GamePiece currentElement, targetElement;
+    PathPlannerTrajectory HSC;
+    PathPlannerTrajectory CSC;
+    PathPlannerTrajectory BSC;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -108,7 +117,7 @@ public class RobotContainer {
         this.robot = robot;
         this.coneOrCube = "cube";
         m_drive = new DrivetrainSubsystem();
-        m_drive.setDefaultCommand(new DrivetrainCommand(m_drive));
+        m_drive.setDefaultCommand(new DrivetrainCommand(m_drive, this));
         // poseEstimate = new PoseEstimator(null, m_drive);
         Limelight = new LimelightSubsystem();
         m_wrist = new WristSubsystem(this);
@@ -117,7 +126,7 @@ public class RobotContainer {
 
         m_claw.setDefaultCommand(new ClawCommand(m_claw, this));
         m_wrist.setDefaultCommand(new WristCommand(m_wrist, this));
-        m_slide.setDefaultCommand(new SlideDefaultCommand(m_slide, m_wrist, this));
+        // m_slide.setDefaultCommand(new SlideDefaultCommand(m_slide, m_wrist, this));
 
         currentElement = GamePiece.NONE;
         targetElement = GamePiece.NONE;
@@ -127,9 +136,9 @@ public class RobotContainer {
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
-        PathPlannerTrajectory CSC = PathPlanner.loadPath("CSC", new PathConstraints(5, 5));
-        PathPlannerTrajectory BSC = PathPlanner.loadPath("BSC", new PathConstraints(5, 5));
-        PathPlannerTrajectory HSC = PathPlanner.loadPath("HSC", new PathConstraints(5, 5));
+        CSC = PathPlanner.loadPath("CSC", new PathConstraints(5, 5));
+        BSC = PathPlanner.loadPath("BSC", new PathConstraints(5, 5));
+        HSC = PathPlanner.loadPath("HSC", new PathConstraints(5, 5));
 
         // This is just an example event map. It would be better to have a constant,
         // global event map
@@ -180,10 +189,19 @@ public class RobotContainer {
                         // commands
         );
         configureButtonBindings();
-        autoChooser.addOption("CSC", new ClawCubeOuttake(m_claw, m_wrist, this).andThen(autoBuilder.fullAuto(CSC)));
-        autoChooser.addOption("HSC", new ClawCubeOuttake(m_claw, m_wrist, this).andThen(autoBuilder.fullAuto(HSC)));
-        autoChooser.addOption("BSC", new ClawCubeOuttake(m_claw, m_wrist, this).andThen(autoBuilder.fullAuto(BSC)));
-        autoChooser.setDefaultOption("default", new ClawCubeOuttake(m_claw, m_wrist, this));
+        // autoChooser.addOption("CSC", new ClawCubeOuttake(m_claw, m_wrist,
+        // this).andThen(autoBuilder.fullAuto(CSC)));
+        // autoChooser.addOption("HSC", new ClawCubeOuttake(m_claw, m_wrist,
+        // this).andThen(autoBuilder.fullAuto(HSC)));
+        // autoChooser.addOption("BSC", new ClawCubeOuttake(m_claw, m_wrist,
+        // this).andThen(autoBuilder.fullAuto(BSC)));
+        // autoChooser.setDefaultOption("default", new ClawCubeOuttake(m_claw, m_wrist,
+        // this));
+        autoChooser.addOption("CSC", "CSC");
+        autoChooser.addOption("BSC", "BSC");
+        autoChooser.addOption("HSC", "HSC");
+        autoChooser.addOption("default", "default");
+
         SmartDashboard.putData(autoChooser);
 
         // this.fullAuto = autoBuilder.fullAuto(pathGroup);
@@ -268,12 +286,12 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         @SuppressWarnings("unused")
-        final Trigger LeftTrigger = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value),
-                RightTrigger = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value),
-                yButton = commandController.y(),
-                bButton = new JoystickButton(m_controller, XboxController.Button.kB.value),
-                aButton = new JoystickButton(m_controller, XboxController.Button.kA.value),
-                xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
+        final Trigger LeftTrigger = new JoystickButton(m_firstController, XboxController.Button.kLeftBumper.value),
+                RightTrigger = new JoystickButton(m_firstController, XboxController.Button.kRightBumper.value),
+                yButton = secondCommandController.y(),
+                bButton = new JoystickButton(m_firstController, XboxController.Button.kB.value),
+                aButton = new JoystickButton(m_firstController, XboxController.Button.kA.value),
+                xButton = new JoystickButton(m_firstController, XboxController.Button.kX.value);
         // bButton.onTrue(new ClawCommand(m_claw, this));
         // bButton.onTrue(new AlignFlatSurface(this));
 
@@ -347,9 +365,56 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        if (autoChooser.getSelected() == "default") {
+            return new ClawCubeOuttake(m_claw, m_wrist, this).finallyDo((boolean interrupt) -> {
+                ++intakeToggle;
+            });
+        } else if (autoChooser.getSelected() == "BSC") {
+            m_drive.m_pose = new Pose2d(1.66, .43, m_drive.getInitGyro()); // BSC
+            return new ClawCubeOuttake(m_claw, m_wrist,
+                    this).withTimeout(2).andThen(autoBuilder.fullAuto(BSC))
+                    .finallyDo((boolean interrupt) -> {
+                        ++intakeToggle;
+                    });
+
+        }
+
+        else if (autoChooser.getSelected() == "CSC") {
+            // m_drive.m_pose = new Pose2d(1.66, 2.98, m_drive.getInitGyro()); // CSC
+            // return new ClawCubeOuttake(m_claw, m_wrist,
+            // this).withTimeout(2).andThen(autoBuilder.fullAuto(CSC))
+            // .finallyDo((boolean interrupt) -> {
+            // ++intakeToggle;
+            // });
+            return new autoGoBrrrrr(m_drive, m_claw);
+
+        }
+
+        else if (autoChooser.getSelected() == "HSC") {
+            m_drive.m_pose = new Pose2d(1.73, 4.67, m_drive.getInitGyro());
+
+            return new ClawCubeOuttake(m_claw, m_wrist,
+                    this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
+                    .finallyDo((boolean interrupt) -> {
+                        ++intakeToggle;
+
+                    });
+            // return autoBuilder.fullAuto(HSC);
+        }
+        // autoChooser.addOption("CSC", new ClawCubeOuttake(m_claw, m_wrist,
+        // this).andThen(autoBuilder.fullAuto(CSC)));
+        // autoChooser.addOption("HSC", new ClawCubeOuttake(m_claw, m_wrist,
+        // this).andThen(autoBuilder.fullAuto(HSC)));
+        // autoChooser.addOption("BSC", new ClawCubeOuttake(m_claw, m_wrist,
+        // this).andThen(autoBuilder.fullAuto(BSC)));
+        // autoChooser.setDefaultOption("default", new ClawCubeOuttake(m_claw,
+        // m_wrist,
+        // this));
 
         // An ExampleCommand will run in autonomous
-        return autoChooser.getSelected();
+        return new ClawCubeOuttake(m_claw, m_wrist, this).finallyDo((boolean interrupt) -> {
+            ++intakeToggle;
+        });
         // return null;
 
     }
@@ -415,8 +480,8 @@ public class RobotContainer {
                         extra = false;
                         break;
                 }
-                return (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftX(), 0.1))) > 0) ||
-                        (Math.abs((MathUtil.applyDeadband(RobotContainer.m_controller.getLeftY(), 0.1))) > 0) ||
+                return (Math.abs((MathUtil.applyDeadband(RobotContainer.m_firstController.getLeftX(), 0.1))) > 0) ||
+                        (Math.abs((MathUtil.applyDeadband(RobotContainer.m_firstController.getLeftY(), 0.1))) > 0) ||
                         extra;
 
             }

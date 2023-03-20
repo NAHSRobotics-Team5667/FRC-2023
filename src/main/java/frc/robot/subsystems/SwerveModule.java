@@ -260,15 +260,15 @@ public class SwerveModule {
         return Math.abs(m_turningPIDController.getSetpoint() - getTurnEncoderDistance()) < 0.1;
     }
 
-    // public double collectEncoderSample() {
-    // if (sampleCounter < 50.0) {
-    // m_encoderSampleSum += getAbsTurnEncoder();
-    // sampleCounter++;
-    // } else if (sampleCounter == 50) {
-    // trueEncoderOffset = m_encoderSampleSum / sampleCounter;
-    // }
-    // return trueEncoderOffset;
-    // }
+    public double collectEncoderSample() {
+        if (sampleCounter < 50.0) {
+            m_encoderSampleSum += getAbsTurnEncoder();
+            sampleCounter++;
+        } else if (sampleCounter == 50) {
+            trueEncoderOffset = m_encoderSampleSum / sampleCounter;
+        }
+        return trueEncoderOffset;
+    }
 
     public double getOffset() {
         return trueEncoderOffset;

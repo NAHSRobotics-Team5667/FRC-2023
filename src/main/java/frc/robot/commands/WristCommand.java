@@ -17,7 +17,7 @@ import frc.robot.subsystems.WristSubsystem;
 
 public class WristCommand extends CommandBase {
     WristSubsystem wrist;
-    XboxController m_Controller = RobotContainer.m_controller;
+    XboxController m_Controller = RobotContainer.m_firstController;
     RobotContainer robotContainer;
     // these will be the heights of the slide at different points. The wrist angle
     // will be set as Setpoints[bumperPos]
@@ -45,7 +45,7 @@ public class WristCommand extends CommandBase {
 
         if (wrist.getBumperPos() == 0) {
             if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                position = -90;
+                position = -110;
             } else {
                 position = WristConstants.kWristSafePosition;
                 safe = "safe";
@@ -65,6 +65,10 @@ public class WristCommand extends CommandBase {
 
                 position = WristConstants.kWristCubeOuttakeSetpoint[wrist.getBumperPos() -
                         1];
+            }
+
+            if (robotContainer.getTargetElement().equals(GamePiece.NONE)) {
+                position = WristConstants.kWristSafePosition;
             }
             safe = "not";
         }

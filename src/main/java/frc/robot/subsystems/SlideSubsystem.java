@@ -35,7 +35,7 @@ public class SlideSubsystem extends SubsystemBase {
     @SuppressWarnings("unused")
     private SimpleMotorFeedforward m_slideFeedForward = new SimpleMotorFeedforward(0, 0, 0);
 
-    private PIDController controller = new PIDController(.1, 0, 0);
+    public PIDController controller = new PIDController(.1, 0, 0);
 
     @SuppressWarnings("unused")
     // private ProfiledPIDController slideController = new
