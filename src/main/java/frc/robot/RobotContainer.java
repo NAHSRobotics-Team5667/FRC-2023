@@ -61,7 +61,6 @@ public class RobotContainer {
 
     public static final XboxController secondController = new XboxController(1); // creates drive controller
 
-    @SuppressWarnings("unused")
     public SendableChooser<String> autoChooser = new SendableChooser<String>(); // decides which auto we are using
 
     // declares all subsystems
@@ -84,8 +83,9 @@ public class RobotContainer {
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
     PathPlannerTrajectory HSC, CSC, BSC; // autonomous trajectories, needs inital pose set to path initial pose
+    @SuppressWarnings("unused")
 
-    private int positionSetter;
+    private int positionLevel;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -108,6 +108,8 @@ public class RobotContainer {
         targetElement = GamePiece.NONE;
 
         lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
+
+        positionLevel = 0;
 
         // ===================================================================
         // AUTONOMOUS
@@ -181,6 +183,7 @@ public class RobotContainer {
     // ===================================================================
     // GAME PIECE HANDLING
     // ===================================================================
+
     public void setCurrentElement(GamePiece element) {
         currentElement = element;
     }
@@ -196,11 +199,20 @@ public class RobotContainer {
     public GamePiece getTargetElement() {
         return targetElement;
     }
+
+    // ===================================================================
+    // POSITION LEVEL
     // ===================================================================
 
-    public int getBumperPos() {
-        return m_wrist.getBumperPos();
+    public int getPositionLevel() {
+        return positionLevel;
     }
+
+    public void setPositionLevel(int positionLevel) {
+        this.positionLevel = positionLevel;
+    }
+
+    // ===================================================================
 
     /**
      * Use this method to define your button->command mappings. Buttons can be

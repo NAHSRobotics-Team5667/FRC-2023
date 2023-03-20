@@ -25,7 +25,6 @@ public class CurrentSpikeCounter {
         threshold = t;
         deadband = d;
         off_val = threshold - deadband;
-
     }
 
     /**
@@ -52,7 +51,6 @@ public class CurrentSpikeCounter {
         } else {
             return false;
         }
-
     }
 
     /**

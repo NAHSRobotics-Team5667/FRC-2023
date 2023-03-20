@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -31,7 +30,7 @@ public class SlideCommand extends CommandBase {
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         this.wrist = wrist;
-        wrist = m_RobotContainer.wrist;
+        wrist = m_RobotContainer.m_wrist;
 
         hasSpool = !slide.getBottomLimitSwitch();
         hasZeroed = false;

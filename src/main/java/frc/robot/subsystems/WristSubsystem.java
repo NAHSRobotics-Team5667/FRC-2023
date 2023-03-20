@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,22 +23,15 @@ public class WristSubsystem extends SubsystemBase {
     public int bumperPos = 0;
     public WPI_TalonFX m_wristMotorFirst, m_wristMotorSecond;
     private PIDController wristPID = new PIDController(.02, 0, 0);
-    private SimpleMotorFeedforward m_wristFeedForward = new SimpleMotorFeedforward(0, 0, 0);
-
     private DutyCycleEncoder m_encoder;
-
     private double angleOffset = 0;
-
     private int counter = 0;
-
     private RobotContainer m_robotContainer;
-
     private double maxBumperPos = 0;
 
     /** Creates a new WristSubsystem. */
     public WristSubsystem(RobotContainer m_robotContainer) {
         m_encoder = new DutyCycleEncoder(5);
-
         wristPID.setTolerance(2.5);
 
         m_wristMotorFirst = new WPI_TalonFX(Constants.WristConstants.kWristIDLeft);
@@ -98,16 +90,6 @@ public class WristSubsystem extends SubsystemBase {
         return wristPID.getPositionError();
     }
 
-    // public void maintainSafePosition() {
-    // double currentPosition = getPosition();
-    // double outputWrist = wristPID.calculate(currentPosition,
-    // Constants.WristConstants.kWristSafePosition);
-    // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-    // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-    // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-
-    // }
-
     // make these dependent on bumperPos, array of setPoints
     public void coneIntakeAngled() { // TODO: this method doesnt do shit
         @SuppressWarnings("unused")
@@ -123,35 +105,6 @@ public class WristSubsystem extends SubsystemBase {
         // Wrist Angled for Cone intake
     }
 
-    // public void coneOuttakeAngled() {
-    // double currentPosition = getPosition();
-    // double outputWrist = wristPID.calculate(currentPosition,
-    // Constants.WristConstants.kWristConeOuttakeSetpoint[bumperPos]);
-    // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-    // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-    // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-    // }
-
-    // public void cubeIntakeAngled() {
-    // // double currentPosition = getPosition();
-    // // double outputWrist = wristPID.calculate(currentPosition,
-    // // Constants.WristConstants.kWristCubeIntakeSetpoint[bumperPos]);
-    // // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-    // // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-    // // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-    // // Wrist Angled for Cube intake
-    // }
-
-    // public void cubeOuttakeAngled() {
-    // double currentPosition = getPosition();
-    // double outputWrist = wristPID.calculate(currentPosition,
-    // WristConstants.kWristCubeOuttakeSetpoint[bumperPos]);
-    // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-    // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-    // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-    // // Wrist Angled for Cube intake
-    // }
-
     public double getAngleDegrees() {
         return WristConstants.convertTicksToRadians(m_wristMotorFirst.getSelectedSensorPosition(), angleOffset);
     }
@@ -161,7 +114,6 @@ public class WristSubsystem extends SubsystemBase {
         if (counter <= 50) {
             counter++;
         }
-
         if (counter == 50) {
             angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
         }

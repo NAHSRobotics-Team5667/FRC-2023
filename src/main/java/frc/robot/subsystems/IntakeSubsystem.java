@@ -64,12 +64,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         SmartDashboard.putNumber("ClawVoltage", m_intake.getMotorOutputVoltage());
         SmartDashboard.putNumber("ClawTempurature", m_intake.getTemperature());
         SmartDashboard.putNumber("ClawCurrent", m_intake.getStatorCurrent());
         isPieceIntaken();
-
         // This method will be called once per scheduler run.
     }
 }

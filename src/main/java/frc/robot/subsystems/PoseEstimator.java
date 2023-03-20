@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
 public class PoseEstimator extends SubsystemBase {
-
     private final PhotonCamera photonCamera;
     private final DrivetrainSubsystem drivetrainSubsystem;
     private final AprilTagFieldLayout aprilTagFieldLayout;
@@ -53,11 +52,8 @@ public class PoseEstimator extends SubsystemBase {
      * radians.
      */
     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
-
     private final SwerveDrivePoseEstimator poseEstimator;
-
     private final Field2d field2d = new Field2d();
-
     private double previousPipelineTimestamp = 0;
 
     public PoseEstimator(PhotonCamera photonCamera, DrivetrainSubsystem drivetrainSubsystem) {

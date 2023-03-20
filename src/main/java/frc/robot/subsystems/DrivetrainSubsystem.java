@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
@@ -163,16 +162,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         public Pose2d m_pose = new Pose2d(0, 0, getGyro());
         public final SwerveDriveOdometry m_odometry;
 
-        // *Constructor for DrivetrainSubsystem - I 'ardly know 'er! */
-        // dammit liam i didnt laugh
         public DrivetrainSubsystem() {
 
                 m_gyro.calibrate(); // this probably isn't necessary but idk
                 this.resetGyro(); // this however, is necessary ish
-
                 this.m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(), positions, m_pose);
                 m_odometry.resetPosition(this.getGyro(), positions, m_pose);
-
         }
 
         public Pose2d getPositionPose2d() {

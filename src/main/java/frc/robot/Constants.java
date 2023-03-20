@@ -42,8 +42,7 @@ public final class Constants {
         public static final double kMaxSpeed = 5; // should be 5 meters per second, 2 rn so ian keeps his ankles
 
         public static final double kMaxAngularSpeed = 2 * Math.PI; // is currently 1, will be 1/2 eventually
-        // (don't
-        // change)
+        // (don't change)
         public static final double kMaxAngularAcceleration = Math.PI;
 
         public static final double kTurnKp = 7;
