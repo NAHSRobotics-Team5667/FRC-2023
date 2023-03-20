@@ -17,7 +17,7 @@ import frc.robot.subsystems.WristSubsystem;
 
 public class WristCommand extends CommandBase {
     WristSubsystem wrist;
-    XboxController m_Controller = RobotContainer.m_firstController;
+    XboxController m_Controller = RobotContainer.firstController;
     RobotContainer robotContainer;
     // these will be the heights of the slide at different points. The wrist angle
     // will be set as Setpoints[bumperPos]

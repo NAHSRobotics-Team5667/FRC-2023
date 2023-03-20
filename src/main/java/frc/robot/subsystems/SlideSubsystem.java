@@ -115,10 +115,8 @@ public class SlideSubsystem extends SubsystemBase {
     public void setSlide(double percentOutput) {
         if (getBottomLimitSwitch()) {
             percentOutput = Math.max(percentOutput, 0);
-        } else {
-            if (getTopLimitSwitch() || m_rightSlide.getSelectedSensorPosition() >= SlideConstants.maxEncoderTicks) {
-                percentOutput = Math.min(percentOutput, 0);
-            }
+        } else if (getTopLimitSwitch() || m_rightSlide.getSelectedSensorPosition() >= SlideConstants.maxEncoderTicks) {
+            percentOutput = Math.min(percentOutput, 0);
         }
 
         m_leftSlide.set(ControlMode.PercentOutput, percentOutput);

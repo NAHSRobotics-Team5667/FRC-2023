@@ -191,13 +191,13 @@ public class WristSubsystem extends SubsystemBase {
             maxBumperPos = 2;
         }
 
-        if (RobotContainer.m_firstController.getRightBumperPressed()) {
+        if (RobotContainer.firstController.getRightBumperPressed()) {
             if (bumperPos < maxBumperPos) {
                 bumperPos++;
             }
         }
 
-        if (RobotContainer.m_firstController.getLeftBumperPressed()) {
+        if (RobotContainer.firstController.getLeftBumperPressed()) {
             if (bumperPos > 0) {
                 bumperPos--;
             }

@@ -13,7 +13,7 @@ import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
-public class SlideDefaultCommand extends CommandBase {
+public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
     @SuppressWarnings("unused")
     private WristSubsystem wrist;
@@ -26,12 +26,12 @@ public class SlideDefaultCommand extends CommandBase {
     // be set as SlideConstants.slideSetpoints[bumperPos]
 
     /** Creates a new SlideCommand. */
-    public SlideDefaultCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {
+    public SlideCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {
         this.m_RobotContainer = m_RobotContainer;
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         this.wrist = wrist;
-        wrist = m_RobotContainer.m_wrist;
+        wrist = m_RobotContainer.wrist;
 
         hasSpool = !slide.getBottomLimitSwitch();
         hasZeroed = false;

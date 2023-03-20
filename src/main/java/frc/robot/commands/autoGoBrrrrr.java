@@ -5,17 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class autoGoBrrrrr extends CommandBase {
   DrivetrainSubsystem m_drive;
-  ClawSubsystem claw;
+  IntakeSubsystem claw;
   boolean isFinished = false;
   double timer = 0;
 
   /** Creates a new autoGoBrrrrr. */
-  public autoGoBrrrrr(DrivetrainSubsystem m_drive, ClawSubsystem claw) {
+  public autoGoBrrrrr(DrivetrainSubsystem m_drive, IntakeSubsystem claw) {
     this.claw = claw;
     this.m_drive = m_drive;
     addRequirements(m_drive, claw);

@@ -62,11 +62,11 @@ public class DrivetrainCommand extends CommandBase {
      * the drive subsystem
      */
     private void joystickDrive() {
-        if (RobotContainer.m_firstController.getPOV() == 180) {
+        if (RobotContainer.firstController.getPOV() == 180) {
             FieldOriented = !FieldOriented;
 
         }
-        if (RobotContainer.m_secondController.getLeftStickButtonPressed()) {
+        if (RobotContainer.secondController.getLeftStickButtonPressed()) {
             slowmode = !slowmode;
         }
         if (slowmode) {
@@ -74,7 +74,7 @@ public class DrivetrainCommand extends CommandBase {
         } else {
             speedMultiplier = .9;
         }
-        if (RobotContainer.m_secondController.getRightStickButton()) {
+        if (RobotContainer.secondController.getRightStickButton()) {
             this.m_swerve.resetGyro();
         }
 
@@ -83,11 +83,11 @@ public class DrivetrainCommand extends CommandBase {
 
         double xSpeed = m_xspeedLimiter
                 .calculate(MathUtil
-                        .applyDeadband(-RobotContainer.m_secondController.getLeftX() * robotContainer.speedMultiplier,
+                        .applyDeadband(-RobotContainer.secondController.getLeftX() * robotContainer.speedMultiplier,
                                 0.1))
                 * DrivetrainSubsystem.kMaxSpeed;
 
-        xSpeed = MathUtil.applyDeadband(-RobotContainer.m_secondController.getLeftX() * robotContainer.speedMultiplier,
+        xSpeed = MathUtil.applyDeadband(-RobotContainer.secondController.getLeftX() * robotContainer.speedMultiplier,
                 0.1)
                 * DrivetrainSubsystem.kMaxSpeed;
 
@@ -97,11 +97,11 @@ public class DrivetrainCommand extends CommandBase {
 
         double ySpeed = m_yspeedLimiter
                 .calculate(MathUtil
-                        .applyDeadband(-RobotContainer.m_secondController.getLeftY() * robotContainer.speedMultiplier,
+                        .applyDeadband(-RobotContainer.secondController.getLeftY() * robotContainer.speedMultiplier,
                                 0.15))
                 * DrivetrainSubsystem.kMaxSpeed;
 
-        ySpeed = MathUtil.applyDeadband(-RobotContainer.m_secondController.getLeftY() * robotContainer.speedMultiplier,
+        ySpeed = MathUtil.applyDeadband(-RobotContainer.secondController.getLeftY() * robotContainer.speedMultiplier,
                 0.15)
                 * DrivetrainSubsystem.kMaxSpeed;
 
@@ -111,19 +111,19 @@ public class DrivetrainCommand extends CommandBase {
         // the right by default.
 
         double rot = m_rotLimiter
-                .calculate(MathUtil.applyDeadband(RobotContainer.m_secondController.getRightX() * 0.4, 0.15))
+                .calculate(MathUtil.applyDeadband(RobotContainer.secondController.getRightX() * 0.4, 0.15))
                 * DrivetrainSubsystem.kMaxAngularSpeed;
 
-        rot = MathUtil.applyDeadband(RobotContainer.m_secondController.getRightX(), 0.15)
+        rot = MathUtil.applyDeadband(RobotContainer.secondController.getRightX(), 0.15)
                 * DrivetrainSubsystem.kMaxAngularSpeed;
 
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);
         SmartDashboard.putNumber("rot", rot);
 
-        SmartDashboard.putNumber("Left Y", RobotContainer.m_secondController.getLeftY());
-        SmartDashboard.putNumber("Left X", RobotContainer.m_secondController.getLeftX());
-        SmartDashboard.putNumber("Right X", RobotContainer.m_secondController.getRightX());
+        SmartDashboard.putNumber("Left Y", RobotContainer.secondController.getLeftY());
+        SmartDashboard.putNumber("Left X", RobotContainer.secondController.getLeftX());
+        SmartDashboard.putNumber("Right X", RobotContainer.secondController.getRightX());
 
         this.m_swerve.drive(xSpeed, ySpeed, rot, FieldOriented);
     }

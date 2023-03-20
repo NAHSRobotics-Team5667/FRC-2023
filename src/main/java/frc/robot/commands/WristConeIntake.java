@@ -6,13 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SlideSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 public class WristConeIntake extends CommandBase {
     boolean isPieceIntaken;
-    ClawSubsystem m_claw;
+    IntakeSubsystem m_claw;
     SlideSubsystem m_slide;
     WristSubsystem m_wrist;
     boolean isCube;
@@ -21,7 +21,8 @@ public class WristConeIntake extends CommandBase {
     RobotContainer m_RobotContainer;
 
     /** Creates a new IntakeOuttakeProcessCube. */
-    public WristConeIntake(WristSubsystem wrist, boolean isCube, ClawSubsystem claw, RobotContainer m_RobotContainer) {
+    public WristConeIntake(WristSubsystem wrist, boolean isCube, IntakeSubsystem claw,
+            RobotContainer m_RobotContainer) {
         this.isPieceIntaken = claw.isPieceIntaken();
         this.m_wrist = wrist;
         this.isCube = isCube;

@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.getSticksMode;
+import frc.robot.RobotContainer.GetSticksMode;
 import java.util.function.BooleanSupplier;
 
 import frc.robot.util.FlatSurfaceFinder;
@@ -21,27 +21,27 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AlignFlatSurface extends ParallelRaceGroup {
-    PathPlannerTrajectory FlatSurfaceLocation;
-    BooleanSupplier getSticks;
+        PathPlannerTrajectory FlatSurfaceLocation;
+        BooleanSupplier getSticks;
 
-    /** Creates a new AlignFlatSurfaceAgain. */
-    public AlignFlatSurface(RobotContainer m_RobotContainer) {
+        /** Creates a new AlignFlatSurfaceAgain. */
+        public AlignFlatSurface(RobotContainer m_RobotContainer) {
 
-        PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints(5, 5),
-                new PathPoint(
-                        new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(),
-                                RobotContainer.poseEstimate.getCurrentPose().getY()),
-                        RobotContainer.poseEstimate.getCurrentPose().getRotation()),
-                new PathPoint(
-                        new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
-                                FlatSurfaceFinder.getNearestPole().getY()),
-                        FlatSurfaceFinder.getNearestPole().getRotation()));
-        this.FlatSurfaceLocation = FlatSurfaceLocation;
-        BooleanSupplier getSticks = m_RobotContainer.getSticks(getSticksMode.SURFACE);
+                PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints(5, 5),
+                                new PathPoint(
+                                                new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(),
+                                                                RobotContainer.poseEstimate.getCurrentPose().getY()),
+                                                RobotContainer.poseEstimate.getCurrentPose().getRotation()),
+                                new PathPoint(
+                                                new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
+                                                                FlatSurfaceFinder.getNearestPole().getY()),
+                                                FlatSurfaceFinder.getNearestPole().getRotation()));
+                this.FlatSurfaceLocation = FlatSurfaceLocation;
+                BooleanSupplier getSticks = m_RobotContainer.getSticks(GetSticksMode.SURFACE);
 
-        // Add your commands in the addCommands() call, e.g.
-        // addCommands(new FooCommand(), new BarCommand());
-        addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
-        until(getSticks);
-    }
+                // Add your commands in the addCommands() call, e.g.
+                // addCommands(new FooCommand(), new BarCommand());
+                addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
+                until(getSticks);
+        }
 }

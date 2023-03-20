@@ -4,7 +4,7 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.getSticksMode;
+import frc.robot.RobotContainer.GetSticksMode;
 import java.util.function.BooleanSupplier;
 import frc.robot.util.PoleFinder;
 import com.pathplanner.lib.PathConstraints;
@@ -34,7 +34,7 @@ public class AlignPoleAgain extends ParallelRaceGroup {
                         PoleFinder.getNearestPole().getX(),
                         PoleFinder.getNearestPole().getY()),
                         PoleFinder.getNearestPole().getRotation()));
-        BooleanSupplier getSticks = m_RobotContainer.getSticks(getSticksMode.POLE);
+        BooleanSupplier getSticks = m_RobotContainer.getSticks(GetSticksMode.POLE);
 
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());

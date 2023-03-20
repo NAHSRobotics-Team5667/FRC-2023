@@ -7,17 +7,17 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
-import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ClawCubeOuttake extends CommandBase {
     double stopClock;
-    ClawSubsystem claw;
+    IntakeSubsystem claw;
     RobotContainer robotContainer;
     WristSubsystem wrist;
 
     /** Creates a new IntakeOuttakeProcessClaw. */
-    public ClawCubeOuttake(ClawSubsystem claw, WristSubsystem wrist, RobotContainer robotContainer) {
+    public ClawCubeOuttake(IntakeSubsystem claw, WristSubsystem wrist, RobotContainer robotContainer) {
         this.claw = claw;
         this.robotContainer = robotContainer;
         this.wrist = wrist;
@@ -35,6 +35,7 @@ public class ClawCubeOuttake extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        // runs for set time
         if (stopClock < 0.5) {
             claw.setIntake(.45);
             stopClock += .02;
@@ -49,10 +50,7 @@ public class ClawCubeOuttake extends CommandBase {
     public void end(boolean interrupted) {
         robotContainer.outtakeFinish = false;
         claw.setIntake(0);
-        robotContainer.inOrOut += 1;
-
         wrist.setBumperPos(0);
-
         robotContainer.setCurrentElement(GamePiece.NONE);
     }
 

@@ -34,10 +34,8 @@ public class SwerveModule {
     double trueEncoderOffset = 100, trueEncoderOffsetTest = 0;
     double[] averageOffsetBoi;
     @SuppressWarnings("unused")
-    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398); // TODO:
-                                                                                                                      // do
-                                                                                                                      // something
-                                                                                                                      // idk
+    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398);
+    // TODO:do something idk
     DutyCycleEncoder Encoder;
     double angleOffset = 0;
 
@@ -176,9 +174,7 @@ public class SwerveModule {
         final double driveOutput = m_drivePIDController.calculate(getDriveEncoderRate(), state.speedMetersPerSecond);
         // double driveOutput = 0;
         m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-
         m_turningPIDController.getPositionError();
-
     }
 
     public void updateTurnPID(double kP, double kI, double kD) {
@@ -218,7 +214,6 @@ public class SwerveModule {
      * @return get the turn motor angle
      */
     public double getTurnEncoderDistance() {
-
         trueEncoderOffsetTest = this.Encoder.getAbsolutePosition() - angleOffset;
 
         // return ((this.Encoder.getDistance()- angleOffset)*2*Math.PI);
@@ -273,5 +268,4 @@ public class SwerveModule {
     public double getOffset() {
         return trueEncoderOffset;
     }
-
 }

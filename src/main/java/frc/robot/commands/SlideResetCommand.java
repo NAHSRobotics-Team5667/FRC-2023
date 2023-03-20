@@ -27,7 +27,7 @@ public class SlideResetCommand extends CommandBase {
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         this.wrist = wrist;
-        wrist = m_RobotContainer.m_wrist;
+        wrist = m_RobotContainer.wrist;
         addRequirements(slide);
     }
 
