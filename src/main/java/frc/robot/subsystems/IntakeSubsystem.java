@@ -14,22 +14,22 @@ import frc.robot.Constants;
 import frc.robot.util.CurrentSpikeCounter;
 
 public class IntakeSubsystem extends SubsystemBase {
-    public WPI_TalonFX m_intake; // intake motor
-    private CurrentSpikeCounter spikeCounter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,
+    public WPI_TalonFX intake; // intake motor
+    private CurrentSpikeCounter spike_counter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,
             Constants.SlideConstants.CurrentDeadband);
 
     /** Creates a new IntakeSubsystem. */
     public IntakeSubsystem() {
-        m_intake = new WPI_TalonFX(Constants.ClawConstants.kClawID);
-        m_intake.setNeutralMode(NeutralMode.Brake);
-        // m_claw.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40,
+        intake = new WPI_TalonFX(Constants.ClawConstants.kClawID);
+        intake.setNeutralMode(NeutralMode.Brake);
+        // claw.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40,
         // 100, 0.5));
-        // m_claw.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40,
+        // claw.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40,
         // 100, 0.5));
     }
 
     public double getPosition() {
-        return m_intake.getSelectedSensorPosition();
+        return intake.getSelectedSensorPosition();
     }
 
     /**
@@ -38,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param percentOutput: Percent of output using Motor Controller
      */
     public void setIntake(double percentOutput) {
-        this.m_intake.set(ControlMode.PercentOutput, percentOutput);
+        this.intake.set(ControlMode.PercentOutput, percentOutput);
     }
 
     /**
@@ -47,26 +47,26 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return: Current motor voltage
      */
     public double getMotorOutputVoltage() {
-        return m_intake.getMotorOutputVoltage();
+        return intake.getMotorOutputVoltage();
     }
 
     public boolean isPieceIntaken() {
-        return spikeCounter.update(m_intake.getStatorCurrent(), false);
+        return spike_counter.update(intake.getStatorCurrent(), false);
     }
 
     public double getMotorSpeed() {
-        return m_intake.getSelectedSensorVelocity();
+        return intake.getSelectedSensorVelocity();
     }
 
     public double getMotorInput() {
-        return m_intake.getBusVoltage();
+        return intake.getBusVoltage();
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("ClawVoltage", m_intake.getMotorOutputVoltage());
-        SmartDashboard.putNumber("ClawTempurature", m_intake.getTemperature());
-        SmartDashboard.putNumber("ClawCurrent", m_intake.getStatorCurrent());
+        SmartDashboard.putNumber("ClawVoltage", intake.getMotorOutputVoltage());
+        SmartDashboard.putNumber("ClawTempurature", intake.getTemperature());
+        SmartDashboard.putNumber("ClawCurrent", intake.getStatorCurrent());
         isPieceIntaken();
         // This method will be called once per scheduler run.
     }

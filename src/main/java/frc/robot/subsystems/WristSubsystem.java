@@ -20,32 +20,32 @@ import frc.robot.RobotContainer.GamePiece;
 
 public class WristSubsystem extends SubsystemBase {
 
-    public int bumperPos = 0;
-    public WPI_TalonFX m_wristMotorFirst, m_wristMotorSecond;
+    // public int bumperPos = 0;
+    public WPI_TalonFX wristMotorFirst, wristMotorSecond;
     private PIDController wristPID = new PIDController(.02, 0, 0);
-    private DutyCycleEncoder m_encoder;
+    private DutyCycleEncoder encoder;
     private double angleOffset = 0;
     private int counter = 0;
-    private RobotContainer m_robotContainer;
+    private RobotContainer robotContainer;
     private double maxBumperPos = 0;
 
     /** Creates a new WristSubsystem. */
-    public WristSubsystem(RobotContainer m_robotContainer) {
-        m_encoder = new DutyCycleEncoder(5);
+    public WristSubsystem(RobotContainer robotContainer) {
+        encoder = new DutyCycleEncoder(5);
         wristPID.setTolerance(2.5);
 
-        m_wristMotorFirst = new WPI_TalonFX(Constants.WristConstants.kWristIDLeft);
-        m_wristMotorSecond = new WPI_TalonFX(Constants.WristConstants.kWristIDRight);
+        wristMotorFirst = new WPI_TalonFX(Constants.WristConstants.kWristIDLeft);
+        wristMotorSecond = new WPI_TalonFX(Constants.WristConstants.kWristIDRight);
 
-        m_wristMotorFirst.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
-        m_wristMotorFirst.setSelectedSensorPosition(0);
+        wristMotorFirst.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
+        wristMotorFirst.setSelectedSensorPosition(0);
 
-        m_wristMotorSecond.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
-        m_wristMotorSecond.setSelectedSensorPosition(0);
+        wristMotorSecond.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
+        wristMotorSecond.setSelectedSensorPosition(0);
 
-        m_wristMotorFirst.setInverted(true);
+        wristMotorFirst.setInverted(true);
 
-        this.m_robotContainer = m_robotContainer;
+        this.robotContainer = robotContainer;
 
         // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
     }
@@ -57,12 +57,12 @@ public class WristSubsystem extends SubsystemBase {
             percentOutput = Math.min(percentOutput, 0);
         }
 
-        m_wristMotorFirst.set(ControlMode.PercentOutput, percentOutput);
-        m_wristMotorSecond.set(ControlMode.PercentOutput, percentOutput);
+        wristMotorFirst.set(ControlMode.PercentOutput, percentOutput);
+        wristMotorSecond.set(ControlMode.PercentOutput, percentOutput);
     }
 
     public double getEncoder() {
-        return m_encoder.getAbsolutePosition();
+        return encoder.getAbsolutePosition();
     }
 
     public void setPosition(double position) {
@@ -70,20 +70,20 @@ public class WristSubsystem extends SubsystemBase {
         setWrist(output);
     }
 
-    public int getBumperPos() {
-        return bumperPos;
-    }
+    // public int getBumperPos() {
+    // return bumperPos;
+    // }
 
-    public void setBumperPos(int bumperPos) {
-        this.bumperPos = bumperPos;
-    }
+    // public void setBumperPos(int bumperPos) {
+    // this.bumperPos = bumperPos;
+    // }
 
     public double getPosition() {
-        return (m_wristMotorFirst.getSelectedSensorPosition() + m_wristMotorSecond.getSelectedSensorPosition()) / 2;
+        return (wristMotorFirst.getSelectedSensorPosition() + wristMotorSecond.getSelectedSensorPosition()) / 2;
     }
 
     public double getDriveRate() {
-        return m_wristMotorFirst.getSelectedSensorVelocity();
+        return wristMotorFirst.getSelectedSensorVelocity();
     }
 
     public double pidError() {
@@ -98,15 +98,15 @@ public class WristSubsystem extends SubsystemBase {
 
         // wristPID.calculate(currentPosition,
         // Constants.WristConstants.kWristConeIntakeSetpoint);
-        // double wristFeedForward = m_wristFeedForward.calculate(getDriveRate());
-        // m_wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-        // m_wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
+        // double wristFeedForward = wristFeedForward.calculate(getDriveRate());
+        // wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
+        // wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
 
         // Wrist Angled for Cone intake
     }
 
     public double getAngleDegrees() {
-        return WristConstants.convertTicksToRadians(m_wristMotorFirst.getSelectedSensorPosition(), angleOffset);
+        return WristConstants.convertTicksToRadians(wristMotorFirst.getSelectedSensorPosition(), angleOffset);
     }
 
     @Override
@@ -114,68 +114,22 @@ public class WristSubsystem extends SubsystemBase {
         if (counter <= 50) {
             counter++;
         }
-        if (counter == 50) {
+
+        if (counter % 50 == 0) {
             angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
         }
 
         SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint());
 
-        // if (counter % 5 == 0 && counter >= 30) {
-        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
-        // }
-
-        // if (Math.abs((getEncoder() * 360) - getAngleDegrees()) > 1) {
-        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
-
-        // m_wristMotorFirst.setSelectedSensorPosition(0);
-        // m_wristMotorSecond.setSelectedSensorPosition(0);
-        // }
-
-        // placed here because i need it updated constantly and dont want to deal with
-        // putting it in a command properly
-        if (m_robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-            maxBumperPos = WristConstants.coneIntakeSetpoints.length;
-
-        } else if (m_robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-            maxBumperPos = WristConstants.cubeIntakeSetpoints.length;
-
-        } else if (!m_robotContainer.getCurrentElement().equals(GamePiece.NONE)) {
-            maxBumperPos = 2;
-        }
-
-        if (RobotContainer.firstController.getRightBumperPressed()) {
-            if (bumperPos < maxBumperPos) {
-                bumperPos++;
-            }
-        }
-
-        if (RobotContainer.firstController.getLeftBumperPressed()) {
-            if (bumperPos > 0) {
-                bumperPos--;
-            }
-        }
-
-        // if (RobotContainer.m_controller.getLeftStickButtonPressed()) {
-        // bumperPos = 0;
-        // }
-
-        SmartDashboard.putNumber("Bumper Pos", getBumperPos());
+        SmartDashboard.putNumber("Position Level", robotContainer.getPositionLevel());
         SmartDashboard.putNumber("Wrist Encoder", getEncoder());
         SmartDashboard.putNumber("Wrist Angle", getAngleDegrees());
         SmartDashboard.putNumber("Angle Offset", angleOffset);
 
-        SmartDashboard.putString("Target Element", m_robotContainer.getTargetElement().toString());
-        SmartDashboard.putString("Current Element", m_robotContainer.getCurrentElement().toString());
+        SmartDashboard.putString("Target Element", robotContainer.getTargetElement().toString());
+        SmartDashboard.putString("Current Element", robotContainer.getCurrentElement().toString());
 
-        // if (RobotContainer.m_controller.getYButton()) {
-        // bumperPos = 0;
-        // }
-
-        // if (RobotContainer.m_controller.getXButton()) {
-        // bumperPos = 3;
-        // }
-
-        // This method will be called once per scheduler run
+        robotContainer.updatePositionLevel();
     }
 
     public void coneOuttakeAngled() {

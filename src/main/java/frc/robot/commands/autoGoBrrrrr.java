@@ -9,16 +9,16 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class autoGoBrrrrr extends CommandBase {
-  DrivetrainSubsystem m_drive;
+  DrivetrainSubsystem drive;
   IntakeSubsystem claw;
   boolean isFinished = false;
   double timer = 0;
 
   /** Creates a new autoGoBrrrrr. */
-  public autoGoBrrrrr(DrivetrainSubsystem m_drive, IntakeSubsystem claw) {
+  public autoGoBrrrrr(DrivetrainSubsystem drive, IntakeSubsystem claw) {
     this.claw = claw;
-    this.m_drive = m_drive;
-    addRequirements(m_drive, claw);
+    this.drive = drive;
+    addRequirements(drive, claw);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -35,7 +35,7 @@ public class autoGoBrrrrr extends CommandBase {
       claw.setIntake(1);
       timer += .02;
       if (timer < 6 && timer > 1) {
-        this.m_drive.drive(0, 1, 0, false);
+        this.drive.drive(0, 1, 0, false);
 
       }
 

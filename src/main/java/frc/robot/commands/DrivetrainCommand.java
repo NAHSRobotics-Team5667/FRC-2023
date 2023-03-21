@@ -8,13 +8,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** The DriveTrainCommand class */
 public class DrivetrainCommand extends CommandBase {
-    public DrivetrainSubsystem m_swerve;
+    public DrivetrainSubsystem swerve;
     private boolean slowmode = false;
     public double speedMultiplier = .9;
     RobotContainer robotContainer;
@@ -22,21 +21,21 @@ public class DrivetrainCommand extends CommandBase {
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // haha changing slewratelimiters go brrrrr
-    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(2),
-            m_yspeedLimiter = new SlewRateLimiter(2),
-            m_rotLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter xspeedLimiter = new SlewRateLimiter(2),
+            yspeedLimiter = new SlewRateLimiter(2),
+            rotLimiter = new SlewRateLimiter(3);
 
     /** Creates a new DrivetrainCommand. */
     public DrivetrainCommand(DrivetrainSubsystem drive, RobotContainer robotContainer) {
         addRequirements(drive);
         this.robotContainer = robotContainer;
-        this.m_swerve = drive;
+        this.swerve = drive;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_swerve.resetGyro();
+        swerve.resetGyro();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -48,7 +47,7 @@ public class DrivetrainCommand extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        this.m_swerve.driveVoltage(0);
+        this.swerve.driveVoltage(0);
     }
 
     // Returns true when the command should end.
@@ -75,13 +74,13 @@ public class DrivetrainCommand extends CommandBase {
             speedMultiplier = .9;
         }
         if (RobotContainer.secondController.getRightStickButton()) {
-            this.m_swerve.resetGyro();
+            this.swerve.resetGyro();
         }
 
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
 
-        double xSpeed = m_xspeedLimiter
+        double xSpeed = xspeedLimiter
                 .calculate(MathUtil
                         .applyDeadband(-RobotContainer.secondController.getLeftX() * robotContainer.speedMultiplier,
                                 0.1))
@@ -95,7 +94,7 @@ public class DrivetrainCommand extends CommandBase {
         // we want a positive value when we pull to the left. Xbox controller
         // return positive values when you pull to the right by default.
 
-        double ySpeed = m_yspeedLimiter
+        double ySpeed = yspeedLimiter
                 .calculate(MathUtil
                         .applyDeadband(-RobotContainer.secondController.getLeftY() * robotContainer.speedMultiplier,
                                 0.15))
@@ -110,7 +109,7 @@ public class DrivetrainCommand extends CommandBase {
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
 
-        double rot = m_rotLimiter
+        double rot = rotLimiter
                 .calculate(MathUtil.applyDeadband(RobotContainer.secondController.getRightX() * 0.4, 0.15))
                 * DrivetrainSubsystem.kMaxAngularSpeed;
 
@@ -125,6 +124,6 @@ public class DrivetrainCommand extends CommandBase {
         SmartDashboard.putNumber("Left X", RobotContainer.secondController.getLeftX());
         SmartDashboard.putNumber("Right X", RobotContainer.secondController.getRightX());
 
-        this.m_swerve.drive(xSpeed, ySpeed, rot, FieldOriented);
+        this.swerve.drive(xSpeed, ySpeed, rot, FieldOriented);
     }
 }

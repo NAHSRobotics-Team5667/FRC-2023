@@ -43,7 +43,7 @@ public class ClawCubeIntake extends CommandBase {
 
         // runs until current spikes
         // NOTE: Change this to use time of flight sensor
-        if (clawSubsystem.m_intake.getStatorCurrent() < 30) {
+        if (clawSubsystem.intake.getStatorCurrent() < 30) {
             clawSubsystem.setIntake(-.45);
         } else {
             robotContainer.intakeFinish = true;
@@ -59,7 +59,7 @@ public class ClawCubeIntake extends CommandBase {
         robotContainer.setCurrentElement(GamePiece.CUBE);
         robotContainer.setTargetElement(GamePiece.NONE);
 
-        wrist.setBumperPos(0);
+        robotContainer.setPositionLevel(0);
     }
 
     // Returns true when the command should end.

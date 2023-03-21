@@ -4,20 +4,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.WristConstants;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
-import frc.robot.RobotContainer.GamePiece;
-import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.WristSubsystem;
 
 public class WristCommand extends CommandBase {
     WristSubsystem wrist;
-    XboxController m_Controller = RobotContainer.firstController;
+    XboxController controller = RobotContainer.firstController;
     RobotContainer robotContainer;
     // these will be the heights of the slide at different points. The wrist angle
     // will be set as Setpoints[bumperPos]
@@ -43,7 +40,7 @@ public class WristCommand extends CommandBase {
         double position = 0;
         String safe = "";
 
-        if (wrist.getBumperPos() == 0) {
+        if (robotContainer.getPositionLevel() == 0) {
             if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
                 position = -110;
             } else {
@@ -52,18 +49,18 @@ public class WristCommand extends CommandBase {
             }
         } else {
             if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                position = WristConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
+                position = WristConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1];
 
             } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
+                position = WristConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1];
 
             } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                position = WristConstants.kWristConeOuttakeSetpoint[wrist.getBumperPos() -
+                position = WristConstants.kWristConeOuttakeSetpoint[robotContainer.getPositionLevel() -
                         1];
 
             } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
 
-                position = WristConstants.kWristCubeOuttakeSetpoint[wrist.getBumperPos() -
+                position = WristConstants.kWristCubeOuttakeSetpoint[robotContainer.getPositionLevel() -
                         1];
             }
 
@@ -92,6 +89,6 @@ public class WristCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_Controller.getAButtonPressed() || m_Controller.getYButton();
+        return controller.getAButtonPressed() || controller.getYButton();
     }
 }

@@ -17,7 +17,7 @@ public class SlideCommand extends CommandBase {
     @SuppressWarnings("unused")
     private WristSubsystem wrist;
     public int bumperPos = 0;
-    RobotContainer m_RobotContainer;
+    RobotContainer RobotContainer;
 
     private boolean hasSpool, hasZeroed;
 
@@ -25,12 +25,12 @@ public class SlideCommand extends CommandBase {
     // be set as SlideConstants.slideSetpoints[bumperPos]
 
     /** Creates a new SlideCommand. */
-    public SlideCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer m_RobotContainer) {
-        this.m_RobotContainer = m_RobotContainer;
+    public SlideCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer robotContainer) {
+        this.RobotContainer = robotContainer;
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         this.wrist = wrist;
-        wrist = m_RobotContainer.m_wrist;
+        wrist = robotContainer.wrist;
 
         hasSpool = !slide.getBottomLimitSwitch();
         hasZeroed = false;
@@ -48,9 +48,9 @@ public class SlideCommand extends CommandBase {
     @Override
     public void execute() {
         if (bumperPos > 0) {
-            m_RobotContainer.speedMultiplier = .3;
+            RobotContainer.speedMultiplier = .3;
         } else {
-            m_RobotContainer.speedMultiplier = .7;
+            RobotContainer.speedMultiplier = .7;
         }
         // max right slide = 277000
 
@@ -75,7 +75,7 @@ public class SlideCommand extends CommandBase {
             // // TESTING
             // / 2, 0.2));
 
-            if (wrist.getBumperPos() == 0) {
+            if (RobotContainer.getPositionLevel() == 0) {
                 position = 0;
                 slide.setSlide(-.35);
                 // if (MathUtil.clamp(
@@ -93,17 +93,17 @@ public class SlideCommand extends CommandBase {
                 // hasZeroed = false;
                 // }
             } else {
-                if (m_RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneIntakeSetpoints[wrist.getBumperPos() - 1];
+                if (RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
+                    position = SlideConstants.coneIntakeSetpoints[RobotContainer.getPositionLevel() - 1];
 
-                } else if (m_RobotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeIntakeSetpoints[wrist.getBumperPos() - 1];
+                } else if (RobotContainer.getTargetElement().equals(GamePiece.CUBE)) {
+                    position = SlideConstants.cubeIntakeSetpoints[RobotContainer.getPositionLevel() - 1];
 
-                } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneOuttakeSetpoint[wrist.getBumperPos() - 1];
+                } else if (RobotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+                    position = SlideConstants.coneOuttakeSetpoint[RobotContainer.getPositionLevel() - 1];
 
-                } else if (m_RobotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeOuttakeSetpoint[wrist.getBumperPos() - 1];
+                } else if (RobotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+                    position = SlideConstants.cubeOuttakeSetpoint[RobotContainer.getPositionLevel() - 1];
                 }
                 slide.setSlidePIDInches(position);
 
@@ -116,7 +116,7 @@ public class SlideCommand extends CommandBase {
         }
 
         if (slide.getTopLimitSwitch()) {
-            wrist.setBumperPos(0);
+            RobotContainer.setPositionLevel(0);
         }
 
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);

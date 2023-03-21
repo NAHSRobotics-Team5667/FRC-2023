@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.Constants.WristConstants;
 import frc.robot.commands.ClawConeIntake;
 import frc.robot.commands.ClawConeOuttake;
 import frc.robot.commands.ClawCubeIntake;
@@ -64,10 +65,10 @@ public class RobotContainer {
     public SendableChooser<String> autoChooser = new SendableChooser<String>(); // decides which auto we are using
 
     // declares all subsystems
-    private SlideSubsystem m_slide;
-    private DrivetrainSubsystem m_drive;
-    public WristSubsystem m_wrist;
-    public IntakeSubsystem m_intake;
+    private SlideSubsystem slide;
+    private DrivetrainSubsystem drive;
+    public WristSubsystem wrist;
+    public IntakeSubsystem intake;
 
     public boolean outtakeFinish = false;
     public double intakeToggle = 0;
@@ -83,7 +84,6 @@ public class RobotContainer {
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
     PathPlannerTrajectory HSC, CSC, BSC; // autonomous trajectories, needs inital pose set to path initial pose
-    @SuppressWarnings("unused")
 
     private int positionLevel;
 
@@ -91,18 +91,18 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        m_drive = new DrivetrainSubsystem();
-        m_drive.setDefaultCommand(new DrivetrainCommand(m_drive, this));
+        drive = new DrivetrainSubsystem();
+        drive.setDefaultCommand(new DrivetrainCommand(drive, this));
 
         // poseEstimate = new PoseEstimator(null, drive);
         Limelight = new LimelightSubsystem(); // instantiate commands
-        m_wrist = new WristSubsystem(this);
-        m_intake = new IntakeSubsystem();
-        m_slide = new SlideSubsystem();
+        wrist = new WristSubsystem(this);
+        intake = new IntakeSubsystem();
+        slide = new SlideSubsystem();
 
-        m_intake.setDefaultCommand(new IntakeCommand(m_intake)); // assign commands to subsystems
-        m_wrist.setDefaultCommand(new WristCommand(m_wrist, this));
-        m_slide.setDefaultCommand(new SlideCommand(m_slide, m_wrist, this));
+        intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to subsystems
+        wrist.setDefaultCommand(new WristCommand(wrist, this));
+        slide.setDefaultCommand(new SlideCommand(slide, wrist, this));
 
         currentElement = GamePiece.NONE;
         targetElement = GamePiece.NONE;
@@ -133,14 +133,14 @@ public class RobotContainer {
         Supplier<Pose2d> poseSupplier = new Supplier<Pose2d>() {
             @Override
             public Pose2d get() {
-                return m_drive.getPositionPose2d();
+                return drive.getPositionPose2d();
             }
         };
 
         Consumer<Pose2d> resetPoseConsumer = new Consumer<Pose2d>() {
             @Override
             public void accept(Pose2d pose) {
-                m_drive.resetPose(DrivetrainSubsystem.positions, pose);
+                drive.resetPose(DrivetrainSubsystem.positions, pose);
 
             }
         };
@@ -148,7 +148,7 @@ public class RobotContainer {
         Consumer<SwerveModuleState[]> outputModuleConsumer = new Consumer<SwerveModuleState[]>() {
             @Override
             public void accept(SwerveModuleState[] t) {
-                m_drive.pleaseGodLetThisWork(t[0], t[1], t[2], t[3]);
+                drive.pleaseGodLetThisWork(t[0], t[1], t[2], t[3]);
             }
         };
 
@@ -158,7 +158,7 @@ public class RobotContainer {
         autoBuilder = new SwerveAutoBuilder(
                 poseSupplier, // Pose2d supplier
                 resetPoseConsumer, // Pose2d consumer, used to reset odometry at the beginning of auto
-                m_drive.m_kinematics, // SwerveDriveKinematics
+                drive.kinematics, // SwerveDriveKinematics
                 new PIDConstants(2.7109, 0, 0), // PID constants to correct for translation error (used to create the X
                                                 // and Y PID controllers)
                 new PIDConstants(7, 12, 0.1), // PID constants to correct for rotation error (used to create the
@@ -167,8 +167,8 @@ public class RobotContainer {
                 eventMap,
                 true, // Should the path be automatically mirrored depending on alliance color.
                       // Optional, defaults to true
-                m_drive // The drive subsystem. Used to properly set the requirements of path following
-                        // commands
+                drive // The drive subsystem. Used to properly set the requirements of path following
+                      // commands
         );
         configureButtonBindings();
         autoChooser.addOption("CSC", "CSC");
@@ -212,6 +212,24 @@ public class RobotContainer {
         this.positionLevel = positionLevel;
     }
 
+    public void updatePositionLevel() {
+        int maxPositionLevel = 0;
+
+        if (getTargetElement().equals(GamePiece.CONE)) {
+            maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
+        } else if (getTargetElement().equals(GamePiece.CUBE)) {
+            maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
+        } else if (!getCurrentElement().equals(GamePiece.NONE)) {
+            maxPositionLevel = 2;
+        }
+
+        if (getPositionLevel() < maxPositionLevel && secondController.getRightBumperPressed()) {
+            positionLevel++;
+        } else if (getPositionLevel() > 0 && secondController.getLeftBumperPressed()) {
+            positionLevel--;
+        }
+    }
+
     // ===================================================================
 
     /**
@@ -237,31 +255,31 @@ public class RobotContainer {
                 xButton = new JoystickButton(firstController, XboxController.Button.kX.value);// makes all triggers
 
         aButton.onTrue(
-                new ClawCubeOuttake(m_intake, m_wrist, this)
-                        .until(checkIntakeOrOuttakeFinish(IntakeOrOuttake.OUTTAKE))
+                new ClawCubeOuttake(intake, wrist, this)
+                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE))
         /*
          * .andThen(new WristCubeOuttake(m_wrist, this))
          * .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))
          */);
         yButton.onTrue(
-                new ClawConeIntake(m_intake, m_wrist, true, this)
-                        .until(checkIntakeOrOuttakeFinish(IntakeOrOuttake.INTAKE))
+                new ClawConeIntake(intake, wrist, true, this)
+                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
         /*
          * .andThen(new WristConeIntake(m_wrist,
-         * intakeFinish, m_claw,
+         * intakeFinish, claw,
          * this)).until(doneIntakeOuttake(
          * intakeOrOuttake.INTAKE))
          */);
         xButton.onTrue(
-                new ClawCubeIntake(m_intake, m_wrist, true, this)
-                        .until(checkIntakeOrOuttakeFinish(IntakeOrOuttake.INTAKE))
+                new ClawCubeIntake(intake, wrist, true, this)
+                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
         /*
          * .andThen(new WristCubeIntake(m_wrist, this))
          * .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))
          */);
         bButton.onTrue(
-                new ClawConeOuttake(m_intake, this)
-                        .until(checkIntakeOrOuttakeFinish(IntakeOrOuttake.OUTTAKE))
+                new ClawConeOuttake(intake, this)
+                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE))
         /*
          * .andThen(new WristConeOuttake(m_wrist,
          * this)).until(doneIntakeOuttake(
@@ -278,13 +296,13 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         switch (autoChooser.getSelected()) {
             case "default":
-                return new ClawCubeOuttake(m_intake, m_wrist, this).finallyDo((boolean interrupt) -> {
+                return new ClawCubeOuttake(intake, wrist, this).finallyDo((boolean interrupt) -> {
                     ++intakeToggle;
                 });
 
             case "BSC":
-                m_drive.m_pose = new Pose2d(1.66, .43, m_drive.getInitGyro()); // BSC
-                return new ClawCubeOuttake(m_intake, m_wrist, this)
+                drive.pose = new Pose2d(1.66, .43, drive.getInitGyro()); // BSC
+                return new ClawCubeOuttake(intake, wrist, this)
                         .withTimeout(2)
                         .andThen(autoBuilder.fullAuto(BSC))
                         .finallyDo((boolean interrupt) -> {
@@ -292,16 +310,16 @@ public class RobotContainer {
                         });
             case "CSC":
                 // drive.m_pose = new Pose2d(1.66, 2.98, drive.getInitGyro()); // CSC
-                // return new ClawCubeOuttake(m_claw, m_wrist,
+                // return new ClawCubeOuttake(claw, wrist,
                 // this).withTimeout(2).andThen(autoBuilder.fullAuto(CSC))
                 // .finallyDo((boolean interrupt) -> {
                 // ++intakeToggle;
                 // });
-                return new autoGoBrrrrr(m_drive, m_intake);
+                return new autoGoBrrrrr(drive, intake);
             case "HSC":
-                m_drive.m_pose = new Pose2d(1.73, 4.67, m_drive.getInitGyro());
+                drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());
 
-                return new ClawCubeOuttake(m_intake, m_wrist,
+                return new ClawCubeOuttake(intake, wrist,
                         this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
@@ -310,7 +328,7 @@ public class RobotContainer {
             // return autoBuilder.fullAuto(HSC);
         }
 
-        return new ClawCubeOuttake(m_intake, m_wrist, this).finallyDo((boolean interrupt) -> {
+        return new ClawCubeOuttake(intake, wrist, this).finallyDo((boolean interrupt) -> {
             ++intakeToggle;
         });
     }
@@ -332,7 +350,7 @@ public class RobotContainer {
         CONE
     }
 
-    public BooleanSupplier checkIntakeOrOuttakeFinish(IntakeOrOuttake mode) {
+    public BooleanSupplier checkIntakeFinish(IntakeOrOuttake mode) {
         return new BooleanSupplier() {
             public boolean getAsBoolean() {
                 switch (mode) {

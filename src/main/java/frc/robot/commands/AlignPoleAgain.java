@@ -23,7 +23,7 @@ public class AlignPoleAgain extends ParallelRaceGroup {
     BooleanSupplier getSticks;
 
     /** Creates a new AlignPoleAgain. */
-    public AlignPoleAgain(RobotContainer m_RobotContainer) {
+    public AlignPoleAgain(RobotContainer RobotContainer) {
         this.FlatSurfaceLocation = PathPlanner.generatePath(
                 new PathConstraints(5, 5),
                 new PathPoint(new Translation2d(
@@ -34,11 +34,11 @@ public class AlignPoleAgain extends ParallelRaceGroup {
                         PoleFinder.getNearestPole().getX(),
                         PoleFinder.getNearestPole().getY()),
                         PoleFinder.getNearestPole().getRotation()));
-        BooleanSupplier getSticks = m_RobotContainer.getSticks(GetSticksMode.POLE);
+        BooleanSupplier getSticks = RobotContainer.getSticks(GetSticksMode.POLE);
 
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
-        addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
+        addCommands(RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
         until(getSticks);
     }
 }

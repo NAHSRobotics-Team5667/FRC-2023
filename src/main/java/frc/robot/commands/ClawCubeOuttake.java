@@ -39,7 +39,6 @@ public class ClawCubeOuttake extends CommandBase {
         if (stopClock < 0.5) {
             claw.setIntake(.45);
             stopClock += .02;
-
         } else {
             robotContainer.outtakeFinish = true;
         }
@@ -50,7 +49,7 @@ public class ClawCubeOuttake extends CommandBase {
     public void end(boolean interrupted) {
         robotContainer.outtakeFinish = false;
         claw.setIntake(0);
-        wrist.setBumperPos(0);
+        robotContainer.setPositionLevel(0);
         robotContainer.setCurrentElement(GamePiece.NONE);
     }
 

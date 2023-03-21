@@ -4,14 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.util.CurrentSpikeCounter;
 
 public class ClawConeIntake extends CommandBase {
     public IntakeSubsystem clawSubsystem;
@@ -48,7 +45,7 @@ public class ClawConeIntake extends CommandBase {
 
         // runs until current spikes
         // TODO: Change to time of flight sensor
-        if (clawSubsystem.m_intake.getStatorCurrent() < 30) {
+        if (clawSubsystem.intake.getStatorCurrent() < 30) {
             clawSubsystem.setIntake(.45);
         }
 
@@ -60,7 +57,7 @@ public class ClawConeIntake extends CommandBase {
         robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
 
-        wrist.setBumperPos(0);
+        robotContainer.setPositionLevel(0);
 
         robotContainer.setCurrentElement(GamePiece.CONE);
         robotContainer.setTargetElement(GamePiece.NONE);

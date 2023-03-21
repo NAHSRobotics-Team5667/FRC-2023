@@ -12,25 +12,25 @@ import frc.robot.subsystems.WristSubsystem;
 
 public class WristConeIntake extends CommandBase {
     boolean isPieceIntaken;
-    IntakeSubsystem m_claw;
-    SlideSubsystem m_slide;
-    WristSubsystem m_wrist;
+    IntakeSubsystem claw;
+    SlideSubsystem slide;
+    WristSubsystem wrist;
     boolean isCube;
     double setpoint;
     boolean isDone = false;
-    RobotContainer m_RobotContainer;
+    RobotContainer robotContainer;
 
     /** Creates a new IntakeOuttakeProcessCube. */
     public WristConeIntake(WristSubsystem wrist, boolean isCube, IntakeSubsystem claw,
-            RobotContainer m_RobotContainer) {
+            RobotContainer robotContainer) {
         this.isPieceIntaken = claw.isPieceIntaken();
-        this.m_wrist = wrist;
+        this.wrist = wrist;
         this.isCube = isCube;
-        this.m_RobotContainer = m_RobotContainer;
-        m_RobotContainer.lightstrip.scheduler.setLightEffect(() -> {
-            m_RobotContainer.lightstrip.flashingRGB(isCube ? 255 : 120, isCube ? 210 : 0, isCube ? 0 : 153);
+        this.robotContainer = robotContainer;
+        robotContainer.lightstrip.scheduler.setLightEffect(() -> {
+            robotContainer.lightstrip.flashingRGB(isCube ? 255 : 120, isCube ? 210 : 0, isCube ? 0 : 153);
         }, 1.5, 10, .14);
-        addRequirements(m_wrist);
+        addRequirements(wrist);
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
@@ -44,10 +44,10 @@ public class WristConeIntake extends CommandBase {
     @Override
     public void execute() {
 
-        m_wrist.coneIntakeAngled();
-        if (Math.abs(m_wrist.pidError()) < .1) {
+        wrist.coneIntakeAngled();
+        if (Math.abs(wrist.pidError()) < .1) {
             isDone = true;
-            m_RobotContainer.intakeFinish = true;
+            robotContainer.intakeFinish = true;
         }
 
     }
@@ -56,9 +56,9 @@ public class WristConeIntake extends CommandBase {
     @Override
     public void end(boolean interrupted) {
 
-        m_RobotContainer.intakeFinish = false;
-        m_wrist.m_wristMotorFirst.setVoltage(0);
-        m_wrist.m_wristMotorSecond.setVoltage(0);
+        robotContainer.intakeFinish = false;
+        wrist.wristMotorFirst.setVoltage(0);
+        wrist.wristMotorSecond.setVoltage(0);
 
     }
 

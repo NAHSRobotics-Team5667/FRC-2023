@@ -75,7 +75,7 @@ public class PoseEstimator extends SubsystemBase {
         ShuffleboardTab tab = Shuffleboard.getTab("Vision");
 
         poseEstimator = new SwerveDrivePoseEstimator(
-                drivetrainSubsystem.m_kinematics,
+                drivetrainSubsystem.kinematics,
                 drivetrainSubsystem.getGyro(),
                 drivetrainSubsystem.getPosition(),
                 new Pose2d(),

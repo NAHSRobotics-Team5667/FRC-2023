@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * The Lime Light Subsystem Singleton
  */
 public class LimelightSubsystem {
-    private static LimelightSubsystem m_Instance;
+    private static LimelightSubsystem instance;
     private NetworkTable table; // Network table to access Lime Light Values
 
     // Frequently used entries to store
@@ -105,8 +105,8 @@ public class LimelightSubsystem {
     private final LightMode LIGHT_ON = LightMode.ON,
             LIGHT_OFF = LightMode.OFF;
 
-    public SendableChooser<Boolean> m_snapshot_chooser = new SendableChooser<>(),
-            m_light_chooser = new SendableChooser<>();
+    public SendableChooser<Boolean> snapshotChooser = new SendableChooser<>(),
+            lightChooser = new SendableChooser<>();
 
     /**
      * Lime Light Driver Singleton
@@ -119,11 +119,11 @@ public class LimelightSubsystem {
         ta = table.getEntry("ta");
         setLightState(LIGHT_OFF);
 
-        m_snapshot_chooser.setDefaultOption("Disabled", false);
-        m_snapshot_chooser.addOption("Enabled", true);
+        snapshotChooser.setDefaultOption("Disabled", false);
+        snapshotChooser.addOption("Enabled", true);
 
-        m_light_chooser.setDefaultOption("On", true);
-        m_light_chooser.addOption("Off", false);
+        lightChooser.setDefaultOption("On", true);
+        lightChooser.addOption("Off", false);
     }
 
     /**
@@ -324,11 +324,11 @@ public class LimelightSubsystem {
      * @return The Lime Light instance
      */
     public static LimelightSubsystem getInstance() {
-        if (m_Instance == null) {
-            m_Instance = new LimelightSubsystem();
+        if (instance == null) {
+            instance = new LimelightSubsystem();
         }
 
-        return m_Instance;
+        return instance;
     }
 
     /**
@@ -362,12 +362,12 @@ public class LimelightSubsystem {
      * Send the custom choosers to Shuffleboard
      */
     public void outputChoosers() {
-        Shuffleboard.getTab("Teleop").add("Snapshot", m_snapshot_chooser);
-        Shuffleboard.getTab("Teleop").add("Light Mode", m_light_chooser);
+        Shuffleboard.getTab("Teleop").add("Snapshot", snapshotChooser);
+        Shuffleboard.getTab("Teleop").add("Light Mode", lightChooser);
     }
 
     public void updateChoosers() {
-        if (m_light_chooser.getSelected())
+        if (lightChooser.getSelected())
             turnLightOn();
         else
             turnLightOff();

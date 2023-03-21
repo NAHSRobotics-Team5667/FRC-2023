@@ -36,7 +36,6 @@ public class FlatSurfaceFinder extends SubsystemBase {
         public static final Rotation2d BLUE_ROTATION2D = new Rotation2d(0);
         public static final List<Pose2d> BLUEFLATSURFACES_POSE2DS = new ArrayList<Pose2d>() {
             {
-
                 add(new Pose2d(0, 0, BLUE_ROTATION2D));
                 add(new Pose2d(0, 0, BLUE_ROTATION2D));
                 add(new Pose2d(0, 0, BLUE_ROTATION2D));
@@ -46,7 +45,6 @@ public class FlatSurfaceFinder extends SubsystemBase {
                 add(new Pose2d(0, 0, BLUE_ROTATION2D));
                 add(new Pose2d(0, 0, BLUE_ROTATION2D));
                 add(new Pose2d(0, 0, BLUE_ROTATION2D));
-
             }
         };
     }

@@ -25,7 +25,7 @@ public class AlignFlatSurface extends ParallelRaceGroup {
         BooleanSupplier getSticks;
 
         /** Creates a new AlignFlatSurfaceAgain. */
-        public AlignFlatSurface(RobotContainer m_RobotContainer) {
+        public AlignFlatSurface(RobotContainer RobotContainer) {
 
                 PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints(5, 5),
                                 new PathPoint(
@@ -37,11 +37,11 @@ public class AlignFlatSurface extends ParallelRaceGroup {
                                                                 FlatSurfaceFinder.getNearestPole().getY()),
                                                 FlatSurfaceFinder.getNearestPole().getRotation()));
                 this.FlatSurfaceLocation = FlatSurfaceLocation;
-                BooleanSupplier getSticks = m_RobotContainer.getSticks(GetSticksMode.SURFACE);
+                BooleanSupplier getSticks = RobotContainer.getSticks(GetSticksMode.SURFACE);
 
                 // Add your commands in the addCommands() call, e.g.
                 // addCommands(new FooCommand(), new BarCommand());
-                addCommands(m_RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
+                addCommands(RobotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
                 until(getSticks);
         }
 }
