@@ -4,13 +4,19 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -27,7 +33,30 @@ public class WristSubsystem extends SubsystemBase {
     private double angleOffset = 0;
     private int counter = 0;
     private RobotContainer robotContainer;
-    private double maxBumperPos = 0;
+
+    ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist");
+
+    // ====================================================================
+    // PID EDITING
+    // ====================================================================
+    GenericEntry p = wristTab.add("Wrist P", WristConstants.kP)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 10))
+            .withPosition(0, 0)
+            .getEntry();
+
+    GenericEntry i = wristTab.add("Wrist I", WristConstants.kI)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 10))
+            .withPosition(1, 0)
+            .getEntry();
+
+    GenericEntry d = wristTab.add("Wrist D", WristConstants.kD)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 10))
+            .withPosition(2, 0)
+            .getEntry();
+    // ====================================================================
 
     /** Creates a new WristSubsystem. */
     public WristSubsystem(RobotContainer robotContainer) {
@@ -90,6 +119,12 @@ public class WristSubsystem extends SubsystemBase {
         return wristPID.getPositionError();
     }
 
+    public void updatePID(double kP, double kI, double kD) {
+        wristPID.setP(kP);
+        wristPID.setI(kI);
+        wristPID.setD(kD);
+    }
+
     // make these dependent on bumperPos, array of setPoints
     public void coneIntakeAngled() { // TODO: this method doesnt do shit
         @SuppressWarnings("unused")
@@ -115,6 +150,8 @@ public class WristSubsystem extends SubsystemBase {
             counter++;
         }
 
+        // counter++;
+
         if (counter % 50 == 0) {
             angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
         }
@@ -124,12 +161,20 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Position Level", robotContainer.getPositionLevel());
         SmartDashboard.putNumber("Wrist Encoder", getEncoder());
         SmartDashboard.putNumber("Wrist Angle", getAngleDegrees());
+        SmartDashboard.putNumber("Wrist Error", pidError());
         SmartDashboard.putNumber("Angle Offset", angleOffset);
 
         SmartDashboard.putString("Target Element", robotContainer.getTargetElement().toString());
         SmartDashboard.putString("Current Element", robotContainer.getCurrentElement().toString());
 
-        robotContainer.updatePositionLevel();
+        robotContainer.updatePositionLevel(
+                robotContainer.firstController.getLeftBumperPressed(),
+                robotContainer.firstController.getRightBumperPressed());
+
+        updatePID(
+                p.getDouble(WristConstants.kP),
+                i.getDouble(WristConstants.kI),
+                d.getDouble(WristConstants.kD));
     }
 
     public void coneOuttakeAngled() {

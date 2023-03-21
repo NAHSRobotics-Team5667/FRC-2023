@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -17,7 +18,7 @@ public class SlideCommand extends CommandBase {
     @SuppressWarnings("unused")
     private WristSubsystem wrist;
     public int bumperPos = 0;
-    RobotContainer RobotContainer;
+    RobotContainer robotContainer;
 
     private boolean hasSpool, hasZeroed;
 
@@ -26,7 +27,7 @@ public class SlideCommand extends CommandBase {
 
     /** Creates a new SlideCommand. */
     public SlideCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer robotContainer) {
-        this.RobotContainer = robotContainer;
+        this.robotContainer = robotContainer;
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         this.wrist = wrist;
@@ -47,15 +48,13 @@ public class SlideCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (bumperPos > 0) {
-            RobotContainer.speedMultiplier = .3;
-        } else {
-            RobotContainer.speedMultiplier = .7;
-        }
-        // max right slide = 277000
+        // slide.setSlide(robotContainer.firstController.getLeftY() / 3);
 
-        // slide.setSlide(MathUtil.applyDeadband(m_RobotContainer.m_controller.getLeftY()
-        // / 2, 0.1));
+        if (bumperPos > 0) {
+            robotContainer.speedMultiplier = .3;
+        } else {
+            robotContainer.speedMultiplier = .7;
+        }
 
         double position = 0;
 
@@ -64,46 +63,32 @@ public class SlideCommand extends CommandBase {
                 slide.setSlide(0.1);
             } else if (!hasSpool && !slide.getBottomLimitSwitch()) {
                 hasSpool = true;
-                // slide.setSlide(0.1);
             } else if (hasSpool && !slide.getBottomLimitSwitch()) {
                 slide.setSlide(-0.1);
             } else if (hasSpool && slide.getBottomLimitSwitch()) {
                 hasZeroed = true;
             }
+
         } else {
-            // slide.setSlide(MathUtil.applyDeadband(m_RobotContainer.m_controller.getLeftY()
-            // // TESTING
-            // / 2, 0.2));
-
-            if (RobotContainer.getPositionLevel() == 0) {
+            if (robotContainer.getPositionLevel() == 0) {
                 position = 0;
-                slide.setSlide(-.35);
-                // if (MathUtil.clamp(
-                // //
-                // slide.controller.calculate(SlideConstants.rawUnitsToInches(slide.getRightRawEncoder()),
-                // // position),
-                // // -0.9, 0.9) < .05) {
-                // // slide.setSlide(-.1);
-                // // } else {
-                // // slide.setSlidePIDInches(position);
-                // // }
+                slide.setSlidePIDInches(position);
 
-                // slide.setSlidePIDInches(position);
-                // if ( slide.controller.atSetpoint() && !slide.getBottomLimitSwitch()) {
-                // hasZeroed = false;
-                // }
+                if (slide.controller.atSetpoint() && !slide.getBottomLimitSwitch()) {
+                    hasZeroed = false;
+                }
             } else {
-                if (RobotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneIntakeSetpoints[RobotContainer.getPositionLevel() - 1];
+                if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
+                    position = SlideConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1];
 
-                } else if (RobotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeIntakeSetpoints[RobotContainer.getPositionLevel() - 1];
+                } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
+                    position = SlideConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1];
 
-                } else if (RobotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneOuttakeSetpoint[RobotContainer.getPositionLevel() - 1];
+                } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+                    position = SlideConstants.coneOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
 
-                } else if (RobotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeOuttakeSetpoint[RobotContainer.getPositionLevel() - 1];
+                } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+                    position = SlideConstants.cubeOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
                 }
                 slide.setSlidePIDInches(position);
 
@@ -115,17 +100,8 @@ public class SlideCommand extends CommandBase {
             hasSpool = false;
         }
 
-        if (slide.getTopLimitSwitch()) {
-            RobotContainer.setPositionLevel(0);
-        }
-
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
         SmartDashboard.putBoolean("Has Spool", hasSpool);
-        // SmartDashboard.putNumber("Slide Position", position);
-
-        // slide.setSlidePIDInches(30);
-        // slide.setSlidePIDEncoder(113000);
-
     }
 
     // Called once the command ends or is interrupted.

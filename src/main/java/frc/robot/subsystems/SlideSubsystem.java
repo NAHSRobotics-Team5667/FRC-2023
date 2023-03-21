@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -14,7 +16,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -26,6 +32,30 @@ public class SlideSubsystem extends SubsystemBase {
     private DigitalInput bottomLimitSwitch;
     private DigitalInput topLimitSwitch;
     public PIDController controller = new PIDController(.1, 0, 0);
+
+    ShuffleboardTab slideTab = Shuffleboard.getTab("Slide");
+
+    // ====================================================================
+    // PID EDITING
+    // ====================================================================
+    GenericEntry p = slideTab.add("Slide P", SlideConstants.kP)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 10))
+            .withPosition(0, 0)
+            .getEntry();
+
+    GenericEntry i = slideTab.add("Slide I", SlideConstants.kI)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 10))
+            .withPosition(1, 0)
+            .getEntry();
+
+    GenericEntry d = slideTab.add("Slide D", SlideConstants.kD)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 10))
+            .withPosition(2, 0)
+            .getEntry();
+    // ====================================================================
 
     /** Creates a new SlideSubsystem. */
     public SlideSubsystem() {
@@ -48,7 +78,7 @@ public class SlideSubsystem extends SubsystemBase {
         bottomLimitSwitch = new DigitalInput(Constants.SlideConstants.kBottomLimitSwitchId);
         topLimitSwitch = new DigitalInput(Constants.SlideConstants.kTopLimitSwitchId);
 
-        controller.setTolerance(0.1);
+        // controller.setTolerance(0);
     }
 
     public double getRightRawEncoder() {
@@ -97,8 +127,14 @@ public class SlideSubsystem extends SubsystemBase {
 
     public void setSlidePIDInches(double inchesSetpoint) {
         double output = MathUtil.clamp(
-                controller.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint), -0.9, 0.9);
+                controller.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint), -0.3, 0.3);
         setSlide(output);
+    }
+
+    public void updatePID(double kP, double kI, double kD) {
+        controller.setP(kP);
+        controller.setI(kI);
+        controller.setD(kD);
     }
 
     public void setPosition(double inchesSetpoint) {
@@ -107,6 +143,10 @@ public class SlideSubsystem extends SubsystemBase {
 
     public double getVelocity() {
         return leftSlide.getSelectedSensorVelocity();
+    }
+
+    public double getPositionError() {
+        return controller.getPositionError();
     }
 
     public double getSlideOutput() {
@@ -119,9 +159,14 @@ public class SlideSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Slide Bottom Limit Switch", getBottomLimitSwitch());
         SmartDashboard.putNumber("Right Slide Encoder", getRightRawEncoder());
         SmartDashboard.putNumber("Right Slide Inches", SlideConstants.rawUnitsToInches(getRightRawEncoder()));
+        SmartDashboard.putNumber("Slide Error", getPositionError());
 
         SmartDashboard.putNumber("Slide Stator", rightSlide.getStatorCurrent());
         SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint());
 
+        updatePID(
+                p.getDouble(SlideConstants.kP),
+                i.getDouble(SlideConstants.kI),
+                d.getDouble(SlideConstants.kD));
     }
 }
