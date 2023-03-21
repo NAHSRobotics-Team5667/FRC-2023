@@ -20,8 +20,8 @@ import frc.robot.subsystems.Lights;
  * project.
  */
 public class Robot extends TimedRobot {
-    private Command m_autonomousCommand;
-    RobotContainer m_robotContainer;
+    private Command autonomousCommand;
+    RobotContainer robotContainer;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -30,10 +30,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // Instantiate our RobotContainer. This will perform all our button bindings,
-        // and put our
-        // autonomous chooser on the dashboard.
-        m_robotContainer = new RobotContainer(this);
+        robotContainer = new RobotContainer();
         CameraServer.startAutomaticCapture();
     }
 
@@ -62,7 +59,7 @@ public class Robot extends TimedRobot {
     /** This function is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {
-        this.m_robotContainer.lightstrip.setPeriod(Lights.period.DISABLED);
+        this.robotContainer.lightstrip.setPeriod(Lights.period.DISABLED);
     }
 
     @Override
@@ -75,12 +72,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        this.m_robotContainer.lightstrip.setPeriod(Lights.period.AUTO);
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        this.robotContainer.lightstrip.setPeriod(Lights.period.AUTO);
+        autonomousCommand = robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
+        if (autonomousCommand != null) {
+            autonomousCommand.schedule();
         }
     }
 
@@ -91,13 +88,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        this.m_robotContainer.lightstrip.setPeriod(Lights.period.TELEOP);
+        this.robotContainer.lightstrip.setPeriod(Lights.period.TELEOP);
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
         }
     }
 
@@ -108,7 +105,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        this.m_robotContainer.lightstrip.setPeriod(Lights.period.TEST);
+        this.robotContainer.lightstrip.setPeriod(Lights.period.TEST);
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
@@ -116,7 +113,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-        this.m_robotContainer.lightstrip.periodic();
+        this.robotContainer.lightstrip.periodic();
     }
 
     /** This function is called once when the robot is first started up. */

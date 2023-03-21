@@ -14,8 +14,8 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class PoleFinder extends SubsystemBase {
-    public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue); // TODO: Check if this works
-
+    public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue); // TODO: Check if
+                                                                                                    // this works
 
     public static final class FieldConstants {
         public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
@@ -30,7 +30,6 @@ public class PoleFinder extends SubsystemBase {
                 add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
                 add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
                 add(new Pose2d(0, 0, REDANGLE_ROTATION2D));
-
             }
         };
         public static final Rotation2d BLUE_ROTATION2D = new Rotation2d(0);
@@ -47,7 +46,6 @@ public class PoleFinder extends SubsystemBase {
                 add(new Pose2d(0, 0, BLUE_ROTATION2D));
             }
         };
-
     }
 
     /** Creates a new PoleFinder. */
@@ -58,6 +56,7 @@ public class PoleFinder extends SubsystemBase {
         return RobotContainer.poseEstimate.getCurrentPose()
                 .nearest(isBlue ? FieldConstants.BLUEPOLES_POSE2DS : FieldConstants.REDPOLES_POSE2DS);
     }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

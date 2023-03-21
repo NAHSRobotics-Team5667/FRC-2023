@@ -42,8 +42,7 @@ public final class Constants {
         public static final double kMaxSpeed = 5; // should be 5 meters per second, 2 rn so ian keeps his ankles
 
         public static final double kMaxAngularSpeed = 2 * Math.PI; // is currently 1, will be 1/2 eventually
-                                                                   // (don't
-                                                                   // change)
+        // (don't change)
         public static final double kMaxAngularAcceleration = Math.PI;
 
         public static final double kTurnKp = 7;
@@ -139,7 +138,7 @@ public final class Constants {
         public static final double[] coneIntakeSetpoints = {
                 10, // 0 - floor intake (flipped)
                 21.2979, // 1 - floor intake (upright)
-                30 // 2 - human player intake
+                5 // 2 - human player intake
         };
 
         public static final double[] cubeIntakeSetpoints = {
@@ -150,13 +149,13 @@ public final class Constants {
         public static final double[] cubeOuttakeSetpoint = {
                 0, // 0 - ground level (hybrid)
                 25.267, // 1 - first platform
-                46.1483 // 2 - second platform (highest)
+                // 46.1483 // 2 - second platform (highest)
         };
 
         public static final double[] coneOuttakeSetpoint = {
                 16.1876, // 0 - ground level (hybrid)
                 53.9773, // 1 - first pole
-                57.168 // 2 - second pole (highest)
+                // 57.168 // 2 - second pole (highest)
         };
 
         public static final double maxEncoderTicks = 400000;
@@ -186,7 +185,7 @@ public final class Constants {
 
     public static final class WristConstants {
         public static final int kWristIDLeft = 0, kWristIDRight = 1, kWristConeSetpoint = -1,
-                kWristSafePosition = -125;
+                kWristSafePosition = -135;
 
         public static final double kEncoderOffset = 0.44;
 
@@ -195,11 +194,11 @@ public final class Constants {
         public static final double[] coneIntakeSetpoints = {
                 0, // 0 - floor intake (flipped)
                 60.513, // 1 - floor intake (upright)
-                0 // 2 - human player intake
+                -60 // 2 - human player intake
         };
 
         public static final double[] cubeIntakeSetpoints = {
-                -20, // 1 - floor intake
+                0, // 1 - floor intake
                 0 // 2 - human player intake
         };
 

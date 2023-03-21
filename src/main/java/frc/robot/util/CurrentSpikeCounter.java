@@ -12,10 +12,7 @@ package frc.robot.util;
  */
 public class CurrentSpikeCounter {
     private double threshold, deadband, off_val;
-
-    private boolean isSpiking = false,
-            ramped = false,
-            isRamping = false;
+    private boolean isSpiking = false, ramped = false, isRamping = false;
 
     /**
      * Create a spike counter
@@ -28,7 +25,6 @@ public class CurrentSpikeCounter {
         threshold = t;
         deadband = d;
         off_val = threshold - deadband;
-
     }
 
     /**
@@ -55,7 +51,6 @@ public class CurrentSpikeCounter {
         } else {
             return false;
         }
-
     }
 
     /**

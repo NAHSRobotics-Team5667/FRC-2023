@@ -13,26 +13,29 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** The DriveTrainCommand class */
 public class DrivetrainCommand extends CommandBase {
-    public DrivetrainSubsystem m_swerve;
+    public DrivetrainSubsystem swerve;
     private boolean slowmode = false;
-    public double speedMultiplier = .7;
+    public double speedMultiplier = .9;
+    RobotContainer robotContainer;
+    public boolean FieldOriented = true;
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // haha changing slewratelimiters go brrrrr
-    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(2),
-            m_yspeedLimiter = new SlewRateLimiter(2),
-            m_rotLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter xspeedLimiter = new SlewRateLimiter(2),
+            yspeedLimiter = new SlewRateLimiter(2),
+            rotLimiter = new SlewRateLimiter(3);
 
     /** Creates a new DrivetrainCommand. */
-    public DrivetrainCommand(DrivetrainSubsystem drive) {
+    public DrivetrainCommand(DrivetrainSubsystem drive, RobotContainer robotContainer) {
         addRequirements(drive);
-        this.m_swerve = drive;
+        this.robotContainer = robotContainer;
+        this.swerve = drive;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_swerve.resetGyro();
+        swerve.resetGyro();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -44,7 +47,7 @@ public class DrivetrainCommand extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        this.m_swerve.driveVoltage(0);
+        this.swerve.driveVoltage(0);
     }
 
     // Returns true when the command should end.
@@ -58,37 +61,47 @@ public class DrivetrainCommand extends CommandBase {
      * the drive subsystem
      */
     private void joystickDrive() {
-        if (RobotContainer.m_controller.getLeftStickButtonPressed() ){
+        if (RobotContainer.firstController.getPOV() == 180) {
+            FieldOriented = !FieldOriented;
+
+        }
+        if (RobotContainer.secondController.getLeftStickButtonPressed()) {
             slowmode = !slowmode;
         }
-        if (slowmode){
-            speedMultiplier = .3;
-        }else {
+        if (slowmode) {
             speedMultiplier = .7;
+        } else {
+            speedMultiplier = .9;
         }
-        if (RobotContainer.m_controller.getRightStickButton()) {
-            this.m_swerve.resetGyro();
+        if (RobotContainer.secondController.getRightStickButton()) {
+            this.swerve.resetGyro();
         }
 
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
 
-        double xSpeed = m_xspeedLimiter
-                .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX() * speedMultiplier, 0.1))
+        double xSpeed = xspeedLimiter
+                .calculate(MathUtil
+                        .applyDeadband(-RobotContainer.secondController.getLeftX() * robotContainer.speedMultiplier,
+                                0.1))
                 * DrivetrainSubsystem.kMaxSpeed;
 
-        xSpeed = MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftX() * speedMultiplier, 0.1)
+        xSpeed = MathUtil.applyDeadband(-RobotContainer.secondController.getLeftX() * robotContainer.speedMultiplier,
+                0.1)
                 * DrivetrainSubsystem.kMaxSpeed;
 
         // Get the y speed or sideways/strafe speed. We are inverting this3 because
         // we want a positive value when we pull to the left. Xbox controller
         // return positive values when you pull to the right by default.
 
-        double ySpeed = m_yspeedLimiter
-                .calculate(MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY() * 0.7, 0.15))
+        double ySpeed = yspeedLimiter
+                .calculate(MathUtil
+                        .applyDeadband(-RobotContainer.secondController.getLeftY() * robotContainer.speedMultiplier,
+                                0.15))
                 * DrivetrainSubsystem.kMaxSpeed;
 
-        ySpeed = MathUtil.applyDeadband(-RobotContainer.m_controller.getLeftY() * 0.7, 0.15)
+        ySpeed = MathUtil.applyDeadband(-RobotContainer.secondController.getLeftY() * robotContainer.speedMultiplier,
+                0.15)
                 * DrivetrainSubsystem.kMaxSpeed;
 
         // Get the rate of angular rotation. We are inverting this because we want a
@@ -96,21 +109,21 @@ public class DrivetrainCommand extends CommandBase {
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
 
-        double rot = m_rotLimiter
-                .calculate(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX() * 0.4, 0.15))
+        double rot = rotLimiter
+                .calculate(MathUtil.applyDeadband(RobotContainer.secondController.getRightX() * 0.4, 0.15))
                 * DrivetrainSubsystem.kMaxAngularSpeed;
 
-        rot = MathUtil.applyDeadband(RobotContainer.m_controller.getRightX(), 0.15)
+        rot = MathUtil.applyDeadband(RobotContainer.secondController.getRightX(), 0.15)
                 * DrivetrainSubsystem.kMaxAngularSpeed;
 
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);
         SmartDashboard.putNumber("rot", rot);
 
-        SmartDashboard.putNumber("Left Y", RobotContainer.m_controller.getLeftY());
-        SmartDashboard.putNumber("Left X", RobotContainer.m_controller.getLeftX());
-        SmartDashboard.putNumber("Right X", RobotContainer.m_controller.getRightX());
+        SmartDashboard.putNumber("Left Y", RobotContainer.secondController.getLeftY());
+        SmartDashboard.putNumber("Left X", RobotContainer.secondController.getLeftX());
+        SmartDashboard.putNumber("Right X", RobotContainer.secondController.getRightX());
 
-        this.m_swerve.drive(xSpeed, ySpeed, rot, true);
+        this.swerve.drive(xSpeed, ySpeed, rot, FieldOriented);
     }
 }
