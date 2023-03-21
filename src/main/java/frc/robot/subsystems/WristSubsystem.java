@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.WristConstants;
-import frc.robot.RobotContainer.GamePiece;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -27,7 +26,7 @@ public class WristSubsystem extends SubsystemBase {
     private double angleOffset = 0;
     private int counter = 0;
     private RobotContainer robotContainer;
-    private double maxBumperPos = 0;
+    // private double maxBumperPos = 0;
 
     /** Creates a new WristSubsystem. */
     public WristSubsystem(RobotContainer robotContainer) {
