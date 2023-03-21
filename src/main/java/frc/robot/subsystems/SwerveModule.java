@@ -30,7 +30,7 @@ public class SwerveModule {
     // public final ProfiledPIDController turningPIDController;
     public final PIDController turningPIDController;
 
-    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(.096682, 2.2041, .54385);
+    private final SimpleMotorFeedforward betterDriveFeedforward = new SimpleMotorFeedforward(.096682, 2.2041, .54385);
     double trueEncoderOffset = 100, trueEncoderOffsetTest = 0;
     double[] averageOffsetBoi;
     @SuppressWarnings("unused")
@@ -162,7 +162,7 @@ public class SwerveModule {
                 new Rotation2d(getTurnEncoderDistance()));
         // Calculate the drive output from the drive PID controller.
 
-        final double driveFeedforward = driveFeedforward.calculate(state.speedMetersPerSecond);
+        final double driveFeedforward = betterDriveFeedforward.calculate(state.speedMetersPerSecond);
 
         // Calculate the turning motor output from the turning PID controller.
         final double turnOutput = turningPIDController.calculate(getTurnEncoderDistance(),
