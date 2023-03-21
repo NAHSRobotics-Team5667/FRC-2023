@@ -193,15 +193,15 @@ public class Lights extends SubsystemBase {
             //() -> {Lights.this.setSolidRGB(0, 0, 0);},
             //() -> {Lights.this.setSolidRGB(255, 255, 255);}
             () -> {Lights.this.flashingRGB(255, 0, 0);},
-            () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, teamColor.equals(Color.kRed) ? Color.kYellow : Color.kWhite, Color.kBlack}, 3);},
+            () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, Color.kWhite, Color.kBlack}, 3);},
             () -> {Lights.this.rainbow(1);}, 
             () -> {Lights.this.cylon(60, 255, 1);} 
         };
 
         public Light_Scheduler() {
-            this.default_disabled = () -> {Lights.this.cylon_but_two(8, 255, 1,30,255);};
+            this.default_disabled = () -> {Lights.this.cylon_but_two(2, 255, 1,24,255);};
             this.defualt_teleop = () -> {Lights.this.rainbow(2);};
-            this.defualt_auto = () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, teamColor.equals(Color.kRed) ? Color.kYellow : Color.kWhite, Color.kBlack}, 3);};
+            this.defualt_auto = () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, Color.kWhite, Color.kBlack}, 3);};
             this.default_endgame = () -> {Lights.this.flashingRGB(255, 0, 0);};
         
             this.setDefaultLightEffect();
