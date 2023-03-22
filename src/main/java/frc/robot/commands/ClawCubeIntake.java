@@ -34,6 +34,7 @@ public class ClawCubeIntake extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        robotContainer.setCurrentElement(GamePiece.NONE);
         robotContainer.setTargetElement(GamePiece.CUBE);
     }
 

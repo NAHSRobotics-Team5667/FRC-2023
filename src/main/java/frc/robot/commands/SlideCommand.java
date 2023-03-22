@@ -58,12 +58,18 @@ public class SlideCommand extends CommandBase {
 
         } else {
             int positionLevel = robotContainer.getPositionLevel();
+
             if (positionLevel == 0) {
-                slide.setSlidePIDInches(positionLevel);
-                if (slide.controller.atSetpoint() && !bottomLimitSwitch) {
-                    hasZeroed = false;
+                position = 0;
+                slide.setSlidePIDInches(position);
+                if (hasSpool && !slide.getBottomLimitSwitch()) {
+                    slide.setSlide(-0.1);
+
                 }
 
+                // if (!slide.getBottomLimitSwitch()) {
+                // hasZeroed = false;
+                // }
             } else {
                 if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
                     position = SlideConstants.coneIntakeSetpoints[positionLevel - 1];
@@ -78,10 +84,11 @@ public class SlideCommand extends CommandBase {
             }
         }
 
-        if (slide.getTopLimitSwitch() && hasZeroed) {
-            hasZeroed = false;
-            hasSpool = false;
-        }
+        // if (slide.getTopLimitSwitch() && hasZeroed) {
+        // hasZeroed = false;
+        // hasSpool = false;
+        // }
+
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
         SmartDashboard.putBoolean("Has Spool", hasSpool);
     }

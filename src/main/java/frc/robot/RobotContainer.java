@@ -215,7 +215,7 @@ public class RobotContainer {
         } else if (getTargetElement().equals(GamePiece.CUBE)) {
             maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
         } else if (!getCurrentElement().equals(GamePiece.NONE)) {
-            maxPositionLevel = 2;
+            maxPositionLevel = 3; // baby mode enabled to disable, set to 3
         }
 
         if (getPositionLevel() < maxPositionLevel && isRightBumperPressed) {
@@ -247,39 +247,53 @@ public class RobotContainer {
                 yButton = new JoystickButton(firstController, XboxController.Button.kY.value),
                 bButton = new JoystickButton(firstController, XboxController.Button.kB.value),
                 aButton = new JoystickButton(firstController, XboxController.Button.kA.value),
-                xButton = new JoystickButton(firstController, XboxController.Button.kX.value);// makes all triggers
+                xButton = new JoystickButton(firstController, XboxController.Button.kX.value),
+                ySecondButton = new JoystickButton(secondController, XboxController.Button.kY.value),
+                bSecondButton = new JoystickButton(secondController, XboxController.Button.kB.value),
+                aSecondButton = new JoystickButton(secondController, XboxController.Button.kA.value),
+                xSecondButton = new JoystickButton(secondController, XboxController.Button.kX.value);// makes all
+                                                                                                     // triggers
 
-        aButton.onTrue(
-                new ClawCubeOuttake(intake, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE))
+        aButton.and(xButton).whileTrue(
+                new ClawConeIntake(intake, wrist, true, this)
+                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         /*
          * .andThen(new WristCubeOuttake(m_wrist, this))
          * .until(doneIntakeOuttake(intakeOrOuttake.OUTTAKE))
-         */);
-        yButton.onTrue(
-                new ClawConeIntake(intake, wrist, true, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
-        /*
-         * .andThen(new WristConeIntake(m_wrist,
-         * intakeFinish, claw,
-         * this)).until(doneIntakeOuttake(
-         * intakeOrOuttake.INTAKE))
-         */);
-        xButton.onTrue(
-                new ClawCubeIntake(intake, wrist, true, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
-        /*
-         * .andThen(new WristCubeIntake(m_wrist, this))
-         * .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))
-         */);
-        bButton.onTrue(
+         */
+        aButton.and(bSecondButton).whileTrue(
                 new ClawConeOuttake(intake, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE))
-        /*
-         * .andThen(new WristConeOuttake(m_wrist,
-         * this)).until(doneIntakeOuttake(
-         * intakeOrOuttake.OUTTAKE))
-         */);
+                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
+        bButton.and(bSecondButton).whileTrue(
+                new ClawCubeOuttake(intake, wrist, this)
+                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
+        bButton.and(yButton).whileTrue(
+                new ClawCubeIntake(intake, wrist, true, this)
+                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
+        // yButton.onTrue(
+        // new ClawConeIntake(intake, wrist, true, this)
+        // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
+        // /*
+        // * .andThen(new WristConeIntake(m_wrist,
+        // * intakeFinish, claw,
+        // * this)).until(doneIntakeOuttake(
+        // * intakeOrOuttake.INTAKE))
+        // */);
+        // xButton.onTrue(
+        // new ClawCubeIntake(intake, wrist, true, this)
+        // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
+        // /*
+        // * .andThen(new WristCubeIntake(m_wrist, this))
+        // * .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))
+        // */);
+        // bButton.onTrue(
+        // new ClawConeOuttake(intake, this)
+        // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE))
+        // /*
+        // * .andThen(new WristConeOuttake(m_wrist,
+        // * this)).until(doneIntakeOuttake(
+        // * intakeOrOuttake.OUTTAKE))
+        // */);
 
     }
 

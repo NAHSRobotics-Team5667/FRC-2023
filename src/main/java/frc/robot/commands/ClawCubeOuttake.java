@@ -26,6 +26,7 @@ public class ClawCubeOuttake extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+
         stopClock = 0;
     }
 
@@ -33,7 +34,7 @@ public class ClawCubeOuttake extends CommandBase {
     @Override
     public void execute() {
         // runs for set time
-        if (stopClock < 0.5) {
+        if (stopClock < 10) {
             claw.setIntake(.45);
             stopClock += .02;
         } else {

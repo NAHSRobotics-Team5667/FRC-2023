@@ -64,9 +64,9 @@ public class WristCommand extends CommandBase {
                         1];
             }
 
-            if (robotContainer.getTargetElement().equals(GamePiece.NONE)) {
-                position = WristConstants.kWristSafePosition;
-            }
+            // if (robotContainer.getTargetElement().equals(GamePiece.NONE)) {
+            // position = WristConstants.kWristSafePosition;
+            // }
             safe = "not";
         }
 
@@ -87,6 +87,6 @@ public class WristCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return controller.getAButtonPressed() || controller.getYButton();
+        return false;
     }
 }
