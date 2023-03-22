@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class autoGoBrrrrr extends CommandBase {
+public class TestAuto extends CommandBase {
     DrivetrainSubsystem drive;
     IntakeSubsystem claw;
     boolean isFinished = false;
     double timer = 0;
 
     /** Creates a new autoGoBrrrrr. */
-    public autoGoBrrrrr(DrivetrainSubsystem drive, IntakeSubsystem claw) {
+    public TestAuto(DrivetrainSubsystem drive, IntakeSubsystem claw) {
         this.claw = claw;
         this.drive = drive;
         addRequirements(drive, claw);

@@ -33,7 +33,7 @@ import frc.robot.commands.ClawConeOuttake;
 import frc.robot.commands.ClawCubeIntake;
 import frc.robot.commands.ClawCubeOuttake;
 import frc.robot.commands.DrivetrainCommand;
-import frc.robot.commands.autoGoBrrrrr;
+import frc.robot.commands.TestAuto;
 import frc.robot.commands.SlideCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -325,7 +325,7 @@ public class RobotContainer {
                 // .finallyDo((boolean interrupt) -> {
                 // ++intakeToggle;
                 // });
-                return new autoGoBrrrrr(drive, intake);
+                return new TestAuto(drive, intake);
 
             case "HSC":
                 drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());

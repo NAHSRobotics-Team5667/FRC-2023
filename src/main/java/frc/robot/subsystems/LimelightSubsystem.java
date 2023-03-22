@@ -2,17 +2,20 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * The Lime Light Subsystem Singleton
  */
-public class LimelightSubsystem {
+public class LimelightSubsystem extends SubsystemBase {
     private static LimelightSubsystem instance;
     private NetworkTable table; // Network table to access Lime Light Values
 
@@ -29,8 +32,7 @@ public class LimelightSubsystem {
         }
 
         /**
-         * Get the current LED Mode
-         * 
+         * Purpose - Get the current LED Mode
          * @return the LED mode as int
          */
         public int getLedMode() {
@@ -113,11 +115,11 @@ public class LimelightSubsystem {
      */
     public LimelightSubsystem() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
-
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
         setLightState(LIGHT_OFF);
+       
 
         snapshotChooser.setDefaultOption("Disabled", false);
         snapshotChooser.addOption("Enabled", true);
@@ -349,13 +351,13 @@ public class LimelightSubsystem {
      * Output diagnostics
      */
     public void outputTelemetry() {
-        SmartDashboard.putBoolean("HasTarget", hasValidTarget());
-        SmartDashboard.putNumber("Horizontal Offset", getXAngle());
-        SmartDashboard.putNumber("Vertical Offset", getYAngle());
-        SmartDashboard.putNumber("Area", getArea());
-        SmartDashboard.putNumber("Skew", getSkew());
-        SmartDashboard.putString("XCorners", Arrays.toString(getXCorners()));
-        SmartDashboard.putString("YCorners", Arrays.toString(getYCorners()));
+        SmartDashboard.putBoolean("LimelightHasTarget", hasValidTarget());
+        SmartDashboard.putNumber("LimelightX", getXAngle());
+        SmartDashboard.putNumber("LimelightY", getYAngle());
+        SmartDashboard.putNumber("LimelightArea", getArea());
+        SmartDashboard.putNumber("LimelightSkew", getSkew());
+        SmartDashboard.putString("LimelightXCorners", Arrays.toString(getXCorners()));
+        SmartDashboard.putString("LimelightYCorners", Arrays.toString(getYCorners()));
     }
 
     /**
@@ -367,10 +369,16 @@ public class LimelightSubsystem {
     }
 
     public void updateChoosers() {
-        if (lightChooser.getSelected())
+        if (lightChooser.getSelected()) {
             turnLightOn();
-        else
+        } else {
             turnLightOff();
+        }
 
+    }
+
+    @Override
+    public void periodic() {
+        outputTelemetry(); // updates values for x angle, y angle, skew, area, x corners, y corners
     }
 }
