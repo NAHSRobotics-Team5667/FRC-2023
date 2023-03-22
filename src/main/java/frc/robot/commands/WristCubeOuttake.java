@@ -28,7 +28,6 @@ public class WristCubeOuttake extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-
         wrist.coneOuttakeAngled(); // might need driver control here, in case cone is in odd position
         if (Math.abs(wrist.pidError()) < .1) {
             robotContainer.outtakeFinish = true;

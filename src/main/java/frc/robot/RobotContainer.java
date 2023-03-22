@@ -56,11 +56,8 @@ import frc.robot.subsystems.LimelightSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-    // The robot's subsystems and commands are defined here...
-    public static final XboxController firstController = new XboxController(0); // creates intake/outtake controller
-
-    public static final XboxController secondController = new XboxController(1); // creates drive controller
+    public static final XboxController firstController = new XboxController(0), // creates intake/outtake controller
+            secondController = new XboxController(1); // creates drive controller
 
     public SendableChooser<String> autoChooser = new SendableChooser<String>(); // decides which auto we are using
 
@@ -75,7 +72,7 @@ public class RobotContainer {
 
     public Lights lightstrip;
 
-    public LimelightSubsystem Limelight;
+    public LimelightSubsystem limelight;
     public static PoseEstimator poseEstimate;
 
     public SwerveAutoBuilder autoBuilder; // builds on-the-fly and autonomous paths
@@ -95,19 +92,18 @@ public class RobotContainer {
         drive.setDefaultCommand(new DrivetrainCommand(drive, this));
 
         // poseEstimate = new PoseEstimator(null, drive);
-        Limelight = new LimelightSubsystem(); // instantiate commands
+        limelight = new LimelightSubsystem(); // instantiate commands
         wrist = new WristSubsystem(this);
         intake = new IntakeSubsystem();
         slide = new SlideSubsystem();
+        lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
         intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to subsystems
         wrist.setDefaultCommand(new WristCommand(wrist, this));
-        slide.setDefaultCommand(new SlideCommand(slide, wrist, this));
+        slide.setDefaultCommand(new SlideCommand(slide, this));
 
         currentElement = GamePiece.NONE;
         targetElement = GamePiece.NONE;
-
-        lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
         positionLevel = 0;
 
@@ -141,7 +137,6 @@ public class RobotContainer {
             @Override
             public void accept(Pose2d pose) {
                 drive.resetPose(DrivetrainSubsystem.positions, pose);
-
             }
         };
 
@@ -255,7 +250,7 @@ public class RobotContainer {
                 xButton = new JoystickButton(firstController, XboxController.Button.kX.value);// makes all triggers
 
         aButton.onTrue(
-                new ClawCubeOuttake(intake, wrist, this)
+                new ClawCubeOuttake(intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE))
         /*
          * .andThen(new WristCubeOuttake(m_wrist, this))
@@ -296,18 +291,19 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         switch (autoChooser.getSelected()) {
             case "default":
-                return new ClawCubeOuttake(intake, wrist, this).finallyDo((boolean interrupt) -> {
+                return new ClawCubeOuttake(intake, this).finallyDo((boolean interrupt) -> {
                     ++intakeToggle;
                 });
 
             case "BSC":
                 drive.pose = new Pose2d(1.66, .43, drive.getInitGyro()); // BSC
-                return new ClawCubeOuttake(intake, wrist, this)
+                return new ClawCubeOuttake(intake, this)
                         .withTimeout(2)
                         .andThen(autoBuilder.fullAuto(BSC))
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
                         });
+
             case "CSC":
                 // drive.m_pose = new Pose2d(1.66, 2.98, drive.getInitGyro()); // CSC
                 // return new ClawCubeOuttake(claw, wrist,
@@ -316,19 +312,17 @@ public class RobotContainer {
                 // ++intakeToggle;
                 // });
                 return new autoGoBrrrrr(drive, intake);
+
             case "HSC":
                 drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());
-
-                return new ClawCubeOuttake(intake, wrist,
-                        this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
+                return new ClawCubeOuttake(intake, this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
-
                         });
             // return autoBuilder.fullAuto(HSC);
         }
 
-        return new ClawCubeOuttake(intake, wrist, this).finallyDo((boolean interrupt) -> {
+        return new ClawCubeOuttake(intake, this).finallyDo((boolean interrupt) -> {
             ++intakeToggle;
         });
     }

@@ -8,19 +8,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.WristSubsystem;
 
-public class ClawCubeOuttake extends CommandBase {
+public class ClawCubeOuttake extends CommandBase { 
+    // TODO: this is a copy of ClawConeOuttake, but with the intake speed reversed. This is a bad way to do this. We should have a single command that takes a parameter for the direction of the intake.
     double stopClock;
     IntakeSubsystem claw;
     RobotContainer robotContainer;
-    WristSubsystem wrist;
 
     /** Creates a new IntakeOuttakeProcessClaw. */
-    public ClawCubeOuttake(IntakeSubsystem claw, WristSubsystem wrist, RobotContainer robotContainer) {
+    public ClawCubeOuttake(IntakeSubsystem claw, RobotContainer robotContainer) {
         this.claw = claw;
         this.robotContainer = robotContainer;
-        this.wrist = wrist;
         addRequirements(claw);
         // Use addRequirements() here to declare subsystem dependencies.
     }
@@ -29,7 +27,6 @@ public class ClawCubeOuttake extends CommandBase {
     @Override
     public void initialize() {
         stopClock = 0;
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.

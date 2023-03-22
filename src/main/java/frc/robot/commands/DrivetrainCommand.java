@@ -13,11 +13,12 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** The DriveTrainCommand class */
 public class DrivetrainCommand extends CommandBase {
-    public DrivetrainSubsystem swerve;
-    private boolean slowmode = false;
-    public double speedMultiplier = .9;
+    public DrivetrainSubsystem drive;
+    public double speedMultiplier = .9; 
+    // TODO: put this and the one in RobotContainer in Constants. I would also put the slowmode multiplier in Constants.
+
     RobotContainer robotContainer;
-    public boolean FieldOriented = true;
+    public boolean fieldOriented = true, slowmode = false; // TODO: maybe put these in DrivetrainSubsystem?
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // haha changing slewratelimiters go brrrrr
@@ -29,13 +30,13 @@ public class DrivetrainCommand extends CommandBase {
     public DrivetrainCommand(DrivetrainSubsystem drive, RobotContainer robotContainer) {
         addRequirements(drive);
         this.robotContainer = robotContainer;
-        this.swerve = drive;
+        this.drive = drive;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        swerve.resetGyro();
+        drive.resetGyro();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +48,7 @@ public class DrivetrainCommand extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        this.swerve.driveVoltage(0);
+        this.drive.driveVoltage(0);
     }
 
     // Returns true when the command should end.
@@ -62,21 +63,16 @@ public class DrivetrainCommand extends CommandBase {
      */
     private void joystickDrive() {
         if (RobotContainer.firstController.getPOV() == 180) {
-            FieldOriented = !FieldOriented;
-
+            fieldOriented = !fieldOriented;
         }
 
         if (RobotContainer.secondController.getLeftStickButtonPressed()) {
             slowmode = !slowmode;
         }
+        speedMultiplier = slowmode ? .7 : .9;
 
-        if (slowmode) {
-            speedMultiplier = .7;
-        } else {
-            speedMultiplier = .9;
-        }
         if (RobotContainer.secondController.getRightStickButton()) {
-            this.swerve.resetGyro();
+            this.drive.resetGyro();
         }
 
         // Get the x speed. We are inverting this because Xbox controllers return
@@ -126,6 +122,6 @@ public class DrivetrainCommand extends CommandBase {
         SmartDashboard.putNumber("Left X", RobotContainer.secondController.getLeftX());
         SmartDashboard.putNumber("Right X", RobotContainer.secondController.getRightX());
 
-        this.swerve.drive(xSpeed, ySpeed, rot, FieldOriented);
+        this.drive.drive(xSpeed, ySpeed, rot, fieldOriented);
     }
 }

@@ -35,7 +35,6 @@ public class SwerveModule {
     double[] averageOffsetBoi;
     @SuppressWarnings("unused")
     private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0.26284, 0.27578, 0.0038398);
-    // TODO: do something idk
     DutyCycleEncoder Encoder;
     double angleOffset = 0;
 

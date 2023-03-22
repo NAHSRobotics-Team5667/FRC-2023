@@ -10,6 +10,7 @@ import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class ClawConeOuttake extends CommandBase {
+    // TODO: this is a copy of ClawCubeOuttake, but with the intake speed reversed. This is a bad way to do this.  We should have a single command that takes a parameter for the direction of the intake.
     double stopClock;
     IntakeSubsystem claw;
     RobotContainer robotContainer;
@@ -26,7 +27,6 @@ public class ClawConeOuttake extends CommandBase {
     @Override
     public void initialize() {
         stopClock = 0;
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.

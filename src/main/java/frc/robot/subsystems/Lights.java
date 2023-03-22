@@ -175,7 +175,12 @@ public class Lights extends SubsystemBase {
 
     long teleop_start_time = Long.MAX_VALUE;
 
-    public void setPeriod(Lights.period p) {
+    /**
+     * Sets the current period of the game. This is used to set the default light
+     * effect. Should generally be called from {@link frc.robot.Robot}
+     * @param p The period of the game
+     */
+    public void setPeriod(Lights.period p) { 
         currentPeriod = p;
         scheduler.setDefaultLightEffect();
         if (p == period.TELEOP) {
@@ -196,7 +201,8 @@ public class Lights extends SubsystemBase {
 
     public class Light_Scheduler {
         private LightEffect current_effect;
-        private int ticks_per_call = 1, tick_counter = 0, test_index = 0;
+        private long  tick_counter = 0; 
+        private int ticks_per_call = 1, test_index = 0;
         private double time_left = 0, fade_time_left = 0; // in seconds
         private Color[] fade_from, fade_to;
         LightEffect default_disabled, defualt_teleop, defualt_auto, default_endgame;
@@ -313,21 +319,17 @@ public class Lights extends SubsystemBase {
             if (this.tick_counter++ % this.ticks_per_call == 0 && this.fade_time_left <= 0) {
                 this.current_effect.apply();
             }
-
             if (this.fade_time_left > 0) {
                 this.fadeLightEffect();
-            }
-
-            if (this.time_left <= 0) {
-                if (this.fade_time_left <= 0) {
-                    this.setDefaultLightEffect(); // if no time is left for whatever effect, set the default light
-                                                  // effect for the current period.
-                }
+            } else if (this.time_left <= 0) {
+                // if no time is left for whatever effect, set the default light effect for the current period.
+                this.setDefaultLightEffect();
+                // this can be optimized by only calling it once after the time runs out but for readability it works.
             } else {
                 this.time_left -= .02; // 0.02 seconds is usually the period of the periodic function
             }
 
-            if (this.tick_counter == Integer.MAX_VALUE) {
+            if (this.tick_counter == Long.MAX_VALUE) { // reset the tick counter to prevent overflow
                 this.tick_counter = 0;
             }
         }

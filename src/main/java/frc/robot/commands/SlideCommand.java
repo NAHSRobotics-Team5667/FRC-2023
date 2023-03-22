@@ -4,34 +4,24 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.SlideConstants;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.SlideSubsystem;
-import frc.robot.subsystems.WristSubsystem;
 
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
-    @SuppressWarnings("unused")
-    private WristSubsystem wrist;
     public int bumperPos = 0;
     RobotContainer robotContainer;
-
     private boolean hasSpool, hasZeroed;
 
-    // these will be the heights of the slide at different points. The height will
-    // be set as SlideConstants.slideSetpoints[bumperPos]
-
     /** Creates a new SlideCommand. */
-    public SlideCommand(SlideSubsystem slide, WristSubsystem wrist, RobotContainer robotContainer) {
+    public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
-        this.wrist = wrist;
-        wrist = robotContainer.wrist;
 
         hasSpool = !slide.getBottomLimitSwitch();
         hasZeroed = false;
@@ -50,48 +40,41 @@ public class SlideCommand extends CommandBase {
     public void execute() {
         // slide.setSlide(robotContainer.firstController.getLeftY() / 3);
 
-        if (bumperPos > 0) {
-            robotContainer.speedMultiplier = .3;
-        } else {
-            robotContainer.speedMultiplier = .7;
-        }
+        robotContainer.speedMultiplier = (bumperPos > 0) ? .3 : .7;
 
         double position = 0;
 
+        boolean bottomLimitSwitch = slide.getBottomLimitSwitch();
         if (!hasZeroed) {
-            if (!hasSpool && slide.getBottomLimitSwitch()) {
+            if (!hasSpool && bottomLimitSwitch) {
                 slide.setSlide(0.1);
-            } else if (!hasSpool && !slide.getBottomLimitSwitch()) {
+            } else if (!hasSpool && !bottomLimitSwitch) {
                 hasSpool = true;
-            } else if (hasSpool && !slide.getBottomLimitSwitch()) {
+            } else if (hasSpool && !bottomLimitSwitch) {
                 slide.setSlide(-0.1);
-            } else if (hasSpool && slide.getBottomLimitSwitch()) {
-                hasZeroed = true;
+            } else if (hasSpool && bottomLimitSwitch) {
+                hasZeroed = true; // TODO: should we add a setSlide to zero here?
             }
 
         } else {
-            if (robotContainer.getPositionLevel() == 0) {
-                position = 0;
-                slide.setSlidePIDInches(position);
-
-                if (slide.controller.atSetpoint() && !slide.getBottomLimitSwitch()) {
+            int positionLevel = robotContainer.getPositionLevel();
+            if (positionLevel == 0) {
+                slide.setSlidePIDInches(positionLevel);
+                if (slide.controller.atSetpoint() && !bottomLimitSwitch) {
                     hasZeroed = false;
                 }
+
             } else {
                 if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1];
-
+                    position = SlideConstants.coneIntakeSetpoints[positionLevel - 1];
                 } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1];
-
+                    position = SlideConstants.cubeIntakeSetpoints[positionLevel - 1];
                 } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
-
+                    position = SlideConstants.coneOuttakeSetpoint[positionLevel - 1];
                 } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
+                    position = SlideConstants.cubeOuttakeSetpoint[positionLevel - 1];
                 }
                 slide.setSlidePIDInches(position);
-
             }
         }
 
@@ -99,7 +82,6 @@ public class SlideCommand extends CommandBase {
             hasZeroed = false;
             hasSpool = false;
         }
-
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
         SmartDashboard.putBoolean("Has Spool", hasSpool);
     }
