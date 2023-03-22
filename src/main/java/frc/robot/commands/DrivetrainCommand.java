@@ -65,9 +65,11 @@ public class DrivetrainCommand extends CommandBase {
             FieldOriented = !FieldOriented;
 
         }
+
         if (RobotContainer.secondController.getLeftStickButtonPressed()) {
             slowmode = !slowmode;
         }
+
         if (slowmode) {
             speedMultiplier = .7;
         } else {

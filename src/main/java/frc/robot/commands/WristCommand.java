@@ -74,9 +74,7 @@ public class WristCommand extends CommandBase {
 
         wrist.setPosition(position);
 
-        // wrist.setWrist(MathUtil.applyDeadband(RobotContainer.m_controller.getRightX()
-        // // TESTING
-        // / 2, 0.2));
+        // wrist.setWrist(RobotContainer.firstController.getRightX() / 3);
 
     }
 

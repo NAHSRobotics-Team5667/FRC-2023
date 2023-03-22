@@ -45,7 +45,7 @@ public class ClawConeIntake extends CommandBase {
 
         // runs until current spikes
         // TODO: Change to time of flight sensor
-        if (clawSubsystem.intake.getStatorCurrent() < 30) {
+        if (clawSubsystem.intake.getStatorCurrent() < 35) {
             clawSubsystem.setIntake(.45);
         }
 

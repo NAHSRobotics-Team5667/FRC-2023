@@ -212,7 +212,7 @@ public class RobotContainer {
         this.positionLevel = positionLevel;
     }
 
-    public void updatePositionLevel() {
+    public void updatePositionLevel(boolean isLeftBumperPressed, boolean isRightBumperPressed) {
         int maxPositionLevel = 0;
 
         if (getTargetElement().equals(GamePiece.CONE)) {
@@ -223,9 +223,9 @@ public class RobotContainer {
             maxPositionLevel = 2;
         }
 
-        if (getPositionLevel() < maxPositionLevel && secondController.getRightBumperPressed()) {
+        if (getPositionLevel() < maxPositionLevel && isRightBumperPressed) {
             positionLevel++;
-        } else if (getPositionLevel() > 0 && secondController.getLeftBumperPressed()) {
+        } else if (getPositionLevel() > 0 && isLeftBumperPressed) {
             positionLevel--;
         }
     }
