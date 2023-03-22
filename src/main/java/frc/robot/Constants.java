@@ -149,13 +149,13 @@ public final class Constants {
                 public static final double[] cubeOuttakeSetpoint = {
                                 0, // 0 - ground level (hybrid)
                                 25.267, // 1 - first platform
-                                // 46.1483 // 2 - second platform (highest)
+                                46.1483 // 2 - second platform (highest)
                 };
 
                 public static final double[] coneOuttakeSetpoint = {
                                 16.1876, // 0 - ground level (hybrid)
                                 53.9773, // 1 - first pole
-                                // 57.168 // 2 - second pole (highest)
+                                57.168 // 2 - second pole (highest)
                 };
 
                 public static final double kP = 0.15;

@@ -167,8 +167,8 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putString("Current Element", robotContainer.getCurrentElement().toString());
 
         robotContainer.updatePositionLevel(
-                robotContainer.firstController.getLeftBumperPressed(),
-                robotContainer.firstController.getRightBumperPressed());
+                RobotContainer.firstController.getLeftBumperPressed(),
+                RobotContainer.firstController.getRightBumperPressed());
 
         updatePID(
                 p.getDouble(WristConstants.kP),

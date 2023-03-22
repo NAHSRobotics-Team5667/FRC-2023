@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -73,10 +72,14 @@ public class SlideCommand extends CommandBase {
             if (robotContainer.getPositionLevel() == 0) {
                 position = 0;
                 slide.setSlidePIDInches(position);
+                if (hasSpool && !slide.getBottomLimitSwitch()) {
+                    slide.setSlide(-0.1);
 
-                if (slide.controller.atSetpoint() && !slide.getBottomLimitSwitch()) {
-                    hasZeroed = false;
                 }
+
+                // if (!slide.getBottomLimitSwitch()) {
+                // hasZeroed = false;
+                // }
             } else {
                 if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
                     position = SlideConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1];
@@ -95,10 +98,10 @@ public class SlideCommand extends CommandBase {
             }
         }
 
-        if (slide.getTopLimitSwitch() && hasZeroed) {
-            hasZeroed = false;
-            hasSpool = false;
-        }
+        // if (slide.getTopLimitSwitch() && hasZeroed) {
+        // hasZeroed = false;
+        // hasSpool = false;
+        // }
 
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
         SmartDashboard.putBoolean("Has Spool", hasSpool);

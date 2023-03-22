@@ -33,7 +33,7 @@ public class ClawConeOuttake extends CommandBase {
     @Override
     public void execute() {
         // runs for set time
-        if (stopClock < 0.5) {
+        if (stopClock < 10) {
             claw.setIntake(-.45);
             stopClock += .02;
         } else {
@@ -46,7 +46,7 @@ public class ClawConeOuttake extends CommandBase {
     public void end(boolean interrupted) {
         robotContainer.outtakeFinish = false;
         claw.setIntake(0);
-
+        robotContainer.setPositionLevel(0);
         robotContainer.setCurrentElement(GamePiece.NONE);
     }
 
