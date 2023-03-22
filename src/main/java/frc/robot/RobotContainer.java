@@ -265,7 +265,7 @@ public class RobotContainer {
                 new ClawConeOuttake(intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         bButton.and(bSecondButton).whileTrue(
-                new ClawCubeOuttake(intake, wrist, this)
+                new ClawCubeOuttake(intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue(
                 new ClawCubeIntake(intake, wrist, true, this)
