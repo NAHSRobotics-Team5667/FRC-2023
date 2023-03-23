@@ -13,10 +13,6 @@ import frc.robot.subsystems.WristSubsystem;
 public class ClawConeIntake extends CommandBase {
     // TODO: this is a copy of ClawCubeIntake, with minor adjustments. It should be
     // refactored to a single command with a piece type parameter.
-<<<<<<< Updated upstream
-=======
-    // See CounterTODO in ConeOuttake
->>>>>>> Stashed changes
     public IntakeSubsystem clawSubsystem;
 
     public WristSubsystem wrist;

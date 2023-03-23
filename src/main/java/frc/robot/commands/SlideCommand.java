@@ -55,11 +55,6 @@ public class SlideCommand extends CommandBase {
                 slide.setSlide(-0.1);
             } else if (hasSpool && bottomLimitSwitch) {
                 hasZeroed = true; // TODO: should we add a setSlide to zero here?
-                                  // No, "hasZeroed" just means the string is properly spooled and we can trust
-                                  // the encoder now
-                                  // However we should set where the sensor thinks it is to zero here idk if thats
-                                  // what you meant
-                slide.resetSlideEncoders();
             }
 
         } else {

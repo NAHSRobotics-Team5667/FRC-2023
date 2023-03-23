@@ -11,9 +11,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ClawCubeIntake extends CommandBase {
-    // TODO: this is a copy of ClawConeIntake, with minor adjustments. It should be
-    // refactored to a single command with a piece type parameter.
-    // See CounterTODO in ConeOuttake
+    // TODO: this is a copy of ClawConeIntake, with minor adjustments. It should be refactored to a single command with a piece type parameter.
     public IntakeSubsystem clawSubsystem;
 
     public WristSubsystem wrist;

@@ -32,11 +32,6 @@ public class TestAuto extends CommandBase {
     public void execute() {
         if (timer < 6) { // TODO: take a look at the timer in Lights.java:343 its a bit more concise to
                          // use the system clock rather than assume that periodic is called every 20ms
-<<<<<<< Updated upstream
-=======
-                         // Ok thats a good point, but like this makes sense. This is a placeholder auto
-                         // until we start doing better with PathPlanner so I'm too lazy to change it
->>>>>>> Stashed changes
 
             claw.setIntake(1);
             timer += .02;

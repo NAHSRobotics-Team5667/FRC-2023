@@ -9,11 +9,8 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class ClawCubeOuttake extends CommandBase {
-    // TODO: this is a copy of ClawConeOuttake, but with the intake speed reversed.
-    // This is a bad way to do this. We should have a single command that takes a
-    // parameter for the direction of the intake.
-    // See Counter TODO
+public class ClawCubeOuttake extends CommandBase { 
+    // TODO: this is a copy of ClawConeOuttake, but with the intake speed reversed. This is a bad way to do this. We should have a single command that takes a parameter for the direction of the intake.
     double stopClock;
     IntakeSubsystem claw;
     RobotContainer robotContainer;

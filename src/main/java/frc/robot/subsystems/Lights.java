@@ -115,9 +115,6 @@ public class Lights extends SubsystemBase {
 
     public void cylon_but_two(int hue, int saturation, int speed_multiplier, int hue2, int sat2) { // TODO: make this
                                                                                                    // not awful
-                                                                                                   // Counter TODO: Ok
-                                                                                                   // but like how else
-                                                                                                   // can you do this
         for (var i = 0; i < ledBuffer.getLength(); i++) {
             int value = 250 - (Math.abs(this.cylon_center - i) * 40);
             if (value < 0) {
@@ -181,10 +178,9 @@ public class Lights extends SubsystemBase {
     /**
      * Sets the current period of the game. This is used to set the default light
      * effect. Should generally be called from {@link frc.robot.Robot}
-     * 
      * @param p The period of the game
      */
-    public void setPeriod(Lights.period p) {
+    public void setPeriod(Lights.period p) { 
         currentPeriod = p;
         scheduler.setDefaultLightEffect();
         if (p == period.TELEOP) {
@@ -205,43 +201,27 @@ public class Lights extends SubsystemBase {
 
     public class Light_Scheduler {
         private LightEffect current_effect;
-        private long tick_counter = 0;
+        private long  tick_counter = 0; 
         private int ticks_per_call = 1, test_index = 0;
         private double time_left = 0, fade_time_left = 0; // in seconds
         private Color[] fade_from, fade_to;
         LightEffect default_disabled, defualt_teleop, defualt_auto, default_endgame;
-
-        LightEffect[] tests = new LightEffect[] {
-                // () -> {Lights.this.setSolidRGB(0, 0, 0);},
-                // () -> {Lights.this.setSolidRGB(255, 255, 255);}
-                () -> {
-                    Lights.this.flashingRGB(255, 0, 0);
-                },
-                () -> {
-                    Lights.this.carnival(new Color[] { teamColor, Color.kBlack, Color.kWhite, Color.kBlack }, 3);
-                },
-                () -> {
-                    Lights.this.rainbow(1);
-                },
-                () -> {
-                    Lights.this.cylon(60, 255, 1);
-                }
+        
+        LightEffect[] tests = new LightEffect[] { 
+            //() -> {Lights.this.setSolidRGB(0, 0, 0);},
+            //() -> {Lights.this.setSolidRGB(255, 255, 255);}
+            () -> {Lights.this.flashingRGB(255, 0, 0);},
+            () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, Color.kWhite, Color.kBlack}, 3);},
+            () -> {Lights.this.rainbow(1);}, 
+            () -> {Lights.this.cylon(60, 255, 1);} 
         };
 
         public Light_Scheduler() {
-            this.default_disabled = () -> {
-                Lights.this.cylon_but_two(2, 255, 1, 24, 255);
-            };
-            this.defualt_teleop = () -> {
-                Lights.this.rainbow(2);
-            };
-            this.defualt_auto = () -> {
-                Lights.this.carnival(new Color[] { teamColor, Color.kBlack, Color.kWhite, Color.kBlack }, 3);
-            };
-            this.default_endgame = () -> {
-                Lights.this.flashingRGB(255, 0, 0);
-            };
-
+            this.default_disabled = () -> {Lights.this.cylon_but_two(2, 255, 1,24,255);};
+            this.defualt_teleop = () -> {Lights.this.rainbow(2);};
+            this.defualt_auto = () -> {Lights.this.carnival(new Color[] {teamColor, Color.kBlack, Color.kWhite, Color.kBlack}, 3);};
+            this.default_endgame = () -> {Lights.this.flashingRGB(255, 0, 0);};
+        
             this.setDefaultLightEffect();
         }
 
@@ -342,11 +322,9 @@ public class Lights extends SubsystemBase {
             if (this.fade_time_left > 0) {
                 this.fadeLightEffect();
             } else if (this.time_left <= 0) {
-                // if no time is left for whatever effect, set the default light effect for the
-                // current period.
+                // if no time is left for whatever effect, set the default light effect for the current period.
                 this.setDefaultLightEffect();
-                // this can be optimized by only calling it once after the time runs out but for
-                // readability it works.
+                // this can be optimized by only calling it once after the time runs out but for readability it works.
             } else {
                 this.time_left -= .02; // 0.02 seconds is usually the period of the periodic function
             }
