@@ -30,7 +30,8 @@ public class TestAuto extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (timer < 6) { // TODO: take a look at the timer in Lights.java:343 its a bit more concise to use the system clock rather than assume that periodic is called every 20ms
+        if (timer < 6) { // TODO: take a look at the timer in Lights.java:343 its a bit more concise to
+                         // use the system clock rather than assume that periodic is called every 20ms
 
             claw.setIntake(1);
             timer += .02;

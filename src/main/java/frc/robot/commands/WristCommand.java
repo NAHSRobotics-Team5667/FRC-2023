@@ -36,8 +36,9 @@ public class WristCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        // wrist.setWrist(RobotContainer.firstController.getRightX() / 3);
 
-        double position = 0;
+        double position = WristConstants.kWristConeSetpoint;
         String safe = "";
 
         if (robotContainer.getPositionLevel() == 0) {
@@ -63,19 +64,12 @@ public class WristCommand extends CommandBase {
                 position = WristConstants.kWristCubeOuttakeSetpoint[robotContainer.getPositionLevel() -
                         1];
             }
-
-            // if (robotContainer.getTargetElement().equals(GamePiece.NONE)) {
-            // position = WristConstants.kWristSafePosition;
-            // }
-            safe = "not";
         }
 
+        safe = "not";
         SmartDashboard.putString("Safe", safe);
 
         wrist.setPosition(position);
-
-        // wrist.setWrist(RobotContainer.firstController.getRightX() / 3);
-
     }
 
     // Called once the command ends or is interrupted.

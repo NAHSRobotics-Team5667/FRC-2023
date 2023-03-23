@@ -83,6 +83,14 @@ public class SlideSubsystem extends SubsystemBase {
         return rightSlide.getSelectedSensorPosition();
     }
 
+    public double getRightRawSpeed() {
+        return Math.abs(getRightRawVelocity());
+    }
+
+    public double getRightRawVelocity() {
+        return rightSlide.getSelectedSensorVelocity();
+    }
+
     public void resetSlideEncoders() {
         rightSlide.setSelectedSensorPosition(0);
         leftSlide.setSelectedSensorPosition(0);
@@ -124,9 +132,13 @@ public class SlideSubsystem extends SubsystemBase {
     }
 
     public void setSlidePIDInches(double inchesSetpoint) {
-        double output = MathUtil.clamp(
-                controller.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint), -0.3, 0.3);
+        double output = getPIDOutput(inchesSetpoint);
         setSlide(output);
+    }
+
+    public double getPIDOutput(double inchesSetpoint) {
+        return MathUtil.clamp(
+                controller.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint), -0.4, 0.4);
     }
 
     public void updatePID(double kP, double kI, double kD) {

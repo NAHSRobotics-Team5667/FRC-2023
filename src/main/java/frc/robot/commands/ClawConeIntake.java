@@ -11,7 +11,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ClawConeIntake extends CommandBase {
-    // TODO: this is a copy of ClawCubeIntake, with minor adjustments. It should be refactored to a single command with a piece type parameter.
+    // TODO: this is a copy of ClawCubeIntake, with minor adjustments. It should be
+    // refactored to a single command with a piece type parameter.
     public IntakeSubsystem clawSubsystem;
 
     public WristSubsystem wrist;
@@ -46,7 +47,7 @@ public class ClawConeIntake extends CommandBase {
 
         // runs until current spikes
         // TODO: Change to time of flight sensor
-        if (clawSubsystem.intake.getStatorCurrent() < 35) {
+        if (clawSubsystem.intake.getStatorCurrent() < 70) {
             clawSubsystem.setIntake(.45);
         }
 

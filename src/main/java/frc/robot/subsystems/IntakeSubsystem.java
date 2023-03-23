@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.Rev2mDistanceSensor;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,14 +21,45 @@ public class IntakeSubsystem extends SubsystemBase {
     private CurrentSpikeCounter spike_counter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,
             Constants.SlideConstants.CurrentDeadband);
 
+    private Rev2mDistanceSensor m_distanceSensor;
+
     /** Creates a new IntakeSubsystem. */
     public IntakeSubsystem() {
         intake = new WPI_TalonFX(Constants.ClawConstants.kClawID);
         intake.setNeutralMode(NeutralMode.Brake);
+
+        m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+        m_distanceSensor.setAutomaticMode(true);
+
         // claw.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40,
         // 100, 0.5));
         // claw.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40,
         // 100, 0.5));
+    }
+
+    public boolean isPieceIntaken() {
+        return spike_counter.update(intake.getStatorCurrent(), false);
+    }
+
+    // ===========================================================================
+    // MOTOR
+    // ===========================================================================
+
+    /**
+     * Purpose: To return current motor output voltage to use as de facto sensor
+     * 
+     * @return: Current motor voltage
+     */
+    public double getMotorOutputVoltage() {
+        return intake.getMotorOutputVoltage();
+    }
+
+    public double getMotorSpeed() {
+        return intake.getSelectedSensorVelocity();
+    }
+
+    public double getMotorInput() {
+        return intake.getBusVoltage();
     }
 
     public double getPosition() {
@@ -41,26 +75,19 @@ public class IntakeSubsystem extends SubsystemBase {
         this.intake.set(ControlMode.PercentOutput, percentOutput);
     }
 
-    /**
-     * Purpose: To return current motor output voltage to use as de facto sensor
-     * 
-     * @return: Current motor voltage
-     */
-    public double getMotorOutputVoltage() {
-        return intake.getMotorOutputVoltage();
+    // ===========================================================================
+    // DISTANCE SENSOR
+    // ===========================================================================
+
+    public boolean isRangeValid() {
+        return m_distanceSensor.isRangeValid();
     }
 
-    public boolean isPieceIntaken() {
-        return spike_counter.update(intake.getStatorCurrent(), false);
+    public double getRangeInches() {
+        return m_distanceSensor.getRange(Unit.kInches);
     }
 
-    public double getMotorSpeed() {
-        return intake.getSelectedSensorVelocity();
-    }
-
-    public double getMotorInput() {
-        return intake.getBusVoltage();
-    }
+    // ===========================================================================
 
     @Override
     public void periodic() {
@@ -68,6 +95,8 @@ public class IntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("ClawTempurature", intake.getTemperature());
         SmartDashboard.putNumber("ClawCurrent", intake.getStatorCurrent());
         isPieceIntaken();
-        // This method will be called once per scheduler run.
+
+        SmartDashboard.putBoolean("Distance Range Valid", m_distanceSensor.isRangeValid());
+        SmartDashboard.putNumber("Distance Sensor Range", m_distanceSensor.getRange(Unit.kInches));
     }
 }
