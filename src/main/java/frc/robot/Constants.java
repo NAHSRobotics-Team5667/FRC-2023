@@ -136,8 +136,13 @@ public final class Constants {
         public static final class SlideConstants {
 
                 public static final double[] coneIntakeSetpoints = {
+<<<<<<< Updated upstream
                                 21.0973, // 0 - floor intake (upright)
                                 3.3827, // 1 - floor intake (flipped)
+=======
+                                17.8653, // 0 - floor intake (upright)
+                                3.2449, // 1 - floor intake (flipped)
+>>>>>>> Stashed changes
                                 0 // 2 - human player intake
                 };
 
@@ -158,15 +163,25 @@ public final class Constants {
                                 59.3297 // 2 - second pole (highest)
                 };
 
+<<<<<<< Updated upstream
                 public static final double kP = 0.25;
                 public static final double kI = 0.0;
                 public static final double kD = 0.015;
+=======
+                public static final double kP = 0.15;
+                public static final double kI = 0.002;
+                public static final double kD = 0;
+>>>>>>> Stashed changes
 
                 public static final double maxEncoderTicks = 207000;
 
                 public static final int kLSlideID = 2;
                 public static final int kRSlideID = 4;
+<<<<<<< Updated upstream
                 public static final double kSlideConstant = 1 / 16384; // TODO: do somethin
+=======
+                public static final double kSlideConstant = 1 / 16384;
+>>>>>>> Stashed changes
 
                 public static final int EncoderId = -1;
                 public static final int EncoderOffset = -1;
@@ -197,8 +212,13 @@ public final class Constants {
                 // OUTTAKE SETPOINTS -------------------------------------
 
                 public static final double[] coneIntakeSetpoints = {
+<<<<<<< Updated upstream
                                 58.7045, // 0 - floor intake (upright)
                                 29.025, // 1 - floor intake (flipped)
+=======
+                                48.0681, // 0 - floor intake (upright)
+                                32.0102, // 1 - floor intake (flipped)
+>>>>>>> Stashed changes
                                 -60 // 2 - human player intake
                 };
 
@@ -216,7 +236,11 @@ public final class Constants {
                 public static final double[] kWristConeOuttakeSetpoint = {
                                 27.1897, // 0 - ground level (hybrid)
                                 49.9116, // 1 - first pole
+<<<<<<< Updated upstream
                                 6.9903, // 2 - second pole (highest)
+=======
+                                6.0569, // 2 - second pole (highest)
+>>>>>>> Stashed changes
                 };
 
                 public static final double kP = 0.007;

@@ -14,11 +14,16 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 /** The DriveTrainCommand class */
 public class DrivetrainCommand extends CommandBase {
     public DrivetrainSubsystem drive;
-    public double speedMultiplier = .9; 
-    // TODO: put this and the one in RobotContainer in Constants. I would also put the slowmode multiplier in Constants.
+    public double speedMultiplier = .9;
+    // TODO: put this and the one in RobotContainer in Constants. I would also put
+    // the slowmode multiplier in Constants.
+    // OK
 
     RobotContainer robotContainer;
     public boolean fieldOriented = true, slowmode = false; // TODO: maybe put these in DrivetrainSubsystem?
+    // No, they are ok here, this should be edited in command as it affects how fast
+    // it drives, and how it drives, its easier to translate them in the drive
+    // method
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // haha changing slewratelimiters go brrrrr
