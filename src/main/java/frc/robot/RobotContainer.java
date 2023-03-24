@@ -90,9 +90,10 @@ public class RobotContainer {
     public RobotContainer() {
         drive = new DrivetrainSubsystem();
         drive.setDefaultCommand(new DrivetrainCommand(drive, this));
-
-        poseEstimate = new PoseEstimator(drive, limelight);
         limelight = new LimelightSubsystem(); // instantiate commands
+
+        poseEstimate = new PoseEstimator(drive, this);
+
         wrist = new WristSubsystem(this);
         intake = new IntakeSubsystem();
         slide = new SlideSubsystem();

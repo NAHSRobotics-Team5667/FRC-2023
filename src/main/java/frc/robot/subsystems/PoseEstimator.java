@@ -23,7 +23,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
 
 public class PoseEstimator extends SubsystemBase {
@@ -31,6 +33,7 @@ public class PoseEstimator extends SubsystemBase {
     private final DrivetrainSubsystem drivetrainSubsystem;
     private final AprilTagFieldLayout aprilTagFieldLayout;
     private final LimelightSubsystem limelite;
+    private final RobotContainer robotContainer;
 
     // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
     // you trust your various sensors. Smaller numbers will cause the filter to
@@ -59,9 +62,10 @@ public class PoseEstimator extends SubsystemBase {
     private double timer = 0;
 
     public PoseEstimator(DrivetrainSubsystem drivetrainSubsystem,
-            LimelightSubsystem limelite) {
+            RobotContainer robotContainer) {
         photonCamera = new PhotonCamera(VisionConstants.kCameraName);
-        this.limelite = limelite;
+        this.robotContainer = robotContainer;
+        limelite = robotContainer.limelight;
         // this.photonCamera = photonCamera;
         this.drivetrainSubsystem = drivetrainSubsystem;
         AprilTagFieldLayout layout;
@@ -92,6 +96,7 @@ public class PoseEstimator extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putString("pose2d", getCurrentPose().toString());
         // Update pose estimator with the best visible target
 
         // var pipelineResult = photonCamera.getLatestResult();
