@@ -7,9 +7,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.Rev2mDistanceSensor;
-import com.revrobotics.Rev2mDistanceSensor.Port;
-import com.revrobotics.Rev2mDistanceSensor.Unit;
+// import com.revrobotics.Rev2mDistanceSensor;
+// import com.revrobotics.Rev2mDistanceSensor.Port;
+// import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,15 +21,15 @@ public class IntakeSubsystem extends SubsystemBase {
     private CurrentSpikeCounter spike_counter = new CurrentSpikeCounter(Constants.SlideConstants.CurrentThreshold,
             Constants.SlideConstants.CurrentDeadband);
 
-    private Rev2mDistanceSensor m_distanceSensor;
+    // private Rev2mDistanceSensor m_distanceSensor;
 
     /** Creates a new IntakeSubsystem. */
     public IntakeSubsystem() {
         intake = new WPI_TalonFX(Constants.ClawConstants.kClawID);
         intake.setNeutralMode(NeutralMode.Brake);
 
-        m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
-        m_distanceSensor.setAutomaticMode(true);
+        // m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+        // m_distanceSensor.setAutomaticMode(true);
 
         // claw.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40,
         // 100, 0.5));
@@ -79,13 +79,13 @@ public class IntakeSubsystem extends SubsystemBase {
     // DISTANCE SENSOR
     // ===========================================================================
 
-    public boolean isRangeValid() {
-        return m_distanceSensor.isRangeValid();
-    }
+    // public boolean isRangeValid() {
+    // return m_distanceSensor.isRangeValid();
+    // }
 
-    public double getRangeInches() {
-        return m_distanceSensor.getRange(Unit.kInches);
-    }
+    // public double getRangeInches() {
+    // return m_distanceSensor.getRange(Unit.kInches);
+    // }
 
     // ===========================================================================
 
@@ -96,7 +96,9 @@ public class IntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("ClawCurrent", intake.getStatorCurrent());
         isPieceIntaken();
 
-        SmartDashboard.putBoolean("Distance Range Valid", m_distanceSensor.isRangeValid());
-        SmartDashboard.putNumber("Distance Sensor Range", m_distanceSensor.getRange(Unit.kInches));
+        // SmartDashboard.putBoolean("Distance Range Valid",
+        // m_distanceSensor.isRangeValid());
+        // SmartDashboard.putNumber("Distance Sensor Range",
+        // m_distanceSensor.getRange(Unit.kInches));
     }
 }

@@ -10,7 +10,13 @@ import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class ClawConeOuttake extends CommandBase {
-    // TODO: this is a copy of ClawCubeOuttake, but with the intake speed reversed. This is a bad way to do this.  We should have a single command that takes a parameter for the direction of the intake.
+    // TODO: this is a copy of ClawCubeOuttake, but with the intake speed reversed.
+    // This is a bad way to do this. We should have a single command that takes a
+    // parameter for the direction of the intake.
+    // Counter TODO: The issue with making it all in one command is that the
+    // ConfigureButtonBindings command only runs once, which means the triggers and
+    // commands linked to them are only defined the way they are at instantiation,
+    // meaning that we cant pass a changing variable in them to sense that.
     double stopClock;
     IntakeSubsystem claw;
     RobotContainer robotContainer;
