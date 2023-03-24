@@ -361,7 +361,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     /**
-     * Get the distance of the limelight target
+     * Purpose: Get the distance of the limelight target
      * 
      * @param h1 - The height of the limelight with respect to the floor
      * @param h2 - The height of the target

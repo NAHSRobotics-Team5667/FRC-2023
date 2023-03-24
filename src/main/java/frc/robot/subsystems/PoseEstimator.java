@@ -56,12 +56,13 @@ public class PoseEstimator extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator;
     private final Field2d field2d = new Field2d();
     private double previousPipelineTimestamp = 0;
+    private double timer = 0;
 
-    public PoseEstimator(PhotonCamera photonCamera, DrivetrainSubsystem drivetrainSubsystem,
+    public PoseEstimator(DrivetrainSubsystem drivetrainSubsystem,
             LimelightSubsystem limelite) {
         photonCamera = new PhotonCamera(VisionConstants.kCameraName);
         this.limelite = limelite;
-        this.photonCamera = photonCamera;
+        // this.photonCamera = photonCamera;
         this.drivetrainSubsystem = drivetrainSubsystem;
         AprilTagFieldLayout layout;
         try {
@@ -93,9 +94,10 @@ public class PoseEstimator extends SubsystemBase {
     public void periodic() {
         // Update pose estimator with the best visible target
 
-        var pipelineResult = photonCamera.getLatestResult();
-        var resultTimestamp = pipelineResult.getTimestampSeconds();
+        // var pipelineResult = photonCamera.getLatestResult();
+        // var resultTimestamp = pipelineResult.getTimestampSeconds();
         if (limelite.getDeltaTime() >= 20 && limelite.hasValidTarget()) {
+            timer += limelite.getDeltaTime();
             // previousPipelineTimestamp = resultTimestamp;
             // //var target = pipelineResult.getBestTarget();
             // var fiducialId = limelite.getID();
@@ -112,9 +114,9 @@ public class PoseEstimator extends SubsystemBase {
             // Transform3d camToTarget = target.getBestCameraToTarget();
             // Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
 
-            // var visionMeasurement = camPose.transformBy(robotToCamera);
+            // var visionMeasurement = camPose.transformBy(robotToCamera)P;
 
-            poseEstimator.addVisionMeasurement(limelite.getVisionPose2d(), resultTimestamp);
+            poseEstimator.addVisionMeasurement(limelite.getVisionPose2d(), timer);
         }
 
         // Update pose estimator with drivetrain sensors
