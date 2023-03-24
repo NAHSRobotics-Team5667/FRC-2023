@@ -2,8 +2,12 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 
-import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -20,7 +24,8 @@ public class LimelightSubsystem extends SubsystemBase {
     private NetworkTable table; // Network table to access Lime Light Values
 
     // Frequently used entries to store
-    private NetworkTableEntry tx, ty, ta;
+    private NetworkTableEntry tx, ty, ta, tid, botpose;
+    private double[] camerapose;
 
     public enum LightMode {
         DEFAULT(0), OFF(1), BLINK(2), ON(3);
@@ -33,6 +38,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
         /**
          * Purpose - Get the current LED Mode
+         * 
          * @return the LED mode as int
          */
         public int getLedMode() {
@@ -115,11 +121,13 @@ public class LimelightSubsystem extends SubsystemBase {
      */
     public LimelightSubsystem() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
+        camerapose = table.getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
+        tid = table.getEntry("tid");
+        botpose = table.getEntry("botpose");
         setLightState(LIGHT_OFF);
-       
 
         snapshotChooser.setDefaultOption("Disabled", false);
         snapshotChooser.addOption("Enabled", true);
@@ -147,6 +155,15 @@ public class LimelightSubsystem extends SubsystemBase {
         return tx.getDouble(0);
     }
 
+    public double getID() {
+        return tid.getDouble(0);
+    }
+
+    public Pose2d getVisionPose2d() {
+        double[] botposeAHHHH = botpose.getDoubleArray(new double[8]);
+        return new Pose2d(new Translation2d(botposeAHHHH[0], botposeAHHHH[1]), new Rotation2d(botposeAHHHH[5]));
+    }
+
     /**
      * Vertical offset from crosshair to target
      * 
@@ -164,6 +181,16 @@ public class LimelightSubsystem extends SubsystemBase {
      */
     public double getArea() {
         return ta.getDouble(0);
+    }
+
+    public Transform3d getCameraPoseTargetSpace() {
+
+        var pose2dCam = new Pose2d(new Translation2d(camerapose[0], camerapose[1]), new Rotation2d(camerapose[2]));
+        var pose2dTarg = new Pose2d(new Translation2d(camerapose[3], camerapose[4]), new Rotation2d(camerapose[5]));
+
+        Transform3d cameraPose = new Transform3d(new Pose3d(pose2dCam), new Pose3d(pose2dTarg));
+        return cameraPose;
+
     }
 
     /**

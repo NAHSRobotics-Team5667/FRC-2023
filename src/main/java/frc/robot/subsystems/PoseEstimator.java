@@ -30,6 +30,7 @@ public class PoseEstimator extends SubsystemBase {
     private final PhotonCamera photonCamera;
     private final DrivetrainSubsystem drivetrainSubsystem;
     private final AprilTagFieldLayout aprilTagFieldLayout;
+    private final LimelightSubsystem limelite;
 
     // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
     // you trust your various sensors. Smaller numbers will cause the filter to
@@ -56,8 +57,10 @@ public class PoseEstimator extends SubsystemBase {
     private final Field2d field2d = new Field2d();
     private double previousPipelineTimestamp = 0;
 
-    public PoseEstimator(PhotonCamera photonCamera, DrivetrainSubsystem drivetrainSubsystem) {
+    public PoseEstimator(PhotonCamera photonCamera, DrivetrainSubsystem drivetrainSubsystem,
+            LimelightSubsystem limelite) {
         photonCamera = new PhotonCamera(VisionConstants.kCameraName);
+        this.limelite = limelite;
         this.photonCamera = photonCamera;
         this.drivetrainSubsystem = drivetrainSubsystem;
         AprilTagFieldLayout layout;
@@ -92,29 +95,33 @@ public class PoseEstimator extends SubsystemBase {
 
         var pipelineResult = photonCamera.getLatestResult();
         var resultTimestamp = pipelineResult.getTimestampSeconds();
-        if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
-            previousPipelineTimestamp = resultTimestamp;
-            var target = pipelineResult.getBestTarget();
-            var fiducialId = target.getFiducialId();
-            // Get the tag pose from field layout - consider that the layout will be null if
-            // it failed to load
-            Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
-                    : aprilTagFieldLayout.getTagPose(fiducialId);
-            if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 && tagPose.isPresent()) {
-                var targetPose = tagPose.get();
-                Transform3d camToTarget = target.getBestCameraToTarget();
-                Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+        if (limelite.getDeltaTime() >= 20 && limelite.hasValidTarget()) {
+            // previousPipelineTimestamp = resultTimestamp;
+            // //var target = pipelineResult.getBestTarget();
+            // var fiducialId = limelite.getID();
+            // //skip prev 2 lines and just yoink apriltag number
 
-                var visionMeasurement = camPose.transformBy(robotToCamera);
-                poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), resultTimestamp);
-            }
+            // // Get the tag pose from field layout - consider that the layout will be null
+            // if
+            // // it failed to load
+            // Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
+            // : aprilTagFieldLayout.getTagPose(fiducialId);
+            // if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 &&
+            // tagPose.isPresent()) {
+            // var targetPose = tagPose.get();
+            // Transform3d camToTarget = target.getBestCameraToTarget();
+            // Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+
+            // var visionMeasurement = camPose.transformBy(robotToCamera);
+
+            poseEstimator.addVisionMeasurement(limelite.getVisionPose2d(), resultTimestamp);
         }
-        // Update pose estimator with drivetrain sensors
-        poseEstimator.update(
-                drivetrainSubsystem.getGyro(),
-                drivetrainSubsystem.getPosition());
 
-        field2d.setRobotPose(getCurrentPose());
+        // Update pose estimator with drivetrain sensors
+        poseEstimator.update(drivetrainSubsystem.getGyro(), drivetrainSubsystem.getPosition());
+
+        field2d.setRobotPose(limelite.getVisionPose2d());
+
     }
 
     private String getFomattedPose() {
