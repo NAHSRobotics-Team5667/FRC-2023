@@ -98,7 +98,7 @@ public class RobotContainer {
 
         limelight = new LimelightSubsystem(); // instantiate commands
 
-        poseEstimate = new PoseEstimator(drive, this);
+        poseEstimate = new PoseEstimator(drive, limelight);
 
         wrist = new WristSubsystem(this);
         intake = new IntakeSubsystem();
@@ -216,16 +216,17 @@ public class RobotContainer {
 
     public void updatePositionLevel(boolean isLeftBumperPressed, boolean isRightBumperPressed) {
         int maxPositionLevel = 0;
-
         // set max position level
-        if (getTargetElement().equals(GamePiece.CONE)) {
-            maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
-        } else if (getTargetElement().equals(GamePiece.CUBE)) {
-            maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
-        } else if (!getCurrentElement().equals(GamePiece.NONE)) {
-            maxPositionLevel = 3;
-        } else { // target element is NONE and current element is NONE
-            maxPositionLevel = 0; // default max position level is 0 - don't want to move anything
+        switch (getTargetElement()) {
+            case CONE:
+                maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
+                break;
+            case CUBE:
+                maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
+                break;
+            default:
+                maxPositionLevel = (getCurrentElement().equals(GamePiece.NONE)) ? 0 : 3;
+                break;
         }
 
         if (getPositionLevel() < maxPositionLevel && isRightBumperPressed) {
@@ -234,6 +235,7 @@ public class RobotContainer {
             positionLevel--;
         } else { // 0 <= position level <= maxPositionLevel and neither bumper is pressed
             // do nothing
+            // what...
         }
     }
 

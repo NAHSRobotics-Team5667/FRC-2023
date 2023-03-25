@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -190,7 +189,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
         Transform3d cameraPose = new Transform3d(new Pose3d(pose2dCam), new Pose3d(pose2dTarg));
         return cameraPose;
-
     }
 
     /**
@@ -322,7 +320,6 @@ public class LimelightSubsystem extends SubsystemBase {
      */
     public void takeSnapshots(LightMode.SnapMode mode) {
         table.getEntry("snapshot").setNumber(mode.getMode());
-
     }
 
     /**
@@ -356,7 +353,6 @@ public class LimelightSubsystem extends SubsystemBase {
         if (instance == null) {
             instance = new LimelightSubsystem();
         }
-
         return instance;
     }
 
@@ -401,7 +397,6 @@ public class LimelightSubsystem extends SubsystemBase {
         } else {
             turnLightOff();
         }
-
     }
 
     @Override

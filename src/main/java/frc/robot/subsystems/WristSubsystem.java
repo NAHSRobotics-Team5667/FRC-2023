@@ -10,8 +10,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -32,10 +30,13 @@ public class WristSubsystem extends SubsystemBase {
     private ProfiledPIDController wristPID;
 
     private DutyCycleEncoder encoder;
-    private LinearFilter encoderFilter; // TODO: use only if encoder values are still not stable enough
-
     private double angleOffset = 0;
+
+    @SuppressWarnings("unused")
     private int counter = 0; // use if absolute encoder still fluctuates too much
+    @SuppressWarnings("unused")
+    private LinearFilter encoderFilter; // TODO: use only if encoder values are still not stable enough
+    
     private RobotContainer robotContainer;
 
     // ====================================================================

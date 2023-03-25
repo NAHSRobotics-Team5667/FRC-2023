@@ -33,7 +33,6 @@ public class SlideCommand extends CommandBase {
     public void initialize() {
         hasTension = false; // initialize boolean checkers just in case
         hasZeroed = false;
-
         slide.setSlide(0);
     }
 
@@ -42,38 +41,30 @@ public class SlideCommand extends CommandBase {
     public void execute() {
         // Uncomment the following to control slide with stick
         // slide.setSlide(robotContainer.slideController.getLeftY() / 3);
-
         double position = 0; // initialize variable to hold position of slide
-
         boolean bottomLimitSwitch = slide.getBottomLimitSwitch();
 
         if (!hasZeroed) { // slide has not zeroed
             if (!hasTension) { // string may not have tension
                 if (bottomLimitSwitch) { // bottom limit switch is hit
                     slide.setSlide(0.1); // go up slowly
-
                 } else { // bottom limit switch is not hit
                     hasTension = true; // string has tension
-
                 }
             } else { // string has tension
                 if (!bottomLimitSwitch) { // bottom limit switch is not hit
                     slide.setSlide(-0.1); // go down slowly
-
                 } else { // bottom limit switch is hit
                     hasZeroed = true; // slide has completed zeroing procedure
                     slide.setSlide(0); // stop slide in case motors have not updated
-
                 }
             }
-
         } else {
             int positionLevel = robotContainer.getPositionLevel();
 
             if (positionLevel == 0) {
                 position = -1; // set slide to go to -1 inches - eliminates any error
-
-            } else { // position level is greater than 0
+            } else { // position level is not equal to 0
                 if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
                     position = SlideConstants.coneIntakeSetpoints[positionLevel - 1]; // length = 3
 
@@ -88,13 +79,10 @@ public class SlideCommand extends CommandBase {
 
                 } else { // current element is NONE and target element is NONE
                     position = -1; // reset position
-
                 }
             }
-
             slide.setSlidePIDInches(position); // set slide to go to position
         }
-
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
         SmartDashboard.putBoolean("Has Spool", hasTension);
     }

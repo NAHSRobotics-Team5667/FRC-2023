@@ -1,12 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.VisionConstants.robotToCamera;
-
 import java.io.IOException;
-import java.util.Optional;
-
-import org.photonvision.PhotonCamera;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -14,8 +8,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,15 +17,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
-import frc.robot.Constants.VisionConstants;
 
 public class PoseEstimator extends SubsystemBase {
-    private final PhotonCamera photonCamera;
+    // private final PhotonCamera photonCamera;
     private final DrivetrainSubsystem drivetrainSubsystem;
-    private final AprilTagFieldLayout aprilTagFieldLayout;
+    // private final AprilTagFieldLayout aprilTagFieldLayout;
     private final LimelightSubsystem limelite;
-    private final RobotContainer robotContainer;
 
     // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
     // you trust your various sensors. Smaller numbers will cause the filter to
@@ -58,14 +47,13 @@ public class PoseEstimator extends SubsystemBase {
     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
     private final SwerveDrivePoseEstimator poseEstimator;
     private final Field2d field2d = new Field2d();
-    private double previousPipelineTimestamp = 0;
+    // private double previousPipelineTimestamp = 0;
     private double timer = 0;
 
     public PoseEstimator(DrivetrainSubsystem drivetrainSubsystem,
-            RobotContainer robotContainer) {
-        photonCamera = new PhotonCamera(VisionConstants.kCameraName);
-        this.robotContainer = robotContainer;
-        limelite = robotContainer.limelight;
+            LimelightSubsystem limelight) {
+        // photonCamera = new PhotonCamera(VisionConstants.kCameraName);
+        this.limelite = limelight;
         // this.photonCamera = photonCamera;
         this.drivetrainSubsystem = drivetrainSubsystem;
         AprilTagFieldLayout layout;
@@ -78,7 +66,7 @@ public class PoseEstimator extends SubsystemBase {
             DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
             layout = null;
         }
-        this.aprilTagFieldLayout = layout;
+        // this.aprilTagFieldLayout = layout;
 
         ShuffleboardTab tab = Shuffleboard.getTab("Vision");
 

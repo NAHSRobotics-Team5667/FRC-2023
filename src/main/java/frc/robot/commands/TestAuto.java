@@ -30,11 +30,7 @@ public class TestAuto extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (timer < 6) { // TODO: take a look at the timer in Lights.java:343 its a bit more concise to
-                         // use the system clock rather than assume that periodic is called every 20ms
-                         // Ok thats a good point, but like this makes sense. This is a placeholder auto
-                         // until we start doing better with PathPlanner so I'm too lazy to change it
-
+        if (timer < 6) {
             claw.setIntake(1);
             timer += .02;
             if (timer < 6 && timer > 1) {

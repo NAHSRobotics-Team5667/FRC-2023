@@ -41,7 +41,9 @@ public class ClawConeIntake extends CommandBase {
         robotContainer.setTargetElement(GamePiece.CONE);
 
         Lights lightstrip = robotContainer.lightstrip;
-        lightstrip.scheduler.setLightEffect(() -> {lightstrip.flashingRGB(252, 211, 3);}, 2, 15, .1);
+        lightstrip.scheduler.setLightEffect(() -> {
+            lightstrip.flashingRGB(252, 211, 3);
+        }, 2, 15, .1);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

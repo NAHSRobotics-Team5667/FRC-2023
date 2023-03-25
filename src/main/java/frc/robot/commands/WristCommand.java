@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.WristConstants;
 import frc.robot.RobotContainer;
@@ -35,15 +33,14 @@ public class WristCommand extends CommandBase {
     public void execute() {
         // Uncomment below if controlling wrist with controller
         // wrist.setWrist(RobotContainer.slideController.getRightX() / 3);
-
         double position = WristConstants.kWristSafePosition; // default position is stowaway
 
-        if (robotContainer.getPositionLevel() == 0) {
+        if (robotContainer.getPositionLevel() == 0) { // TODO: this entire if statement is redundant... just change the else to an if or fix whatever you were trying to do here
             if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
                 position = WristConstants.kConeSafePosition; // go back to cone stowaway
             } else {
                 position = WristConstants.kWristSafePosition; // go back to normal stowaway
-            }
+            } 
 
         } else { // position level > 0
             if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
@@ -59,11 +56,9 @@ public class WristCommand extends CommandBase {
                 position = WristConstants.cubeOuttakeSetpoints[robotContainer.getPositionLevel() - 1]; // length = 3
 
             } else { // current element is NONE and target element is NONE
-                position = WristConstants.kWristSafePosition;
-
+                position = WristConstants.kWristSafePosition; // TODO: this else is redundant. if it gets to this point its still set to default position.
             }
         }
-
         wrist.setPosition(position);
     }
 
