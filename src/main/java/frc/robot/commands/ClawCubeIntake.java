@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ClawCubeIntake extends CommandBase {
@@ -37,6 +38,8 @@ public class ClawCubeIntake extends CommandBase {
     public void initialize() {
         robotContainer.setCurrentElement(GamePiece.NONE);
         robotContainer.setTargetElement(GamePiece.CUBE);
+        Lights lightstrip = robotContainer.lightstrip;
+        lightstrip.scheduler.setLightEffect(() -> {lightstrip.flashingRGB(194, 3, 252);}, 2, 15, .1);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
