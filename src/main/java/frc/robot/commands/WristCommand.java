@@ -13,11 +13,8 @@ import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.WristSubsystem;
 
 public class WristCommand extends CommandBase {
-    WristSubsystem wrist;
-    XboxController controller = RobotContainer.firstController;
-    RobotContainer robotContainer;
-    // these will be the heights of the slide at different points. The wrist angle
-    // will be set as Setpoints[bumperPos]
+    private WristSubsystem wrist;
+    private RobotContainer robotContainer;
 
     /** Creates a new WristCommand. */
     public WristCommand(WristSubsystem wrist, RobotContainer robotContainer) {
@@ -36,36 +33,36 @@ public class WristCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // wrist.setWrist(RobotContainer.firstController.getRightX() / 3);
+        // Uncomment below if controlling wrist with controller
+        // wrist.setWrist(RobotContainer.slideController.getRightX() / 3);
 
-        double position = WristConstants.kWristConeSetpoint;
-        String safe = "";
+        double position = WristConstants.kWristSafePosition; // default position is stowaway
 
         if (robotContainer.getPositionLevel() == 0) {
             if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                position = -110;
+                position = WristConstants.kConeSafePosition; // go back to cone stowaway
             } else {
-                position = WristConstants.kWristSafePosition;
-                safe = "safe";
+                position = WristConstants.kWristSafePosition; // go back to normal stowaway
             }
-        } else {
+
+        } else { // position level > 0
             if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                position = WristConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1];
+                position = WristConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1]; // length = 3
 
             } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1];
+                position = WristConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1]; // length = 1
 
             } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                position = WristConstants.kWristConeOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
+                position = WristConstants.coneOuttakeSetpoints[robotContainer.getPositionLevel() - 1]; // length = 3
 
             } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+                position = WristConstants.cubeOuttakeSetpoints[robotContainer.getPositionLevel() - 1]; // length = 3
 
-                position = WristConstants.kWristCubeOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
+            } else { // current element is NONE and target element is NONE
+                position = WristConstants.kWristSafePosition;
+
             }
         }
-
-        safe = "not";
-        SmartDashboard.putString("Safe", safe);
 
         wrist.setPosition(position);
     }

@@ -64,6 +64,7 @@ public final class Constants {
                 public static final double kBRTurnKp = 7;
                 public static final double kBRTurnKi = 12;
                 public static final double kBRTurnKd = 0.1;
+
                 /*
                  * public static final double kFLTurnKp = 7;
                  * public static final double kFLTurnKi = 5;
@@ -122,18 +123,15 @@ public final class Constants {
 
         }
 
-        public static final class ClawConstants {
-                public static final int kClawID = 3;
-                public static double[] ClawSetpoints = {
-                                0,
-                                0,
-                                0,
-                                0
-                };
+        public static final class IntakeConstants {
+                public static final int kIntakeID = 3;
                 public static final int kVoltageLimit = -1;
         }
 
         public static final class SlideConstants {
+                // ===============================================================
+                // SLIDE INTAKE SETPOINTS
+                // ===============================================================
 
                 public static final double[] coneIntakeSetpoints = {
                                 20.539, // 0 - floor intake (upright)
@@ -142,25 +140,33 @@ public final class Constants {
                 };
 
                 public static final double[] cubeIntakeSetpoints = {
-                                0, // 1 - floor intake
-                                20 // 2 - human player intake
+                                0 // 0 - floor intake
                 };
 
-                public static final double[] cubeOuttakeSetpoint = {
+                // ===============================================================
+                // SLIDE OUTTAKE SETPOINTS
+                // ===============================================================
+
+                public static final double[] cubeOuttakeSetpoints = {
                                 0, // 0 - ground level (hybrid)
                                 25.267, // 1 - first platform
                                 46.1483 // 2 - second platform (highest)
                 };
 
-                public static final double[] coneOuttakeSetpoint = {
+                public static final double[] coneOuttakeSetpoints = {
                                 16.1876, // 0 - ground level (hybrid)
                                 53.9773, // 1 - first pole
                                 59.3297 // 2 - second pole (highest)
                 };
 
+                // ===============================================================
+
                 public static final double kP = 0.25;
                 public static final double kI = 0.0;
                 public static final double kD = 0.015;
+
+                public static final double maxVelocity = 50; // inches per second
+                public static final double maxAcceleration = 30; // inches per second squared
 
                 public static final double maxEncoderTicks = 207000;
 
@@ -189,12 +195,16 @@ public final class Constants {
         }
 
         public static final class WristConstants {
-                public static final int kWristIDLeft = 0, kWristIDRight = 1, kWristConeSetpoint = -1,
-                                kWristSafePosition = -135;
+                public static final int kWristIDLeft = 0, kWristIDRight = 1;
+                public static final int kEncoderID = 5;
+
+                public static final double kWristSafePosition = -135, kConeSafePosition = -110;
 
                 public static final double kEncoderOffset = 0.44;
 
-                // OUTTAKE SETPOINTS -------------------------------------
+                // ===============================================================
+                // WRIST INTAKE SETPOINTS
+                // ===============================================================
 
                 public static final double[] coneIntakeSetpoints = {
                                 59.9327, // 0 - floor intake (upright)
@@ -203,27 +213,33 @@ public final class Constants {
                 };
 
                 public static final double[] cubeIntakeSetpoints = {
-                                -12.1624, // 1 - floor intake
-                                0 // 2 - human player intake
+                                -12.1624 // 0 - floor intake
                 };
 
-                public static final double[] kWristCubeOuttakeSetpoint = {
+                // ===============================================================
+                // WRIST OUTTAKE SETPOINTS
+                // ===============================================================
+
+                public static final double[] cubeOuttakeSetpoints = {
                                 -90, // 0 - ground level (hybrid)
                                 -79.666, // 1 - first platform
                                 -110, // 2 - second platform (highest)
                 };
 
-                public static final double[] kWristConeOuttakeSetpoint = {
-                                27.1897, // 0 - ground level (hybrid)
+                public static final double[] coneOuttakeSetpoints = {
+                                0, // 0 - ground level (hybrid)
                                 49.9116, // 1 - first pole
                                 6.9903, // 2 - second pole (highest)
                 };
+
+                // ===============================================================
 
                 public static final double kP = 0.02;
                 public static final double kI = 0.0;
                 public static final double kD = 0;
 
-                // INTAKE SETPOINTS -------------------------------------
+                public static final double maxVelocity = 180; // degrees per second
+                public static final double maxAcceleration = 180; // degrees per second squared
 
                 public static final double kGearRatio = 128;
 

@@ -15,6 +15,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -23,19 +25,24 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.SlideConstants;
 
 public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX rightSlide, leftSlide;
     private DigitalInput bottomLimitSwitch;
     private DigitalInput topLimitSwitch;
-    public PIDController controller = new PIDController(.1, 0, 0);
+    private RobotContainer robotContainer;
+    // public PIDController controller;
 
-    ShuffleboardTab slideTab = Shuffleboard.getTab("Slide");
+    public ProfiledPIDController controller;
 
     // ====================================================================
     // PID EDITING
     // ====================================================================
+
+    ShuffleboardTab slideTab = Shuffleboard.getTab("Slide");
+
     GenericEntry p = slideTab.add("Slide P", SlideConstants.kP)
             .withWidget(BuiltInWidgets.kTextView)
             .withProperties(Map.of("min", 0, "max", 10))
@@ -53,31 +60,74 @@ public class SlideSubsystem extends SubsystemBase {
             .withProperties(Map.of("min", 0, "max", 10))
             .withPosition(2, 0)
             .getEntry();
+
     // ====================================================================
 
     /** Creates a new SlideSubsystem. */
-    public SlideSubsystem() {
+    public SlideSubsystem(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
+
+        // ====================================================================
+        // Left Slide Motor
+        // ====================================================================
+
         leftSlide = new WPI_TalonFX(Constants.SlideConstants.kLSlideID);
         leftSlide.setNeutralMode(NeutralMode.Brake);
         leftSlide.setSelectedSensorPosition(0);
-        leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 175, 0.75));
-        leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 175, 0.75));
+        leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+        // Current limits
+        // leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
+        // 40, 175, 0.75));
+        // leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
+        // 40, 175, 0.75));
+
+        // ====================================================================
+        // Right Slide Motor
+        // ====================================================================
 
         rightSlide = new WPI_TalonFX(Constants.SlideConstants.kRSlideID);
         rightSlide.setNeutralMode(NeutralMode.Brake);
         rightSlide.setSelectedSensorPosition(0);
-        leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 175, 0.75));
-        leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 175, 0.75));
+
+        // Right slide current limits
+        // rightSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
+        // 40, 175, 0.75));
+        // rightSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
+        // 40, 175, 0.75));
 
         rightSlide.setInverted(true);
 
-        leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        // ====================================================================
+        // Limit Switches
+        // ====================================================================
 
         bottomLimitSwitch = new DigitalInput(Constants.SlideConstants.kBottomLimitSwitchId);
         topLimitSwitch = new DigitalInput(Constants.SlideConstants.kTopLimitSwitchId);
 
-        // controller.setTolerance(0);
+        // ====================================================================
+        // PID
+        // ====================================================================
+
+        // PID Controller
+        // controller = new PIDController(
+        // SlideConstants.kP, SlideConstants.kI, SlideConstants.kD);
+
+        // Profiled PID Controller
+        controller = new ProfiledPIDController(
+                SlideConstants.kP,
+                SlideConstants.kI,
+                SlideConstants.kD,
+                new TrapezoidProfile.Constraints(
+                        SlideConstants.maxVelocity,
+                        SlideConstants.maxAcceleration));
+
+        // ====================================================================
     }
+
+    // ====================================================================
+    // ENCODERS
+    // ====================================================================
 
     public double getRightRawEncoder() {
         return rightSlide.getSelectedSensorPosition();
@@ -91,29 +141,37 @@ public class SlideSubsystem extends SubsystemBase {
         return rightSlide.getSelectedSensorVelocity();
     }
 
-    public void resetSlideEncoders() {
-        rightSlide.setSelectedSensorPosition(0);
-        leftSlide.setSelectedSensorPosition(0);
+    public void resetSlideEncoders(double rawUnits) {
+        rightSlide.setSelectedSensorPosition(rawUnits);
+        leftSlide.setSelectedSensorPosition(rawUnits);
     }
+
+    // ====================================================================
+    // LIMIT SWITCHES
+    // ====================================================================
 
     public boolean getBottomLimitSwitch() {
         if (!bottomLimitSwitch.get()) {
-            resetSlideEncoders();
+            resetSlideEncoders(0);
         }
         return !bottomLimitSwitch.get();
     }
 
     public boolean getTopLimitSwitch() {
-        // if (!topLimitSwitch.get()) {
-        // leftSlide.setSelectedSensorPosition(277000);
-        // rightSlide.setSelectedSensorPosition(277000);
-        // }
-        return !topLimitSwitch.get();
+        return !topLimitSwitch.get(); // TODO: check that this does, in fact, return true when limit switch is pressed
     }
 
-    public double getDriveRate() {
-        return leftSlide.getSelectedSensorVelocity();
+    // ====================================================================
+    // UNIT CONVERSIONS
+    // ====================================================================
+
+    public double getSlideHeightInches() {
+        return SlideConstants.rawUnitsToInches(getRightRawEncoder());
     }
+
+    // ====================================================================
+    // SLIDE MOVEMENT
+    // ====================================================================
 
     public void setSlide(double percentOutput) {
         if (getBottomLimitSwitch()) {
@@ -126,20 +184,9 @@ public class SlideSubsystem extends SubsystemBase {
         rightSlide.set(ControlMode.PercentOutput, percentOutput);
     }
 
-    public void setSlidePIDEncoder(double encoderSetpoint) {
-        double output = controller.calculate(getRightRawEncoder(), encoderSetpoint);
-        setSlide(output);
-    }
-
-    public void setSlidePIDInches(double inchesSetpoint) {
-        double output = getPIDOutput(inchesSetpoint);
-        setSlide(output);
-    }
-
-    public double getPIDOutput(double inchesSetpoint) {
-        return MathUtil.clamp(
-                controller.calculate(SlideConstants.rawUnitsToInches(getRightRawEncoder()), inchesSetpoint), -0.4, 0.4);
-    }
+    // ====================================================================
+    // PID
+    // ====================================================================
 
     public void updatePID(double kP, double kI, double kD) {
         controller.setP(kP);
@@ -147,36 +194,65 @@ public class SlideSubsystem extends SubsystemBase {
         controller.setD(kD);
     }
 
-    public void setPosition(double inchesSetpoint) {
-        setSlidePIDInches(inchesSetpoint);
+    public double getPIDOutput(double inchesSetpoint) {
+        // double output = MathUtil.clamp(
+        // controller.calculate(getSlideHeightInches(),
+        // inchesSetpoint), -0.4, 0.4);
+
+        double output = controller.calculate(
+                getSlideHeightInches(),
+                inchesSetpoint);
+
+        return output;
     }
 
-    public double getVelocity() {
-        return leftSlide.getSelectedSensorVelocity();
+    public void setSlidePIDInches(double inchesSetpoint) {
+        double output = getPIDOutput(inchesSetpoint);
+
+        setSlide(output);
     }
 
     public double getPositionError() {
         return controller.getPositionError();
     }
 
-    public double getSlideOutput() {
-        return 0; // TODO
-    }
+    // ====================================================================
 
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Slide Top Limit Switch", getTopLimitSwitch());
         SmartDashboard.putBoolean("Slide Bottom Limit Switch", getBottomLimitSwitch());
         SmartDashboard.putNumber("Right Slide Encoder", getRightRawEncoder());
-        SmartDashboard.putNumber("Right Slide Inches", SlideConstants.rawUnitsToInches(getRightRawEncoder()));
+        SmartDashboard.putNumber("Right Slide Inches", getSlideHeightInches());
         SmartDashboard.putNumber("Slide Error", getPositionError());
 
         SmartDashboard.putNumber("Slide Stator", rightSlide.getStatorCurrent());
-        SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint());
+        SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint().position); // Profiled PID Controller
+        // SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint()); // PID
+        // Controller
 
         updatePID(
                 p.getDouble(SlideConstants.kP),
                 i.getDouble(SlideConstants.kI),
                 d.getDouble(SlideConstants.kD));
+
+        // Update drivetrain speed depending on height of slide - prevents tipping
+        if (getSlideHeightInches() < 15) {
+            robotContainer.setSpeedMultiplier(1);
+            robotContainer.setTurnMultiplier(0.7);
+
+        } else if (getSlideHeightInches() >= 15 && getSlideHeightInches() < 30) {
+            robotContainer.setSpeedMultiplier(0.7);
+            robotContainer.setTurnMultiplier(0.5);
+
+        } else if (getSlideHeightInches() >= 30 && getSlideHeightInches() < 45) {
+            robotContainer.setSpeedMultiplier(0.5);
+            robotContainer.setSpeedMultiplier(0.4);
+
+        } else { // getSlideHeightInches() >= 45
+            robotContainer.setSpeedMultiplier(0.3);
+            robotContainer.setSpeedMultiplier(0.3);
+
+        }
     }
 }

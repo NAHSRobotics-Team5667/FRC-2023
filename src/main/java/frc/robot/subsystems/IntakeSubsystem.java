@@ -25,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     /** Creates a new IntakeSubsystem. */
     public IntakeSubsystem() {
-        intake = new WPI_TalonFX(Constants.ClawConstants.kClawID);
+        intake = new WPI_TalonFX(Constants.IntakeConstants.kIntakeID);
         intake.setNeutralMode(NeutralMode.Brake);
 
         // m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);

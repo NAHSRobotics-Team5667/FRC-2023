@@ -12,6 +12,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -24,20 +27,23 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
-
-    // public int bumperPos = 0;
     public WPI_TalonFX wristMotorFirst, wristMotorSecond;
-    private PIDController wristPID = new PIDController(.02, 0, 0);
-    private DutyCycleEncoder encoder;
-    private double angleOffset = 0;
-    private int counter = 0;
-    private RobotContainer robotContainer;
+    // private PIDController wristPID;
+    private ProfiledPIDController wristPID;
 
-    ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist");
+    private DutyCycleEncoder encoder;
+    private LinearFilter encoderFilter; // TODO: use only if encoder values are still not stable enough
+
+    private double angleOffset = 0;
+    private int counter = 0; // use if absolute encoder still fluctuates too much
+    private RobotContainer robotContainer;
 
     // ====================================================================
     // PID EDITING
     // ====================================================================
+
+    ShuffleboardTab wristTab = Shuffleboard.getTab("Wrist");
+
     GenericEntry p = wristTab.add("Wrist P", WristConstants.kP)
             .withWidget(BuiltInWidgets.kTextView)
             .withProperties(Map.of("min", 0, "max", 10))
@@ -55,33 +61,69 @@ public class WristSubsystem extends SubsystemBase {
             .withProperties(Map.of("min", 0, "max", 10))
             .withPosition(2, 0)
             .getEntry();
+
+    // ====================================================================
+    // CONSTRUCTOR
     // ====================================================================
 
-    /** Creates a new WristSubsystem. */
     public WristSubsystem(RobotContainer robotContainer) {
-        encoder = new DutyCycleEncoder(5);
-        wristPID.setTolerance(2.5);
+        encoder = new DutyCycleEncoder(WristConstants.kEncoderID);
+        encoderFilter = LinearFilter.movingAverage(5); // takes moving average over last 5 samples
+
+        this.robotContainer = robotContainer;
+
+        // ====================================================================
+        // PID
+        // ====================================================================
+
+        // reg PID
+        // wristPID = new PIDController(
+        // WristConstants.kP,
+        // WristConstants.kI,
+        // WristConstants.kD);
+
+        // Profiled PID
+        wristPID = new ProfiledPIDController(
+                WristConstants.kP,
+                WristConstants.kI,
+                WristConstants.kD,
+                new TrapezoidProfile.Constraints(
+                        WristConstants.maxVelocity,
+                        WristConstants.maxAcceleration));
+
+        // ====================================================================
+        // MOTOR SETUP
+        // ====================================================================
 
         wristMotorFirst = new WPI_TalonFX(Constants.WristConstants.kWristIDLeft);
         wristMotorSecond = new WPI_TalonFX(Constants.WristConstants.kWristIDRight);
 
         wristMotorFirst.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
         wristMotorFirst.setSelectedSensorPosition(0);
+        wristMotorFirst.setInverted(true);
 
         wristMotorSecond.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
         wristMotorSecond.setSelectedSensorPosition(0);
 
-        wristMotorFirst.setInverted(true);
-
-        this.robotContainer = robotContainer;
-
-        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        // ====================================================================
     }
 
+    // ====================================================================
+    // WRIST MOVEMENT
+    // ====================================================================
+
     public void setWrist(double percentOutput) {
-        if (getAngleDegrees() < -125) {
+        // Uses motor values
+        // if (getAngleDegreesMotor() <= WristConstants.kWristSafePosition) {
+        // percentOutput = Math.max(percentOutput, 0);
+        // } else if (getAngleDegreesMotor() >= 90) {
+        // percentOutput = Math.min(percentOutput, 0);
+        // }
+
+        // Uses abs encoder values
+        if (getAngleDegreesAbs() <= WristConstants.kWristSafePosition) {
             percentOutput = Math.max(percentOutput, 0);
-        } else if (getAngleDegrees() > 90) {
+        } else if (getAngleDegreesAbs() >= 90) {
             percentOutput = Math.min(percentOutput, 0);
         }
 
@@ -89,22 +131,43 @@ public class WristSubsystem extends SubsystemBase {
         wristMotorSecond.set(ControlMode.PercentOutput, percentOutput);
     }
 
-    public double getEncoder() {
-        return encoder.getAbsolutePosition();
-    }
-
     public void setPosition(double position) {
-        double output = MathUtil.clamp(wristPID.calculate(getAngleDegrees(), position), -0.4, 0.4);
+        // Uses motor for measurement
+        // double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesMotor(),
+        // position), -0.4, 0.4);
+
+        // double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesAbs(),
+        // position), -0.4, 0.4);
+
+        // Uses abs encoder for measurement
+        double output = wristPID.calculate(getAngleDegreesAbs(), position);
+
         setWrist(output);
     }
 
-    // public int getBumperPos() {
-    // return bumperPos;
-    // }
+    // ====================================================================
+    // PID
+    // ====================================================================
 
-    // public void setBumperPos(int bumperPos) {
-    // this.bumperPos = bumperPos;
-    // }
+    public void updatePID(double kP, double kI, double kD) {
+        wristPID.setP(kP);
+        wristPID.setI(kI);
+        wristPID.setD(kD);
+    }
+
+    // ====================================================================
+    // GETTER METHODS
+    // ====================================================================
+
+    public double getPidError() {
+        return wristPID.getPositionError();
+    }
+
+    public double getEncoder() {
+        return (double) Math.round(encoder.getAbsolutePosition() * 1000d) / 1000d; // copied from stack overflow -
+                                                                                   // rounds to 3 decimal places
+        // return encoder.getAbsolutePosition();
+    }
 
     public double getPosition() {
         return (wristMotorFirst.getSelectedSensorPosition() + wristMotorSecond.getSelectedSensorPosition()) / 2;
@@ -114,66 +177,51 @@ public class WristSubsystem extends SubsystemBase {
         return wristMotorFirst.getSelectedSensorVelocity();
     }
 
-    public double pidError() {
-        return wristPID.getPositionError();
-    }
-
-    public void updatePID(double kP, double kI, double kD) {
-        wristPID.setP(kP);
-        wristPID.setI(kI);
-        wristPID.setD(kD);
-    }
-
-    // make these dependent on bumperPos, array of setPoints
-    public void coneIntakeAngled() { // TODO: this method doesnt do shit
-        @SuppressWarnings("unused")
-        double currentPosition = getPosition();
-        // double outputWrist =
-
-        // wristPID.calculate(currentPosition,
-        // Constants.WristConstants.kWristConeIntakeSetpoint);
-        // double wristFeedForward = wristFeedForward.calculate(getDriveRate());
-        // wristMotorFirst.setVoltage(outputWrist + wristFeedForward);
-        // wristMotorSecond.setVoltage(outputWrist + wristFeedForward);
-
-        // Wrist Angled for Cone intake
-    }
-
-    public double getAngleDegrees() {
+    public double getAngleDegreesMotor() {
         return WristConstants.convertTicksToRadians(wristMotorFirst.getSelectedSensorPosition(), angleOffset);
     }
 
+    public double getAngleDegreesAbs() {
+        return (getEncoder() * 360) + angleOffset;
+    }
+
+    // ====================================================================
+
     @Override
     public void periodic() {
-        if (counter <= 50) {
-            counter++;
-        }
+        // if (counter <= 50) {
+        // counter++;
+        // }
 
-        if (counter % 50 == 0) {
-            angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
-        }
+        // if (counter % 50 == 0) { // updates the encoder offset every second
+        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        // }
 
-        SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint());
+        // UNCOMMENT ABOVE IF ENCODER STILL FLUCTUATES TOO MUCH
+
+        // SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint()); // reg
+        // PID
+
+        // Profiled PID
+        SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint().position);
 
         SmartDashboard.putNumber("Position Level", robotContainer.getPositionLevel());
         SmartDashboard.putNumber("Wrist Encoder", getEncoder());
-        SmartDashboard.putNumber("Wrist Angle", getAngleDegrees());
-        SmartDashboard.putNumber("Wrist Error", pidError());
+        SmartDashboard.putNumber("Wrist Angle Motor", getAngleDegreesMotor());
+        SmartDashboard.putNumber("Wrist Angle Encoder", getAngleDegreesAbs());
+        SmartDashboard.putNumber("Wrist Error", getPidError());
         SmartDashboard.putNumber("Angle Offset", angleOffset);
 
         SmartDashboard.putString("Target Element", robotContainer.getTargetElement().toString());
         SmartDashboard.putString("Current Element", robotContainer.getCurrentElement().toString());
 
-        robotContainer.updatePositionLevel(
-                RobotContainer.firstController.getLeftBumperPressed(),
-                RobotContainer.firstController.getRightBumperPressed());
+        robotContainer.updatePositionLevel( // update position level based on bumpers
+                RobotContainer.slideController.getLeftBumperPressed(),
+                RobotContainer.slideController.getRightBumperPressed());
 
         updatePID(
                 p.getDouble(WristConstants.kP),
                 i.getDouble(WristConstants.kI),
                 d.getDouble(WristConstants.kD));
     }
-
-    public void coneOuttakeAngled() {
-    } // TODO: this is called in the command but doesnt do anything...
 }

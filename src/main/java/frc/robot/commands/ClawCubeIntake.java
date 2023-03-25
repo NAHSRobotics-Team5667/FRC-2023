@@ -12,7 +12,7 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ClawCubeIntake extends CommandBase {
-    // TODO: this is a copy of ClawConeIntake, with minor adjustments. It should be
+    // this is a copy of ClawConeIntake, with minor adjustments. It should be
     // refactored to a single command with a piece type parameter.
     public IntakeSubsystem clawSubsystem;
 
@@ -39,7 +39,9 @@ public class ClawCubeIntake extends CommandBase {
         robotContainer.setCurrentElement(GamePiece.NONE);
         robotContainer.setTargetElement(GamePiece.CUBE);
         Lights lightstrip = robotContainer.lightstrip;
-        lightstrip.scheduler.setLightEffect(() -> {lightstrip.flashingRGB(194, 3, 252);}, 2, 15, .1);
+        lightstrip.scheduler.setLightEffect(() -> {
+            lightstrip.flashingRGB(194, 3, 252);
+        }, 2, 15, .1);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

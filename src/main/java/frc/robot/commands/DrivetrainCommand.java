@@ -13,17 +13,9 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** The DriveTrainCommand class */
 public class DrivetrainCommand extends CommandBase {
-    public DrivetrainSubsystem drive;
-    public double speedMultiplier = .9;
-    // TODO: put this and the one in RobotContainer in Constants. I would also put
-    // the slowmode multiplier in Constants.
-    // OK
-
-    RobotContainer robotContainer;
-    public boolean fieldOriented = true, slowmode = false; // TODO: maybe put these in DrivetrainSubsystem?
-    // No, they are ok here, this should be edited in command as it affects how fast
-    // it drives, and how it drives, its easier to translate them in the drive
-    // method
+    private DrivetrainSubsystem drive;
+    private RobotContainer robotContainer;
+    private boolean fieldOriented = true;
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // haha changing slewratelimiters go brrrrr
@@ -33,9 +25,11 @@ public class DrivetrainCommand extends CommandBase {
 
     /** Creates a new DrivetrainCommand. */
     public DrivetrainCommand(DrivetrainSubsystem drive, RobotContainer robotContainer) {
-        addRequirements(drive);
+        fieldOriented = true; // set field oriented to true by default
         this.robotContainer = robotContainer;
         this.drive = drive;
+
+        addRequirements(drive);
     }
 
     // Called when the command is initially scheduled.
@@ -67,23 +61,12 @@ public class DrivetrainCommand extends CommandBase {
      * the drive subsystem
      */
     private void joystickDrive() {
-        if (RobotContainer.firstController.getPOV() == 180) {
+        if (RobotContainer.driveController.getRightBumperPressed()) {
             fieldOriented = !fieldOriented;
         }
 
-        if (RobotContainer.secondController.getLeftStickButtonPressed()) {
-            slowmode = !slowmode;
-        }
-        speedMultiplier = slowmode ? .5 : .5;
-
-        if (RobotContainer.secondController.getRightStickButton()) {
+        if (RobotContainer.driveController.getRightStickButton()) {
             this.drive.resetGyro();
-        }
-
-        if (robotContainer.getPositionLevel() >= 2) {
-            speedMultiplier = 0.2;
-        } else {
-            speedMultiplier = 0.5;
         }
 
         // Get the x speed. We are inverting this because Xbox controllers return
@@ -91,11 +74,12 @@ public class DrivetrainCommand extends CommandBase {
 
         double xSpeed = xspeedLimiter
                 .calculate(MathUtil
-                        .applyDeadband(-RobotContainer.secondController.getLeftX() * robotContainer.speedMultiplier,
+                        .applyDeadband(-RobotContainer.driveController.getLeftX() * robotContainer.getSpeedMultiplier(),
                                 0.1))
                 * DrivetrainSubsystem.kMaxSpeed;
 
-        xSpeed = MathUtil.applyDeadband(-RobotContainer.secondController.getLeftX() * robotContainer.speedMultiplier,
+        xSpeed = MathUtil.applyDeadband(
+                -RobotContainer.driveController.getLeftX() * robotContainer.getSpeedMultiplier(),
                 0.1)
                 * DrivetrainSubsystem.kMaxSpeed;
 
@@ -105,11 +89,12 @@ public class DrivetrainCommand extends CommandBase {
 
         double ySpeed = yspeedLimiter
                 .calculate(MathUtil
-                        .applyDeadband(-RobotContainer.secondController.getLeftY() * robotContainer.speedMultiplier,
+                        .applyDeadband(-RobotContainer.driveController.getLeftY() * robotContainer.getSpeedMultiplier(),
                                 0.15))
                 * DrivetrainSubsystem.kMaxSpeed;
 
-        ySpeed = MathUtil.applyDeadband(-RobotContainer.secondController.getLeftY() * robotContainer.speedMultiplier,
+        ySpeed = MathUtil.applyDeadband(
+                -RobotContainer.driveController.getLeftY() * robotContainer.getSpeedMultiplier(),
                 0.15)
                 * DrivetrainSubsystem.kMaxSpeed;
 
@@ -119,19 +104,21 @@ public class DrivetrainCommand extends CommandBase {
         // the right by default.
 
         double rot = rotLimiter
-                .calculate(MathUtil.applyDeadband(RobotContainer.secondController.getRightX() * 0.4, 0.15))
+                .calculate(MathUtil.applyDeadband(
+                        RobotContainer.driveController.getRightX() * robotContainer.getTurnMultiplier(), 0.15))
                 * DrivetrainSubsystem.kMaxAngularSpeed;
 
-        rot = MathUtil.applyDeadband(RobotContainer.secondController.getRightX(), 0.15)
+        rot = MathUtil.applyDeadband(
+                RobotContainer.driveController.getRightX() * robotContainer.getTurnMultiplier(), 0.15)
                 * DrivetrainSubsystem.kMaxAngularSpeed;
 
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);
         SmartDashboard.putNumber("rot", rot);
 
-        SmartDashboard.putNumber("Left Y", RobotContainer.secondController.getLeftY());
-        SmartDashboard.putNumber("Left X", RobotContainer.secondController.getLeftX());
-        SmartDashboard.putNumber("Right X", RobotContainer.secondController.getRightX());
+        SmartDashboard.putNumber("Left Y", RobotContainer.driveController.getLeftY());
+        SmartDashboard.putNumber("Left X", RobotContainer.driveController.getLeftX());
+        SmartDashboard.putNumber("Right X", RobotContainer.driveController.getRightX());
 
         this.drive.drive(xSpeed, ySpeed, rot, fieldOriented);
     }

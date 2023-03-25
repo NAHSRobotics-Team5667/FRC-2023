@@ -56,8 +56,8 @@ import frc.robot.subsystems.LimelightSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    public static final XboxController firstController = new XboxController(0), // creates intake/outtake controller
-            secondController = new XboxController(1); // creates drive controller
+    public static final XboxController slideController = new XboxController(0), // creates intake/outtake controller
+            driveController = new XboxController(1); // creates drive controller
 
     public SendableChooser<String> autoChooser = new SendableChooser<String>(); // decides which auto we are using
 
@@ -77,7 +77,9 @@ public class RobotContainer {
 
     public SwerveAutoBuilder autoBuilder; // builds on-the-fly and autonomous paths
     public boolean intakeFinish = false;
-    public double speedMultiplier = .5; // determines how fast robot goes
+
+    private double speedMultiplier; // determines how fast robot goes
+    private double turnMultiplier;
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
     PathPlannerTrajectory HSC, CSC, BSC; // autonomous trajectories, needs inital pose set to path initial pose
@@ -90,13 +92,17 @@ public class RobotContainer {
     public RobotContainer() {
         drive = new DrivetrainSubsystem();
         drive.setDefaultCommand(new DrivetrainCommand(drive, this));
+
+        speedMultiplier = 1;
+        turnMultiplier = 0.7;
+
         limelight = new LimelightSubsystem(); // instantiate commands
 
         poseEstimate = new PoseEstimator(drive, this);
 
         wrist = new WristSubsystem(this);
         intake = new IntakeSubsystem();
-        slide = new SlideSubsystem();
+        slide = new SlideSubsystem(this);
         lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
         intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to subsystems
@@ -211,19 +217,44 @@ public class RobotContainer {
     public void updatePositionLevel(boolean isLeftBumperPressed, boolean isRightBumperPressed) {
         int maxPositionLevel = 0;
 
+        // set max position level
         if (getTargetElement().equals(GamePiece.CONE)) {
             maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
         } else if (getTargetElement().equals(GamePiece.CUBE)) {
             maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
         } else if (!getCurrentElement().equals(GamePiece.NONE)) {
-            maxPositionLevel = 3; // baby mode enabled to disable, set to 3
+            maxPositionLevel = 3;
+        } else { // target element is NONE and current element is NONE
+            maxPositionLevel = 0; // default max position level is 0 - don't want to move anything
         }
 
         if (getPositionLevel() < maxPositionLevel && isRightBumperPressed) {
             positionLevel++;
         } else if (getPositionLevel() > 0 && isLeftBumperPressed) {
             positionLevel--;
+        } else { // 0 <= position level <= maxPositionLevel and neither bumper is pressed
+            // do nothing
         }
+    }
+
+    // ===================================================================
+    // SPEED MULTIPLIERS
+    // ===================================================================
+
+    public double getSpeedMultiplier() {
+        return speedMultiplier;
+    }
+
+    public double getTurnMultiplier() {
+        return turnMultiplier;
+    }
+
+    public void setSpeedMultiplier(double speedMultiplier) {
+        this.speedMultiplier = speedMultiplier;
+    }
+
+    public void setTurnMultiplier(double turnMultiplier) {
+        this.turnMultiplier = turnMultiplier;
     }
 
     // ===================================================================
@@ -243,54 +274,30 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         @SuppressWarnings("unused")
-        final Trigger LeftBumper = new JoystickButton(firstController, XboxController.Button.kLeftBumper.value),
-                RightBumper = new JoystickButton(firstController, XboxController.Button.kRightBumper.value),
-                yButton = new JoystickButton(firstController, XboxController.Button.kY.value),
-                bButton = new JoystickButton(firstController, XboxController.Button.kB.value),
-                aButton = new JoystickButton(firstController, XboxController.Button.kA.value),
-                xButton = new JoystickButton(firstController, XboxController.Button.kX.value),
-                ySecondButton = new JoystickButton(secondController, XboxController.Button.kY.value),
-                bSecondButton = new JoystickButton(secondController, XboxController.Button.kB.value),
-                aSecondButton = new JoystickButton(secondController, XboxController.Button.kA.value),
-                xSecondButton = new JoystickButton(secondController, XboxController.Button.kX.value);// makes all
-                                                                                                     // triggers
+        final Trigger LeftBumper = new JoystickButton(slideController, XboxController.Button.kLeftBumper.value),
+                RightBumper = new JoystickButton(slideController, XboxController.Button.kRightBumper.value),
+                yButton = new JoystickButton(slideController, XboxController.Button.kY.value),
+                bButton = new JoystickButton(slideController, XboxController.Button.kB.value),
+                aButton = new JoystickButton(slideController, XboxController.Button.kA.value),
+                xButton = new JoystickButton(slideController, XboxController.Button.kX.value),
+                ySecondButton = new JoystickButton(driveController, XboxController.Button.kY.value),
+                bSecondButton = new JoystickButton(driveController, XboxController.Button.kB.value),
+                aSecondButton = new JoystickButton(driveController, XboxController.Button.kA.value),
+                xSecondButton = new JoystickButton(driveController, XboxController.Button.kX.value);// makes all
+                                                                                                    // triggers
 
-        aButton.and(xButton).whileTrue(
+        aButton.and(xButton).whileTrue( // intake cone
                 new ClawConeIntake(intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
-        aButton.and(bSecondButton).whileTrue(
+        aButton.and(bSecondButton).whileTrue( // outtake cone
                 new ClawConeOuttake(intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
-        bButton.and(bSecondButton).whileTrue(
+        bButton.and(bSecondButton).whileTrue( // outtake cube
                 new ClawCubeOuttake(intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
-        bButton.and(yButton).whileTrue(
+        bButton.and(yButton).whileTrue( // intake cube
                 new ClawCubeIntake(intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
-        // yButton.onTrue(
-        // new ClawConeIntake(intake, wrist, true, this)
-        // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
-        // /*
-        // * .andThen(new WristConeIntake(m_wrist,
-        // * intakeFinish, claw,
-        // * this)).until(doneIntakeOuttake(
-        // * intakeOrOuttake.INTAKE))
-        // */);
-        // xButton.onTrue(
-        // new ClawCubeIntake(intake, wrist, true, this)
-        // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE))
-        // /*
-        // * .andThen(new WristCubeIntake(m_wrist, this))
-        // * .until(doneIntakeOuttake(intakeOrOuttake.INTAKE))
-        // */);
-        // bButton.onTrue(
-        // new ClawConeOuttake(intake, this)
-        // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE))
-        // /*
-        // * .andThen(new WristConeOuttake(m_wrist,
-        // * this)).until(doneIntakeOuttake(
-        // * intakeOrOuttake.OUTTAKE))
-        // */);
 
     }
 
@@ -388,8 +395,8 @@ public class RobotContainer {
                         break;
                 }
 
-                return (Math.abs((MathUtil.applyDeadband(RobotContainer.firstController.getLeftX(), 0.1))) > 0) ||
-                        (Math.abs((MathUtil.applyDeadband(RobotContainer.firstController.getLeftY(), 0.1))) > 0) ||
+                return (Math.abs((MathUtil.applyDeadband(RobotContainer.driveController.getLeftX(), 0.1))) > 0) ||
+                        (Math.abs((MathUtil.applyDeadband(RobotContainer.driveController.getLeftY(), 0.1))) > 0) ||
                         extra; // extra returns true if distance to goal is small enough
                 // returns true if sticks are moved as well
             }

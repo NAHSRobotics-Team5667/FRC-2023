@@ -13,9 +13,8 @@ import frc.robot.subsystems.SlideSubsystem;
 
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
-    public int bumperPos = 0;
     RobotContainer robotContainer;
-    private boolean hasSpool, hasZeroed;
+    private boolean hasTension, hasZeroed;
 
     /** Creates a new SlideCommand. */
     public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer) {
@@ -23,7 +22,7 @@ public class SlideCommand extends CommandBase {
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
 
-        hasSpool = !slide.getBottomLimitSwitch();
+        hasTension = false;
         hasZeroed = false;
 
         addRequirements(slide);
@@ -32,73 +31,78 @@ public class SlideCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        hasTension = false; // initialize boolean checkers just in case
+        hasZeroed = false;
+
         slide.setSlide(0);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // slide.setSlide(robotContainer.firstController.getLeftY() / 3);
+        // Uncomment the following to control slide with stick
+        // slide.setSlide(robotContainer.slideController.getLeftY() / 3);
 
-        robotContainer.speedMultiplier = (bumperPos > 0) ? .3 : .7;
-
-        double position = 0;
+        double position = 0; // initialize variable to hold position of slide
 
         boolean bottomLimitSwitch = slide.getBottomLimitSwitch();
-        if (!hasZeroed) {
-            if (!hasSpool && bottomLimitSwitch) {
-                slide.setSlide(0.1);
-            } else if (!hasSpool && !bottomLimitSwitch) {
-                hasSpool = true;
-            } else if (hasSpool && !bottomLimitSwitch) {
-                slide.setSlide(-0.1);
-            } else if (hasSpool && bottomLimitSwitch) {
-                hasZeroed = true; // TODO: should we add a setSlide to zero here?
+
+        if (!hasZeroed) { // slide has not zeroed
+            if (!hasTension) { // string may not have tension
+                if (bottomLimitSwitch) { // bottom limit switch is hit
+                    slide.setSlide(0.1); // go up slowly
+
+                } else { // bottom limit switch is not hit
+                    hasTension = true; // string has tension
+
+                }
+            } else { // string has tension
+                if (!bottomLimitSwitch) { // bottom limit switch is not hit
+                    slide.setSlide(-0.1); // go down slowly
+
+                } else { // bottom limit switch is hit
+                    hasZeroed = true; // slide has completed zeroing procedure
+                    slide.setSlide(0); // stop slide in case motors have not updated
+
+                }
             }
 
         } else {
             int positionLevel = robotContainer.getPositionLevel();
 
             if (positionLevel == 0) {
-                position = 0;
-                slide.setSlidePIDInches(position);
-                if (hasSpool && !slide.getBottomLimitSwitch()) {
-                    slide.setSlide(-0.3);
+                position = -1; // set slide to go to -1 inches - eliminates any error
 
-                }
-
-                // if (!slide.getBottomLimitSwitch()) {
-                // hasZeroed = false;
-                // }
-            } else {
+            } else { // position level is greater than 0
                 if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneIntakeSetpoints[positionLevel - 1];
+                    position = SlideConstants.coneIntakeSetpoints[positionLevel - 1]; // length = 3
+
                 } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeIntakeSetpoints[positionLevel - 1];
+                    position = SlideConstants.cubeIntakeSetpoints[positionLevel - 1]; // length = 1
+
                 } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneOuttakeSetpoint[positionLevel - 1];
+                    position = SlideConstants.coneOuttakeSetpoints[positionLevel - 1]; // length = 3
+
                 } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeOuttakeSetpoint[positionLevel - 1];
+                    position = SlideConstants.cubeOuttakeSetpoints[positionLevel - 1]; // length = 3
+
+                } else { // current element is NONE and target element is NONE
+                    position = -1; // reset position
+
                 }
-                slide.setSlidePIDInches(position);
             }
+
+            slide.setSlidePIDInches(position); // set slide to go to position
         }
 
-        // if (slide.getTopLimitSwitch() && hasZeroed) {
-        // hasZeroed = false;
-        // hasSpool = false;
-        // }
-
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
-        SmartDashboard.putBoolean("Has Spool", hasSpool);
+        SmartDashboard.putBoolean("Has Spool", hasTension);
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        // make or call a function to set slide to zero sets slide back to zero
-        bumperPos = 0;
-        slide.setSlide(0);
+        slide.setSlide(0); // stop slide
     }
 
     // Returns true when the command should end.
