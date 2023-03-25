@@ -38,7 +38,7 @@ public class ClawCubeOuttake extends CommandBase {
     public void execute() {
         // runs for set time
         if (stopClock < 10) {
-            claw.setIntake(.45);
+            claw.setIntake(.6);
             stopClock += .02;
         } else {
             robotContainer.outtakeFinish = true;

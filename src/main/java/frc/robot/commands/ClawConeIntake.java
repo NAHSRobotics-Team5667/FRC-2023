@@ -49,6 +49,10 @@ public class ClawConeIntake extends CommandBase {
         // TODO: Change to time of flight sensor
         if (clawSubsystem.intake.getStatorCurrent() < 70) {
             clawSubsystem.setIntake(.45);
+        } else {
+            robotContainer.setCurrentElement(GamePiece.CUBE);
+            robotContainer.setTargetElement(GamePiece.NONE);
+            robotContainer.intakeFinish = true;
         }
 
     }

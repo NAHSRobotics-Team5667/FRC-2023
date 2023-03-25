@@ -47,6 +47,8 @@ public class ClawCubeIntake extends CommandBase {
         if (clawSubsystem.intake.getStatorCurrent() < 30) {
             clawSubsystem.setIntake(-.45);
         } else {
+            robotContainer.setCurrentElement(GamePiece.CUBE);
+            robotContainer.setTargetElement(GamePiece.NONE);
             robotContainer.intakeFinish = true;
         }
     }

@@ -63,7 +63,7 @@ public class SlideCommand extends CommandBase {
                 position = 0;
                 slide.setSlidePIDInches(position);
                 if (hasSpool && !slide.getBottomLimitSwitch()) {
-                    slide.setSlide(-0.1);
+                    slide.setSlide(-0.3);
 
                 }
 

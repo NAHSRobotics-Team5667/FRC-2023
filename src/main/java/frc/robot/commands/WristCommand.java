@@ -56,13 +56,11 @@ public class WristCommand extends CommandBase {
                 position = WristConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1];
 
             } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                position = WristConstants.kWristConeOuttakeSetpoint[robotContainer.getPositionLevel() -
-                        1];
+                position = WristConstants.kWristConeOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
 
             } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
 
-                position = WristConstants.kWristCubeOuttakeSetpoint[robotContainer.getPositionLevel() -
-                        1];
+                position = WristConstants.kWristCubeOuttakeSetpoint[robotContainer.getPositionLevel() - 1];
             }
         }
 

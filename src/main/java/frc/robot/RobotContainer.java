@@ -77,7 +77,7 @@ public class RobotContainer {
 
     public SwerveAutoBuilder autoBuilder; // builds on-the-fly and autonomous paths
     public boolean intakeFinish = false;
-    public double speedMultiplier = .9; // determines how fast robot goes
+    public double speedMultiplier = .5; // determines how fast robot goes
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
     PathPlannerTrajectory HSC, CSC, BSC; // autonomous trajectories, needs inital pose set to path initial pose

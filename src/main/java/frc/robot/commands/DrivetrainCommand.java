@@ -74,10 +74,16 @@ public class DrivetrainCommand extends CommandBase {
         if (RobotContainer.secondController.getLeftStickButtonPressed()) {
             slowmode = !slowmode;
         }
-        speedMultiplier = slowmode ? .7 : .9;
+        speedMultiplier = slowmode ? .5 : .5;
 
         if (RobotContainer.secondController.getRightStickButton()) {
             this.drive.resetGyro();
+        }
+
+        if (robotContainer.getPositionLevel() >= 2) {
+            speedMultiplier = 0.2;
+        } else {
+            speedMultiplier = 0.5;
         }
 
         // Get the x speed. We are inverting this because Xbox controllers return

@@ -136,8 +136,8 @@ public final class Constants {
         public static final class SlideConstants {
 
                 public static final double[] coneIntakeSetpoints = {
-                                21.0973, // 0 - floor intake (upright)
-                                3.3827, // 1 - floor intake (flipped)
+                                20.539, // 0 - floor intake (upright)
+                                3.989, // 1 - floor intake (flipped)
                                 0 // 2 - human player intake
                 };
 
@@ -197,20 +197,20 @@ public final class Constants {
                 // OUTTAKE SETPOINTS -------------------------------------
 
                 public static final double[] coneIntakeSetpoints = {
-                                58.7045, // 0 - floor intake (upright)
-                                29.025, // 1 - floor intake (flipped)
+                                59.9327, // 0 - floor intake (upright)
+                                35.8135, // 1 - floor intake (flipped)
                                 -60 // 2 - human player intake
                 };
 
                 public static final double[] cubeIntakeSetpoints = {
-                                -13.6936, // 1 - floor intake
+                                -12.1624, // 1 - floor intake
                                 0 // 2 - human player intake
                 };
 
                 public static final double[] kWristCubeOuttakeSetpoint = {
                                 -90, // 0 - ground level (hybrid)
                                 -79.666, // 1 - first platform
-                                -91.6953, // 2 - second platform (highest)
+                                -110, // 2 - second platform (highest)
                 };
 
                 public static final double[] kWristConeOuttakeSetpoint = {
@@ -219,8 +219,8 @@ public final class Constants {
                                 6.9903, // 2 - second pole (highest)
                 };
 
-                public static final double kP = 0.007;
-                public static final double kI = 0.00015;
+                public static final double kP = 0.02;
+                public static final double kI = 0.0;
                 public static final double kD = 0;
 
                 // INTAKE SETPOINTS -------------------------------------
