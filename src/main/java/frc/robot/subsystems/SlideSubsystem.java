@@ -11,6 +11,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
@@ -29,9 +31,9 @@ public class SlideSubsystem extends SubsystemBase {
     private DigitalInput bottomLimitSwitch;
     private DigitalInput topLimitSwitch;
     private RobotContainer robotContainer;
-    // public PIDController controller;
+    public PIDController controller;
 
-    public ProfiledPIDController controller;
+    // public ProfiledPIDController controller;
 
     // ====================================================================
     // PID EDITING
@@ -106,17 +108,17 @@ public class SlideSubsystem extends SubsystemBase {
         // ====================================================================
 
         // PID Controller
-        // controller = new PIDController(
-        // SlideConstants.kP, SlideConstants.kI, SlideConstants.kD);
+        controller = new PIDController(
+                SlideConstants.kP, SlideConstants.kI, SlideConstants.kD);
 
         // Profiled PID Controller
-        controller = new ProfiledPIDController(
-                SlideConstants.kP,
-                SlideConstants.kI,
-                SlideConstants.kD,
-                new TrapezoidProfile.Constraints(
-                        SlideConstants.maxVelocity,
-                        SlideConstants.maxAcceleration));
+        // controller = new ProfiledPIDController(
+        // SlideConstants.kP,
+        // SlideConstants.kI,
+        // SlideConstants.kD,
+        // new TrapezoidProfile.Constraints(
+        // SlideConstants.maxVelocity,
+        // SlideConstants.maxAcceleration));
 
         // ====================================================================
     }
@@ -191,13 +193,14 @@ public class SlideSubsystem extends SubsystemBase {
     }
 
     public double getPIDOutput(double inchesSetpoint) {
-        // double output = MathUtil.clamp(
-        // controller.calculate(getSlideHeightInches(),
-        // inchesSetpoint), -0.4, 0.4);
+        double output = MathUtil.clamp(
+                controller.calculate(getSlideHeightInches(),
+                        inchesSetpoint),
+                -0.4, 0.4);
 
-        double output = controller.calculate(
-                getSlideHeightInches(),
-                inchesSetpoint);
+        // double output = controller.calculate(
+        // getSlideHeightInches(),
+        // inchesSetpoint);
 
         return output;
     }
@@ -223,8 +226,9 @@ public class SlideSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Slide Error", getPositionError());
 
         SmartDashboard.putNumber("Slide Stator", rightSlide.getStatorCurrent());
-        SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint().position); // Profiled PID Controller
-        // SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint()); // PID
+        // SmartDashboard.putNumber("Slide Setpoint",
+        // controller.getSetpoint().position); // Profiled PID Controller
+        SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint()); // PID
         // Controller
 
         updatePID(
@@ -233,22 +237,22 @@ public class SlideSubsystem extends SubsystemBase {
                 d.getDouble(SlideConstants.kD));
 
         // Update drivetrain speed depending on height of slide - prevents tipping
-        if (getSlideHeightInches() < 15) {
-            robotContainer.setSpeedMultiplier(1);
-            robotContainer.setTurnMultiplier(0.7);
+        // if (getSlideHeightInches() < 15) {
+        // robotContainer.setSpeedMultiplier(0.7);
+        // robotContainer.setTurnMultiplier(0.7);
 
-        } else if (getSlideHeightInches() >= 15 && getSlideHeightInches() < 30) {
-            robotContainer.setSpeedMultiplier(0.7);
-            robotContainer.setTurnMultiplier(0.5);
+        // } else if (getSlideHeightInches() >= 15 && getSlideHeightInches() < 30) {
+        // robotContainer.setSpeedMultiplier(0.7);
+        // robotContainer.setTurnMultiplier(0.5);
 
-        } else if (getSlideHeightInches() >= 30 && getSlideHeightInches() < 45) {
-            robotContainer.setSpeedMultiplier(0.5);
-            robotContainer.setSpeedMultiplier(0.4);
+        // } else if (getSlideHeightInches() >= 30 && getSlideHeightInches() < 45) {
+        // robotContainer.setSpeedMultiplier(0.5);
+        // robotContainer.setSpeedMultiplier(0.4);
 
-        } else { // getSlideHeightInches() >= 45
-            robotContainer.setSpeedMultiplier(0.3);
-            robotContainer.setSpeedMultiplier(0.3);
+        // } else { // getSlideHeightInches() >= 45
+        // robotContainer.setSpeedMultiplier(0.3);
+        // robotContainer.setSpeedMultiplier(0.3);
 
-        }
+        // }
     }
 }
