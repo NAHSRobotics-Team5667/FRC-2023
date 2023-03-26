@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Lights;
 
 public class ClawConeOuttake extends CommandBase {
     // TODO: this is a copy of ClawCubeOuttake, but with the intake speed reversed.
@@ -20,12 +21,13 @@ public class ClawConeOuttake extends CommandBase {
     double stopClock;
     IntakeSubsystem claw;
     RobotContainer robotContainer;
-
+    Lights lightstrip;
     /** Creates a new IntakeOuttakeProcessClaw. */
     public ClawConeOuttake(IntakeSubsystem claw, RobotContainer robotContainer) {
         this.claw = claw;
         this.robotContainer = robotContainer;
         addRequirements(claw);
+        lightstrip = robotContainer.lightstrip;
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
@@ -33,6 +35,9 @@ public class ClawConeOuttake extends CommandBase {
     @Override
     public void initialize() {
         stopClock = 0;
+        lightstrip.scheduler.setLightEffect(() -> {
+            lightstrip.setSolidRGB(0, 255, 0);
+        }, .5, 25, .14);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

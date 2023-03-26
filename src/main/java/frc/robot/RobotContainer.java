@@ -176,7 +176,7 @@ public class RobotContainer {
         autoChooser.addOption("CSC", "CSC");
         autoChooser.addOption("BSC", "BSC");
         autoChooser.addOption("HSC", "HSC");
-        autoChooser.addOption("default", "default");
+        autoChooser.setDefaultOption("default", "default");
 
         SmartDashboard.putData(autoChooser);
         // ===================================================================
@@ -269,7 +269,6 @@ public class RobotContainer {
      * it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-
     public SwerveAutoBuilder getBuild() {
         return autoBuilder;
     }
@@ -285,8 +284,8 @@ public class RobotContainer {
                 ySecondButton = new JoystickButton(driveController, XboxController.Button.kY.value),
                 bSecondButton = new JoystickButton(driveController, XboxController.Button.kB.value),
                 aSecondButton = new JoystickButton(driveController, XboxController.Button.kA.value),
-                xSecondButton = new JoystickButton(driveController, XboxController.Button.kX.value);// makes all
-                                                                                                    // triggers
+                xSecondButton = new JoystickButton(driveController, XboxController.Button.kX.value);
+        // makes all triggers
 
         aButton.and(xButton).whileTrue( // intake cone
                 new ClawConeIntake(intake, wrist, true, this)
@@ -300,7 +299,6 @@ public class RobotContainer {
         bButton.and(yButton).whileTrue( // intake cube
                 new ClawCubeIntake(intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
-
     }
 
     /**
@@ -314,7 +312,6 @@ public class RobotContainer {
                 return new ClawCubeOuttake(intake, this).finallyDo((boolean interrupt) -> {
                     ++intakeToggle;
                 });
-
             case "BSC":
                 drive.pose = new Pose2d(1.66, .43, drive.getInitGyro()); // BSC
                 return new ClawCubeOuttake(intake, this)
@@ -323,7 +320,6 @@ public class RobotContainer {
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
                         });
-
             case "CSC":
                 // drive.m_pose = new Pose2d(1.66, 2.98, drive.getInitGyro()); // CSC
                 // return new ClawCubeOuttake(claw, wrist,
@@ -332,7 +328,6 @@ public class RobotContainer {
                 // ++intakeToggle;
                 // });
                 return new TestAuto(drive, intake);
-
             case "HSC":
                 drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());
                 return new ClawCubeOuttake(intake, this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
@@ -348,20 +343,15 @@ public class RobotContainer {
     }
 
     public static enum GetSticksMode {
-        POLE,
-        SURFACE,
-        NONE
+        POLE, SURFACE, NONE
     }
 
     public static enum IntakeOrOuttake {
-        INTAKE,
-        OUTTAKE
+        INTAKE, OUTTAKE
     }
 
     public static enum GamePiece {
-        NONE,
-        CUBE,
-        CONE
+        NONE, CUBE, CONE
     }
 
     public BooleanSupplier checkIntakeFinish(IntakeOrOuttake mode) {
@@ -372,9 +362,9 @@ public class RobotContainer {
                         return intakeFinish;
                     case OUTTAKE:
                         return outtakeFinish;
+                    default:
+                        return false; // catch all just in case
                 }
-                return false;
-                // catch all just in case
             }
         };
     };

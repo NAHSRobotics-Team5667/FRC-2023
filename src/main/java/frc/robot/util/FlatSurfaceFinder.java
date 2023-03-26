@@ -14,8 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class FlatSurfaceFinder extends SubsystemBase {
-    public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue); // TODO: Check if
-                                                                                                    // this works
+    public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue); 
 
     public static final class FieldConstants {
         public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);

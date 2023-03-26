@@ -190,6 +190,7 @@ public class Lights extends SubsystemBase {
         if (p == period.TELEOP) {
             teleop_start_time = System.currentTimeMillis();
         }
+        this.teamColor = DriverStation.getAlliance().equals(Alliance.Red) ? new Color(255, 0, 0) : new Color(0, 0, 255);
     }
 
     @FunctionalInterface
