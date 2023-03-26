@@ -41,6 +41,7 @@ public class SlideCommand extends CommandBase {
     public void execute() {
         // Uncomment the following to control slide with stick
         // slide.setSlide(robotContainer.slideController.getLeftY() / 3);
+
         double position = 0; // initialize variable to hold position of slide
         boolean bottomLimitSwitch = slide.getBottomLimitSwitch();
 
@@ -66,20 +67,25 @@ public class SlideCommand extends CommandBase {
                 position = -1; // set slide to go to -1 inches - eliminates any error
             } else { // position level is not equal to 0
                 if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneIntakeSetpoints[positionLevel - 1]; // length = 3
+                    position = SlideConstants.coneIntakeSetpoints[positionLevel - 1]; // length =
+                    // 3
 
                 } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeIntakeSetpoints[positionLevel - 1]; // length = 1
+                    position = SlideConstants.cubeIntakeSetpoints[positionLevel - 1]; // length =
+                    // 1
 
                 } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
-                    position = SlideConstants.coneOuttakeSetpoints[positionLevel - 1]; // length = 3
+                    position = SlideConstants.coneOuttakeSetpoints[positionLevel - 1]; // length
+                    // = 3
 
                 } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
-                    position = SlideConstants.cubeOuttakeSetpoints[positionLevel - 1]; // length = 3
+                    position = SlideConstants.cubeOuttakeSetpoints[positionLevel - 1]; // length
+                    // = 3
 
-                } else { // current element is NONE and target element is NONE
-                    position = -1; // reset position
                 }
+                // else { // current element is NONE and target element is NONE
+                // position = -1; // reset position
+                // }
             }
             slide.setSlidePIDInches(position); // set slide to go to position
         }

@@ -10,6 +10,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -26,8 +28,8 @@ import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
     public WPI_TalonFX wristMotorFirst, wristMotorSecond;
-    // private PIDController wristPID;
-    private ProfiledPIDController wristPID;
+    private PIDController wristPID;
+    // private ProfiledPIDController wristPID;
 
     private DutyCycleEncoder encoder;
     private double angleOffset = 0;
@@ -36,7 +38,7 @@ public class WristSubsystem extends SubsystemBase {
     private int counter = 0; // use if absolute encoder still fluctuates too much
     @SuppressWarnings("unused")
     private LinearFilter encoderFilter; // TODO: use only if encoder values are still not stable enough
-    
+
     private RobotContainer robotContainer;
 
     // ====================================================================
@@ -78,19 +80,19 @@ public class WristSubsystem extends SubsystemBase {
         // ====================================================================
 
         // reg PID
-        // wristPID = new PIDController(
-        // WristConstants.kP,
-        // WristConstants.kI,
-        // WristConstants.kD);
-
-        // Profiled PID
-        wristPID = new ProfiledPIDController(
+        wristPID = new PIDController(
                 WristConstants.kP,
                 WristConstants.kI,
-                WristConstants.kD,
-                new TrapezoidProfile.Constraints(
-                        WristConstants.maxVelocity,
-                        WristConstants.maxAcceleration));
+                WristConstants.kD);
+
+        // Profiled PID
+        // wristPID = new ProfiledPIDController(
+        // WristConstants.kP,
+        // WristConstants.kI,
+        // WristConstants.kD,
+        // new TrapezoidProfile.Constraints(
+        // WristConstants.maxVelocity,
+        // WristConstants.maxAcceleration));
 
         // ====================================================================
         // MOTOR SETUP
@@ -134,14 +136,14 @@ public class WristSubsystem extends SubsystemBase {
 
     public void setPosition(double position) {
         // Uses motor for measurement
-        // double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesMotor(),
-        // position), -0.4, 0.4);
+        double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesMotor(),
+                position), -0.4, 0.4);
 
         // double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesAbs(),
         // position), -0.4, 0.4);
 
         // Uses abs encoder for measurement
-        double output = wristPID.calculate(getAngleDegreesAbs(), position);
+        // double output = wristPID.calculate(getAngleDegreesAbs(), position);
 
         setWrist(output);
     }
@@ -165,8 +167,12 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public double getEncoder() {
-        return (double) Math.round(encoder.getAbsolutePosition() * 1000d) / 1000d; // copied from stack overflow -
-                                                                                   // rounds to 3 decimal places
+        return encoderFilter.calculate((double) Math.round(encoder.getAbsolutePosition() * 1000d) / 1000d); // copied
+                                                                                                            // from
+                                                                                                            // stack
+                                                                                                            // overflow
+                                                                                                            // -
+        // rounds to 3 decimal places
         // return encoder.getAbsolutePosition();
     }
 
@@ -183,28 +189,27 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public double getAngleDegreesAbs() {
-        return (getEncoder() * 360) + angleOffset;
+        return (getEncoder() - WristConstants.kEncoderOffset) * 360;
     }
 
     // ====================================================================
 
     @Override
     public void periodic() {
-        // if (counter <= 50) {
-        // counter++;
-        // }
+        if (counter <= 50) {
+            counter++;
+        }
 
-        // if (counter % 50 == 0) { // updates the encoder offset every second
-        // angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
-        // }
+        if (counter % 50 == 0) { // updates the encoder offset every second
+            angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        }
 
         // UNCOMMENT ABOVE IF ENCODER STILL FLUCTUATES TOO MUCH
 
-        // SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint()); // reg
-        // PID
+        SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint()); // reg PID
 
         // Profiled PID
-        SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint().position);
+        // SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint().position);
 
         SmartDashboard.putNumber("Position Level", robotContainer.getPositionLevel());
         SmartDashboard.putNumber("Wrist Encoder", getEncoder());

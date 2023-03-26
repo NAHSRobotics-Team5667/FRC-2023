@@ -364,19 +364,19 @@ public class RobotContainer {
     }
 
     public void updatePositionLevel(boolean isLeftBumperPressed, boolean isRightBumperPressed) {
-        int maxPositionLevel = 0;
+        int maxPositionLevel = 3;
         // set max position level
-        switch (getTargetElement()) {
-            case CONE:
-                maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
-                break;
-            case CUBE:
-                maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
-                break;
-            default:
-                maxPositionLevel = (getCurrentElement().equals(GamePiece.NONE)) ? 0 : 3;
-                break;
-        }
+        // switch (getTargetElement()) {
+        // case CONE:
+        // maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
+        // break;
+        // case CUBE:
+        // maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
+        // break;
+        // default:
+        // maxPositionLevel = (getCurrentElement().equals(GamePiece.NONE)) ? 0 : 3;
+        // break;
+        // }
 
         if (getPositionLevel() < maxPositionLevel && isRightBumperPressed) {
             positionLevel++;

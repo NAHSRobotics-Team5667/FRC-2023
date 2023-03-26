@@ -38,6 +38,7 @@ public class ClawCubeIntake extends CommandBase {
     public void initialize() {
         robotContainer.setCurrentElement(GamePiece.NONE);
         robotContainer.setTargetElement(GamePiece.CUBE);
+
         Lights lightstrip = robotContainer.lightstrip;
         lightstrip.scheduler.setLightEffect(() -> {
             lightstrip.flashingRGB(194, 3, 252);
