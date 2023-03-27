@@ -134,7 +134,7 @@ public final class Constants {
 
         public static final double[] coneIntakeSetpoints = {
                 20.539, // 0 - floor intake (upright)
-                3.989, // 1 - floor intake (flipped)
+                4.2496, // 1 - floor intake (flipped)
                 5.9572 // 2 - human player intake
         };
 
@@ -173,7 +173,7 @@ public final class Constants {
 
         public static final int kLSlideID = 2;
         public static final int kRSlideID = 4;
-        public static final double kSlideConstant = 1 / 16384; 
+        public static final double kSlideConstant = 1 / 16384;
 
         public static final int EncoderId = -1;
         public static final int EncoderOffset = -1;
@@ -209,7 +209,7 @@ public final class Constants {
 
         public static final double[] coneIntakeSetpoints = {
                 61.9327, // 0 - floor intake (upright)
-                35.8135, // 1 - floor intake (flipped)
+                34.7582, // 1 - floor intake (flipped)
                 -52.2751 // 2 - human player intake
         };
 
@@ -313,6 +313,6 @@ public final class Constants {
 
     public static final class LightConstants {
         public static final int lightstrip1Port = 9;
-        public static final int lightstrip1Length = 150;
+        public static final int lightstrip1Length = 149;
     }
 }

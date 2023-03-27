@@ -67,7 +67,8 @@ public class RobotContainer {
     private double turnMultiplier;
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
-    PathPlannerTrajectory HSC, CSC, BSC; // autonomous trajectories, needs inital pose set to path initial pose
+    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB; // autonomous trajectories, needs inital pose
+                                                                          // set to path initial pose
 
     private int positionLevel;
 
@@ -107,6 +108,12 @@ public class RobotContainer {
         CSC = PathPlanner.loadPath("CSC", new PathConstraints(5, 5));
         BSC = PathPlanner.loadPath("BSC", new PathConstraints(5, 5));
         HSC = PathPlanner.loadPath("HSC", new PathConstraints(5, 5));
+        COB = PathPlanner.loadPath("Test Cone Outtake Bottom", new PathConstraints(5, 5));
+        COM = PathPlanner.loadPath("Test Cone Outtake Mid", new PathConstraints(5, 5));
+        COT = PathPlanner.loadPath("Test Cone Outtake Top", new PathConstraints(5, 5));
+        CbOB = PathPlanner.loadPath("Test Cube Outtake Bottom", new PathConstraints(5, 5));
+        CbOM = PathPlanner.loadPath("Test Cube Outtake Mid", new PathConstraints(5, 5));
+        CbOT = PathPlanner.loadPath("Test Cube Outtake Top", new PathConstraints(5, 5));
 
         // This is just an example event map. It would be better to have a constant,
         // global event map
@@ -167,9 +174,11 @@ public class RobotContainer {
                       // commands
         );
         configureButtonBindings();
+
         autoChooser.addOption("CSC", "CSC");
         autoChooser.addOption("BSC", "BSC");
         autoChooser.addOption("HSC", "HSC");
+        autoChooser.addOption("test", "test");
         autoChooser.addOption("ConeTop", "Test Cone Outtake Top");
         autoChooser.addOption("ConeMid", "Test Cone Outtake Mid");
         autoChooser.addOption("ConeBottom", "Test Cone Outtake Bottom");
@@ -287,7 +296,7 @@ public class RobotContainer {
         // makes all triggers
 
         aButton.and(xButton).whileTrue( // intake cone
-                new ClawIntake(GamePiece.CONE,intake, wrist, true, this)
+                new ClawIntake(GamePiece.CONE, intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
                 new ClawOuttake(GamePiece.CONE, intake, this)
@@ -307,6 +316,26 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         switch (autoChooser.getSelected()) {
+            // autoChooser.addOption("ConeTop", "Test Cone Outtake Top");
+            // autoChooser.addOption("ConeMid", "Test Cone Outtake Mid");
+            // autoChooser.addOption("ConeBottom", "Test Cone Outtake Bottom");
+            // autoChooser.addOption("CubeTop", "Test Cube Outtake Top");
+            // autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
+            // autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
+            case "test":
+                return new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2);
+            case "ConeMid":
+                return autoBuilder.fullAuto(COM);
+            case "ConeBottom":
+                return autoBuilder.fullAuto(COB);
+            case "ConeTop":
+                return autoBuilder.fullAuto(COT);
+            case "CubeBottom":
+                return autoBuilder.fullAuto(CbOB);
+            case "CubeMid":
+                return autoBuilder.fullAuto(CbOM);
+            case "CubeTop":
+                return autoBuilder.fullAuto(CbOT);
             case "default":
                 return new ClawOuttake(GamePiece.CUBE, intake, this).finallyDo((boolean interrupt) -> {
                     ++intakeToggle;

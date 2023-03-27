@@ -150,10 +150,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // 0.306
         // 0.257
         private Translation2d // Create the locations of the wheels
-        frontRightLocation = new Translation2d(0.257, 0.306),
-                        backRightLocation = new Translation2d(-0.257, 0.306),
-                        frontLeftLocation = new Translation2d(0.257, -0.306),
-                        backLeftLocation = new Translation2d(-0.257, -0.306);
+        frontRightLocation = new Translation2d(0.257, -0.306),
+                        // 0.306
+                        // 0.257
+                        backRightLocation = new Translation2d(0.257, 0.306),
+                        frontLeftLocation = new Translation2d(-0.257, -0.306),
+                        backLeftLocation = new Translation2d(-0.257, 0.306);
 
         public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
                         frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);

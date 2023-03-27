@@ -33,6 +33,7 @@ public class WristCommand extends CommandBase {
     public void execute() {
         // Uncomment below if controlling wrist with controller
         // wrist.setWrist(RobotContainer.slideController.getRightX() / 3);
+
         double position = WristConstants.kWristSafePosition;
         // default position is stowaway
 
