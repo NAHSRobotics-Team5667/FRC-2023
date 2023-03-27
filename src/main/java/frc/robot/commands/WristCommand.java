@@ -33,42 +33,30 @@ public class WristCommand extends CommandBase {
     public void execute() {
         // Uncomment below if controlling wrist with controller
         // wrist.setWrist(RobotContainer.slideController.getRightX() / 3);
+        double position = WristConstants.kWristSafePosition;
+        // default position is stowaway
 
-        double position = WristConstants.kWristSafePosition; // default position is
-        // stowaway
+        GamePiece currentElement = robotContainer.getCurrentElement(),
+                targetElement = robotContainer.getTargetElement();
 
-        if (robotContainer.getPositionLevel() == 0) { // TODO: this entire if
-            // statement is redundant... just change the
-            // else to an if or fix whatever you were trying to do here
-            if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+        if (robotContainer.getPositionLevel() == 0) {
+            if (currentElement.equals(GamePiece.CONE)) {
                 position = WristConstants.kConeSafePosition; // go back to cone stowaway
-            } else {
-                position = WristConstants.kWristSafePosition; // go back to normal stowaway
             }
-
         } else { // position level > 0
-            if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
-                position = WristConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1]; //
+            if (targetElement.equals(GamePiece.CONE)) {
+                position = WristConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1];
                 // length = 3
-
-            } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1]; //
+            } else if (targetElement.equals(GamePiece.CUBE)) {
+                position = WristConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1];
                 // length = 1
-
-            } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+            } else if (currentElement.equals(GamePiece.CONE)) {
                 position = WristConstants.coneOuttakeSetpoints[robotContainer.getPositionLevel() - 1];
                 // length = 3
-
-            } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+            } else if (currentElement.equals(GamePiece.CUBE)) {
                 position = WristConstants.cubeOuttakeSetpoints[robotContainer.getPositionLevel() - 1];
                 // length = 3
-
             }
-            // else { // current element is NONE and target element is NONE
-            // position = WristConstants.kWristSafePosition; // TODO: this else is
-            // redundant. if it gets to this point
-            // // its still set to default position.
-            // }
         }
         wrist.setPosition(position);
     }

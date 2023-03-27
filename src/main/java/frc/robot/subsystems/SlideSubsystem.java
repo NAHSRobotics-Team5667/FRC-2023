@@ -13,8 +13,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -30,7 +28,6 @@ public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX rightSlide, leftSlide;
     private DigitalInput bottomLimitSwitch;
     private DigitalInput topLimitSwitch;
-    private RobotContainer robotContainer;
     public PIDController controller;
 
     // public ProfiledPIDController controller;
@@ -62,8 +59,7 @@ public class SlideSubsystem extends SubsystemBase {
     // ====================================================================
 
     /** Creates a new SlideSubsystem. */
-    public SlideSubsystem(RobotContainer robotContainer) {
-        this.robotContainer = robotContainer;
+    public SlideSubsystem() {
 
         // ====================================================================
         // Left Slide Motor
