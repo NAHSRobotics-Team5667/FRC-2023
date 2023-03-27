@@ -18,6 +18,7 @@ public class ClawOuttake extends CommandBase {
     RobotContainer robotContainer;
     Lights lightstrip;
     GamePiece gamePiece;
+
     /** Creates a new IntakeOuttakeProcessClaw. */
     public ClawOuttake(GamePiece gamePiece, IntakeSubsystem claw, RobotContainer robotContainer) {
         this.gamePiece = gamePiece;
@@ -41,13 +42,15 @@ public class ClawOuttake extends CommandBase {
     @Override
     public void execute() {
         // runs for set time
-        if (stopClock < 10) {
-            double intakeSpeed = (gamePiece == CUBE) ? .6 : -.45;
-            claw.setIntake(intakeSpeed);
-            stopClock += .02;
-        } else {
-            robotContainer.outtakeFinish = true;
+        double intakeSpeed = 0;
+
+        if (gamePiece == CUBE) {
+            intakeSpeed = 1;
+        } else if (gamePiece == CONE) {
+            intakeSpeed = -0.45;
         }
+
+        claw.setIntake(intakeSpeed);
     }
 
     // Called once the command ends or is interrupted.

@@ -135,7 +135,7 @@ public class WristSubsystem extends SubsystemBase {
     public void setPosition(double position) {
         // Uses motor for measurement
         double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesMotor(),
-                position), -0.4, 0.4);
+                position), -0.6, 0.6);
 
         // double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesAbs(),
         // position), -0.4, 0.4);

@@ -190,7 +190,7 @@ public class SlideSubsystem extends SubsystemBase {
         double output = MathUtil.clamp(
                 controller.calculate(getSlideHeightInches(),
                         inchesSetpoint),
-                -0.4, 0.4);
+                -0.6, 0.6);
         return output;
     }
 

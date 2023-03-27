@@ -7,6 +7,7 @@ package frc.robot.commands;
 import static frc.robot.RobotContainer.GamePiece.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -59,9 +60,23 @@ public class ClawIntake extends CommandBase {
         if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
             clawSubsystem.setIntake(intakeSpeed);
         } else {
-            robotContainer.setCurrentElement(gamePiece);
-            robotContainer.setTargetElement(GamePiece.NONE);
-            robotContainer.intakeFinish = true;
+            // robotContainer.setCurrentElement(gamePiece);
+            // robotContainer.setTargetElement(GamePiece.NONE);
+            // robotContainer.intakeFinish = true;
+        }
+
+        if (gamePiece.equals(CONE)) {
+            if (!(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {
+                robotContainer.setCurrentElement(gamePiece);
+                robotContainer.setTargetElement(GamePiece.NONE);
+                robotContainer.intakeFinish = true;
+            }
+        } else if (gamePiece.equals(CUBE)) {
+            if (!(RobotContainer.slideController.getBButton() && RobotContainer.slideController.getYButton())) {
+                robotContainer.setCurrentElement(gamePiece);
+                robotContainer.setTargetElement(GamePiece.NONE);
+                robotContainer.intakeFinish = true;
+            }
         }
     }
 
@@ -78,6 +93,6 @@ public class ClawIntake extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return robotContainer.getTargetElement() == NONE;
     }
 }

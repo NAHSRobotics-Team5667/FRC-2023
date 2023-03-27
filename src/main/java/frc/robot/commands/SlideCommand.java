@@ -89,6 +89,12 @@ public class SlideCommand extends CommandBase {
             }
             slide.setSlidePIDInches(position); // set slide to go to position
         }
+
+        if (RobotContainer.slideController.getLeftStickButtonPressed()) {
+            hasZeroed = false;
+            hasTension = false;
+        }
+
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
         SmartDashboard.putBoolean("Has Spool", hasTension);
     }

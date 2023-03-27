@@ -49,45 +49,43 @@ public final class Constants {
         public static final double kTurnKi = 12;
         public static final double kTurnKd = .1;
 
+        // public static final double kFLTurnKp = 7;
+        // public static final double kFLTurnKi = 12;
+        // public static final double kFLTurnKd = 0.1;
+
+        // public static final double kFRTurnKp = 7;
+        // public static final double kFRTurnKi = 12;
+        // public static final double kFRTurnKd = 0.1;
+
+        // public static final double kBLTurnKp = 7;
+        // public static final double kBLTurnKi = 12;
+        // public static final double kBLTurnKd = 0.1;
+
+        // public static final double kBRTurnKp = 7;
+        // public static final double kBRTurnKi = 12;
+        // public static final double kBRTurnKd = 0.1;
+
         public static final double kFLTurnKp = 7;
-        public static final double kFLTurnKi = 12;
-        public static final double kFLTurnKd = 0.1;
+        public static final double kFLTurnKi = 5;
+        public static final double kFLTurnKd = 0.16;
 
         public static final double kFRTurnKp = 7;
-        public static final double kFRTurnKi = 12;
-        public static final double kFRTurnKd = 0.1;
+        public static final double kFRTurnKi = 4;
+        public static final double kFRTurnKd = 0.13;
 
         public static final double kBLTurnKp = 7;
-        public static final double kBLTurnKi = 12;
+        public static final double kBLTurnKi = 2;
         public static final double kBLTurnKd = 0.1;
 
-        public static final double kBRTurnKp = 7;
-        public static final double kBRTurnKi = 12;
-        public static final double kBRTurnKd = 0.1;
-
-        /*
-         * public static final double kFLTurnKp = 7;
-         * public static final double kFLTurnKi = 5;
-         * public static final double kFLTurnKd = 0.16;
-         * 
-         * public static final double kFRTurnKp = 7;
-         * public static final double kFRTurnKi = 4;
-         * public static final double kFRTurnKd = 0.13;
-         * 
-         * public static final double kBLTurnKp = 7;
-         * public static final double kBLTurnKi = 2;
-         * public static final double kBLTurnKd = 0.1;
-         * 
-         * public static final double kBRTurnKp = 8;
-         * public static final double kBRTurnKi = 0;
-         * public static final double kBRTurnKd = 0;
-         */
+        public static final double kBRTurnKp = 8;
+        public static final double kBRTurnKi = 0;
+        public static final double kBRTurnKd = 0;
 
         // next lines are for the Swerve Module object
-        public static final double BLEncoderOffset = 0.4364 - .25;
-        public static final double FLEncoderOffset = 0.4032 - .25;
-        public static final double BREncoderOffset = 0.662 - .25;
-        public static final double FREncoderOffset = 0.9068955 - .25;
+        public static final double BLEncoderOffset = 0.4330 - .25;
+        public static final double FLEncoderOffset = 0.40145 - .25;
+        public static final double BREncoderOffset = 0.668305 - .25;
+        public static final double FREncoderOffset = 0.909868 - .25;
         public static final double kWheelRadius = 0.0508; // meters
         public static final double kEncoderResolution = 2048;
 
@@ -133,9 +131,10 @@ public final class Constants {
         // ===============================================================
 
         public static final double[] coneIntakeSetpoints = {
-                20.539, // 0 - floor intake (upright)
-                4.2496, // 1 - floor intake (flipped)
-                5.9572 // 2 - human player intake
+                5.9572, // 0 - human player intake
+                3.7496, // 1 - floor intake (flipped)
+                20.039 // 2 - floor intake (upright)
+
         };
 
         public static final double[] cubeIntakeSetpoints = {
@@ -208,9 +207,9 @@ public final class Constants {
         // ===============================================================
 
         public static final double[] coneIntakeSetpoints = {
-                61.9327, // 0 - floor intake (upright)
-                34.7582, // 1 - floor intake (flipped)
-                -52.2751 // 2 - human player intake
+                -52.2751, // 0 - human player intake
+                38.7582, // 1 - floor intake (flipped)
+                61.9327 // 2 - floor intake (upright)
         };
 
         public static final double[] cubeIntakeSetpoints = {
@@ -232,7 +231,7 @@ public final class Constants {
         public static final double[] coneOuttakeSetpoints = {
                 0, // 0 - ground level (hybrid)
                 49.9116, // 1 - first pole
-                6.9903, // 2 - second pole (highest)
+                20, // 2 - second pole (highest)
         };
 
         // ===============================================================

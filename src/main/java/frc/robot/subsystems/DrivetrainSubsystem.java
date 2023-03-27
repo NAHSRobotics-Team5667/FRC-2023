@@ -297,10 +297,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                  * dBR.getDouble(DriveConstants.kBRTurnKd));
                  */
 
-                frontLeft.collectEncoderSample();
-                frontRight.collectEncoderSample();
-                backLeft.collectEncoderSample();
-                backRight.collectEncoderSample();
+                // frontLeft.collectEncoderSample();
+                // frontRight.collectEncoderSample();
+                // backLeft.collectEncoderSample();
+                // backRight.collectEncoderSample();
 
                 // SmartDashboard.putNumber("FL Raw Encoder", frontLeft.getTurnEncoderRaw());
                 // SmartDashboard.putNumber("FR Raw Encoder", frontRight.getTurnEncoderRaw());
@@ -323,10 +323,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 // SmartDashboard.putNumber("Gyro Angle", this.getHeading());
                 // SmartDashboard.putString("Gyro Offset", this.gyroOffset.toString());
 
-                SmartDashboard.putNumber("testy boiFL", (frontLeft.trueEncoderOffset));
-                SmartDashboard.putNumber("testy boiFR", (frontRight.trueEncoderOffset));
-                SmartDashboard.putNumber("testy boiBL", (backLeft.trueEncoderOffset));
-                SmartDashboard.putNumber("testy boiBR", (backRight.trueEncoderOffset));
+                // SmartDashboard.putNumber("testy boiFL", (frontLeft.trueEncoderOffset));
+                // SmartDashboard.putNumber("testy boiFR", (frontRight.trueEncoderOffset));
+                // SmartDashboard.putNumber("testy boiBL", (backLeft.trueEncoderOffset));
+                // SmartDashboard.putNumber("testy boiBR", (backRight.trueEncoderOffset));
                 // SmartDashboard.putNumber("FR Pose", frontRight.getTurnEncoderDistance());
                 // SmartDashboard.putNumber("BR Pose", backRight.getTurnEncoderDistance());
                 // SmartDashboard.putNumber("FL Pose", frontLeft.getTurnEncoderDistance());

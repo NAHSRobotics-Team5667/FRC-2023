@@ -296,17 +296,17 @@ public class RobotContainer {
         // makes all triggers
 
         aButton.and(xButton).whileTrue( // intake cone
-                new ClawIntake(GamePiece.CONE, intake, wrist, true, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
+                new ClawIntake(GamePiece.CONE, intake, wrist, true, this));
+        // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
-                new ClawOuttake(GamePiece.CONE, intake, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
+                new ClawOuttake(GamePiece.CONE, intake, this));
+        // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         bButton.and(bSecondButton).whileTrue( // outtake cube
-                new ClawOuttake(GamePiece.CUBE, intake, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
+                new ClawOuttake(GamePiece.CUBE, intake, this));
+        // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
-                new ClawIntake(GamePiece.CUBE, intake, wrist, true, this)
-                        .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
+                new ClawIntake(GamePiece.CUBE, intake, wrist, true, this));
+        // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
     }
 
     /**
