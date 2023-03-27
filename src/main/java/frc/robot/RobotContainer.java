@@ -118,8 +118,8 @@ public class RobotContainer {
         eventMap.put("OuttakeCubeTop", new OuttakeCubeAuto(this, wrist, intake, slide, 2));
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         eventMap.put("balance", new AutoBalance(this, drive));
-        eventMap.put("IntakeCone", new ClawConeIntake(intake, wrist, intakeFinish, this));
-        eventMap.put("IntakeCube", new ClawCubeIntake(intake, wrist, intakeFinish, this));
+        eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, wrist, intakeFinish, this));
+        eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, wrist, intakeFinish, this));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
         // add Outtake top height for cone and cube
         // add intake for cone and cube
@@ -280,16 +280,16 @@ public class RobotContainer {
         // makes all triggers
 
         aButton.and(xButton).whileTrue( // intake cone
-                new ClawConeIntake(intake, wrist, true, this)
+                new ClawIntake(GamePiece.CONE,intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
-                new ClawConeOuttake(intake, this)
+                new ClawOuttake(GamePiece.CONE, intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         bButton.and(bSecondButton).whileTrue( // outtake cube
-                new ClawCubeOuttake(intake, this)
+                new ClawOuttake(GamePiece.CUBE, intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
-                new ClawCubeIntake(intake, wrist, true, this)
+                new ClawIntake(GamePiece.CUBE, intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
     }
 
@@ -301,12 +301,12 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         switch (autoChooser.getSelected()) {
             case "default":
-                return new ClawCubeOuttake(intake, this).finallyDo((boolean interrupt) -> {
+                return new ClawOuttake(GamePiece.CUBE, intake, this).finallyDo((boolean interrupt) -> {
                     ++intakeToggle;
                 });
             case "BSC":
                 drive.pose = new Pose2d(1.66, .43, drive.getInitGyro()); // BSC
-                return new ClawCubeOuttake(intake, this)
+                return new ClawOuttake(GamePiece.CUBE, intake, this)
                         .withTimeout(2)
                         .andThen(autoBuilder.fullAuto(BSC))
                         .finallyDo((boolean interrupt) -> {
@@ -322,14 +322,14 @@ public class RobotContainer {
                 return new TestAuto(drive, intake);
             case "HSC":
                 drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());
-                return new ClawCubeOuttake(intake, this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
+                return new ClawOuttake(GamePiece.CUBE, intake, this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
                         });
             // return autoBuilder.fullAuto(HSC);
         }
 
-        return new ClawCubeOuttake(intake, this).finallyDo((boolean interrupt) -> {
+        return new ClawOuttake(GamePiece.CUBE, intake, this).finallyDo((boolean interrupt) -> {
             ++intakeToggle;
         });
     }
