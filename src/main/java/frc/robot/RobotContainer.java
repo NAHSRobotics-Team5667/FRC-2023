@@ -90,8 +90,8 @@ public class RobotContainer {
         lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
         intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to subsystems
-        wrist.setDefaultCommand(new WristCommand(wrist, this));
-        slide.setDefaultCommand(new SlideCommand(slide, this));
+        wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0));
+        slide.setDefaultCommand(new SlideCommand(slide, this, false, 0, false));
 
         currentElement = GamePiece.NONE;
         targetElement = GamePiece.NONE;
@@ -299,10 +299,12 @@ public class RobotContainer {
                 new ClawIntake(GamePiece.CONE, intake, wrist, true, this));
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
-                new ClawOuttake(GamePiece.CONE, intake, this));
+                new ClawOuttake(GamePiece.CONE, intake, this, 0));
+
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         bButton.and(bSecondButton).whileTrue( // outtake cube
-                new ClawOuttake(GamePiece.CUBE, intake, this));
+                new ClawOuttake(GamePiece.CUBE, intake, this, 0));
+
         // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
                 new ClawIntake(GamePiece.CUBE, intake, wrist, true, this));
@@ -323,7 +325,8 @@ public class RobotContainer {
             // autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
             // autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
             case "test":
-                return new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2);
+                return new SlideCommand(slide, this, true, 2, true).alongWith(new WristCommand(wrist, this, true, 1)
+                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 5)));
             case "ConeMid":
                 return autoBuilder.fullAuto(COM);
             case "ConeBottom":
@@ -337,12 +340,12 @@ public class RobotContainer {
             case "CubeTop":
                 return autoBuilder.fullAuto(CbOT);
             case "default":
-                return new ClawOuttake(GamePiece.CUBE, intake, this).finallyDo((boolean interrupt) -> {
+                return new ClawOuttake(GamePiece.CUBE, intake, this, 0).finallyDo((boolean interrupt) -> {
                     ++intakeToggle;
                 });
             case "BSC":
                 drive.pose = new Pose2d(1.66, .43, drive.getInitGyro()); // BSC
-                return new ClawOuttake(GamePiece.CUBE, intake, this)
+                return new ClawOuttake(GamePiece.CUBE, intake, this, 0)
                         .withTimeout(2)
                         .andThen(autoBuilder.fullAuto(BSC))
                         .finallyDo((boolean interrupt) -> {
@@ -358,14 +361,15 @@ public class RobotContainer {
                 return new TestAuto(drive, intake);
             case "HSC":
                 drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());
-                return new ClawOuttake(GamePiece.CUBE, intake, this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
+                return new ClawOuttake(GamePiece.CUBE, intake, this, 0).withTimeout(2)
+                        .andThen(autoBuilder.fullAuto(HSC))
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
                         });
             // return autoBuilder.fullAuto(HSC);
         }
 
-        return new ClawOuttake(GamePiece.CUBE, intake, this).finallyDo((boolean interrupt) -> {
+        return new ClawOuttake(GamePiece.CUBE, intake, this, 0).finallyDo((boolean interrupt) -> {
             ++intakeToggle;
         });
     }

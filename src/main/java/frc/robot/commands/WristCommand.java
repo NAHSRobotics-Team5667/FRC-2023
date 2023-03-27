@@ -13,11 +13,15 @@ import frc.robot.subsystems.WristSubsystem;
 public class WristCommand extends CommandBase {
     private WristSubsystem wrist;
     private RobotContainer robotContainer;
+    boolean autoOverride;
+    int positionAuto = 0;
+    int index = 0;
 
     /** Creates a new WristCommand. */
-    public WristCommand(WristSubsystem wrist, RobotContainer robotContainer) {
+    public WristCommand(WristSubsystem wrist, RobotContainer robotContainer, boolean autoOverride, int positionAuto) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.wrist = wrist;
+        this.positionAuto = positionAuto;
         this.robotContainer = robotContainer;
         addRequirements(wrist);
     }
@@ -31,14 +35,22 @@ public class WristCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+
         // Uncomment below if controlling wrist with controller
         // wrist.setWrist(RobotContainer.slideController.getRightX() / 3);
-
         double position = WristConstants.kWristSafePosition;
+
         // default position is stowaway
 
         GamePiece currentElement = robotContainer.getCurrentElement(),
                 targetElement = robotContainer.getTargetElement();
+
+        if (autoOverride) {
+            index = positionAuto;
+
+        } else {
+            index = robotContainer.getPositionLevel() - 1;
+        }
 
         if (robotContainer.getPositionLevel() == 0) {
             if (currentElement.equals(GamePiece.CONE)) {
@@ -46,16 +58,16 @@ public class WristCommand extends CommandBase {
             }
         } else { // position level > 0
             if (targetElement.equals(GamePiece.CONE)) {
-                position = WristConstants.coneIntakeSetpoints[robotContainer.getPositionLevel() - 1];
+                position = WristConstants.coneIntakeSetpoints[index];
                 // length = 3
             } else if (targetElement.equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeIntakeSetpoints[robotContainer.getPositionLevel() - 1];
+                position = WristConstants.cubeIntakeSetpoints[index];
                 // length = 1
             } else if (currentElement.equals(GamePiece.CONE)) {
-                position = WristConstants.coneOuttakeSetpoints[robotContainer.getPositionLevel() - 1];
+                position = WristConstants.coneOuttakeSetpoints[index];
                 // length = 3
             } else if (currentElement.equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeOuttakeSetpoints[robotContainer.getPositionLevel() - 1];
+                position = WristConstants.cubeOuttakeSetpoints[index];
                 // length = 3
             }
         }

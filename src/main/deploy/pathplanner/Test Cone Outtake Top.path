@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.9897140648982155,
-        "y": 4.967338139804485
+        "x": 1.8298457109734734,
+        "y": 4.933080635392041
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.989714064898217,
-        "y": 4.967338139804485
+        "x": 2.829845710973473,
+        "y": 4.933080635392041
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,12 +24,12 @@
     },
     {
       "anchorPoint": {
-        "x": 1.99,
-        "y": 4.97
+        "x": 1.83,
+        "y": 4.93
       },
       "prevControl": {
-        "x": 0.99,
-        "y": 4.97
+        "x": 0.8300000000000001,
+        "y": 4.93
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -39,17 +39,23 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
+        "executionBehavior": "parallelDeadline",
+        "waitBehavior": "after",
         "waitTime": 0
       }
     }
   ],
   "markers": [
     {
-      "position": 0.0,
+      "position": 0.036363636363644425,
       "names": [
         "OuttakeConeTop"
+      ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "event"
       ]
     },
     {

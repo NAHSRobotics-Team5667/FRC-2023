@@ -18,14 +18,17 @@ public class ClawOuttake extends CommandBase {
     RobotContainer robotContainer;
     Lights lightstrip;
     GamePiece gamePiece;
+    double delay = 0;
+    double clock = 0;
 
     /** Creates a new IntakeOuttakeProcessClaw. */
-    public ClawOuttake(GamePiece gamePiece, IntakeSubsystem claw, RobotContainer robotContainer) {
+    public ClawOuttake(GamePiece gamePiece, IntakeSubsystem claw, RobotContainer robotContainer, double delay) {
         this.gamePiece = gamePiece;
         this.claw = claw;
         this.robotContainer = robotContainer;
         this.lightstrip = robotContainer.lightstrip;
         addRequirements(claw);
+        this.delay = delay;
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
@@ -42,15 +45,19 @@ public class ClawOuttake extends CommandBase {
     @Override
     public void execute() {
         // runs for set time
-        double intakeSpeed = 0;
+        if (delay < clock && delay != 0) {
+            clock += .02;
+        } else {
+            double intakeSpeed = 0;
 
-        if (gamePiece == CUBE) {
-            intakeSpeed = 1;
-        } else if (gamePiece == CONE) {
-            intakeSpeed = -0.45;
+            if (gamePiece == CUBE) {
+                intakeSpeed = 1;
+            } else if (gamePiece == CONE) {
+                intakeSpeed = -0.45;
+            }
+
+            claw.setIntake(intakeSpeed);
         }
-
-        claw.setIntake(intakeSpeed);
     }
 
     // Called once the command ends or is interrupted.

@@ -14,14 +14,20 @@ import frc.robot.subsystems.SlideSubsystem;
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
     RobotContainer robotContainer;
+    boolean autoOverride = false;
+    boolean isCubeAuto = false;
+    int positionAuto = 0;
+    int positionLevel = 0;
     private boolean hasTension, hasZeroed;
 
     /** Creates a new SlideCommand. */
-    public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer) {
+    public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer, boolean autoOverride, int positionAuto,
+            boolean isCubeAuto) {
         this.robotContainer = robotContainer;
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
-
+        this.autoOverride = autoOverride;
+        this.positionAuto = positionAuto;
         hasTension = false;
         hasZeroed = false;
 
@@ -34,6 +40,13 @@ public class SlideCommand extends CommandBase {
         hasTension = false; // initialize boolean checkers just in case
         hasZeroed = false;
         slide.setSlide(0);
+        if (autoOverride) {
+            if (isCubeAuto) {
+                robotContainer.setCurrentElement(GamePiece.CUBE);
+            } else {
+                robotContainer.setCurrentElement(GamePiece.CONE);
+            }
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -61,7 +74,13 @@ public class SlideCommand extends CommandBase {
                 }
             }
         } else {
-            int positionLevel = robotContainer.getPositionLevel();
+
+            if (autoOverride) {
+                this.positionLevel = positionAuto;
+
+            } else {
+                this.positionLevel = robotContainer.getPositionLevel();
+            }
 
             if (positionLevel == 0) {
                 position = -1; // set slide to go to -1 inches - eliminates any error
