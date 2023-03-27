@@ -30,6 +30,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.OuttakeConeMaxHeightAuto;
 import frc.robot.commands.OuttakeCubeAuto;
 import frc.robot.Constants.WristConstants;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.ClawConeIntake;
 import frc.robot.commands.ClawConeOuttake;
 import frc.robot.commands.ClawCubeIntake;
@@ -135,6 +136,7 @@ public class RobotContainer {
 
         eventMap.put("OuttakeCubeTop", new OuttakeCubeAuto(this, wrist, intake, slide, 2));
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+        eventMap.put("balance", new AutoBalance(this, drive));
         eventMap.put("IntakeCone", new ClawConeIntake(intake, wrist, intakeFinish, this));
         eventMap.put("IntakeCube", new ClawCubeIntake(intake, wrist, intakeFinish, this));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
@@ -148,145 +150,6 @@ public class RobotContainer {
                 return drive.getPositionPose2d();
             }
         };
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
-        ;
 
         Consumer<Pose2d> resetPoseConsumer = new Consumer<Pose2d>() {
             @Override
@@ -328,7 +191,6 @@ public class RobotContainer {
         autoChooser.setDefaultOption("default", "default");
 
         SmartDashboard.putData(autoChooser);
-        // ===================================================================
     }
 
     // ===================================================================
@@ -364,19 +226,19 @@ public class RobotContainer {
     }
 
     public void updatePositionLevel(boolean isLeftBumperPressed, boolean isRightBumperPressed) {
-        int maxPositionLevel = 3;
+        int maxPositionLevel = 0;
         // set max position level
-        // switch (getTargetElement()) {
-        // case CONE:
-        // maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
-        // break;
-        // case CUBE:
-        // maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
-        // break;
-        // default:
-        // maxPositionLevel = (getCurrentElement().equals(GamePiece.NONE)) ? 0 : 3;
-        // break;
-        // }
+        switch (getTargetElement()) {
+            case CONE:
+                maxPositionLevel = WristConstants.coneIntakeSetpoints.length;
+                break;
+            case CUBE:
+                maxPositionLevel = WristConstants.cubeIntakeSetpoints.length;
+                break;
+            default:
+                maxPositionLevel = (getCurrentElement().equals(GamePiece.NONE)) ? 0 : 3;
+                break;
+        }
 
         if (getPositionLevel() < maxPositionLevel && isRightBumperPressed) {
             positionLevel++;
