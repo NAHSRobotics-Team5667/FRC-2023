@@ -14,8 +14,7 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class PoleFinder extends SubsystemBase {
-    public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue); // TODO: Check if
-                                                                                                    // this works
+    public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue);
 
     public static final class FieldConstants {
         public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);

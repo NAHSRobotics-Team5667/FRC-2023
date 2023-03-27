@@ -4,30 +4,27 @@
 
 package frc.robot.commands;
 
+import static frc.robot.RobotContainer.GamePiece.*;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Lights;
 
-public class ClawConeOuttake extends CommandBase {
-    // TODO: this is a copy of ClawCubeOuttake, but with the intake speed reversed.
-    // This is a bad way to do this. We should have a single command that takes a
-    // parameter for the direction of the intake.
-    // Counter TODO: The issue with making it all in one command is that the
-    // ConfigureButtonBindings command only runs once, which means the triggers and
-    // commands linked to them are only defined the way they are at instantiation,
-    // meaning that we cant pass a changing variable in them to sense that.
+public class ClawOuttake extends CommandBase {
     double stopClock;
     IntakeSubsystem claw;
     RobotContainer robotContainer;
     Lights lightstrip;
+    GamePiece gamePiece;
     /** Creates a new IntakeOuttakeProcessClaw. */
-    public ClawConeOuttake(IntakeSubsystem claw, RobotContainer robotContainer) {
+    public ClawOuttake(GamePiece gamePiece, IntakeSubsystem claw, RobotContainer robotContainer) {
+        this.gamePiece = gamePiece;
         this.claw = claw;
         this.robotContainer = robotContainer;
+        this.lightstrip = robotContainer.lightstrip;
         addRequirements(claw);
-        lightstrip = robotContainer.lightstrip;
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
@@ -37,7 +34,7 @@ public class ClawConeOuttake extends CommandBase {
         stopClock = 0;
         lightstrip.scheduler.setLightEffect(() -> {
             lightstrip.setSolidRGB(0, 255, 0);
-        }, .5, 25, .14);
+        }, .6, 25, .14);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -45,7 +42,8 @@ public class ClawConeOuttake extends CommandBase {
     public void execute() {
         // runs for set time
         if (stopClock < 10) {
-            claw.setIntake(-.45);
+            double intakeSpeed = (gamePiece == CUBE) ? .6 : -.45;
+            claw.setIntake(intakeSpeed);
             stopClock += .02;
         } else {
             robotContainer.outtakeFinish = true;

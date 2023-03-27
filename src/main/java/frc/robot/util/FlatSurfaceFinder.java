@@ -15,7 +15,6 @@ import frc.robot.RobotContainer;
 
 public class FlatSurfaceFinder extends SubsystemBase {
     public static boolean isBlue = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue); 
-
     public static final class FieldConstants {
         public static final Rotation2d REDANGLE_ROTATION2D = new Rotation2d(0);
         public static final List<Pose2d> REDFLATSURFACES_POSE2DS = new ArrayList<Pose2d>() {

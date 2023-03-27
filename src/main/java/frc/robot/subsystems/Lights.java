@@ -96,12 +96,12 @@ public class Lights extends SubsystemBase {
      * 
      * @param hue              The hue of the cylon from [0-180]
      * @param saturation       The saturation of the cylon from [0-255]
-     * @param speed_multiplier The speed multiplier of the cylon. <strong>This is
-     *                         how you speed up the light effect.</strong>
+     * @param speed_multiplier The speed multiplier of the cylon. <em>This is
+     *                         how you speed up the light effect.</em>
      */
     public void cylon(int hue, int saturation, int speed_multiplier) {
         for (var i = 0; i < ledBuffer.getLength(); i++) {
-            int value = 250 - (Math.abs(this.cylon_center - i) * 50);
+            int value = 255 - (Math.abs(this.cylon_center - i) * 50);
             if (value < 0) {
                 value = 0;
             }
@@ -113,30 +113,27 @@ public class Lights extends SubsystemBase {
         } // makes the cylon go back and forth
     }
 
-    public void cylon_but_two(int hue, int saturation, int speed_multiplier, int hue2, int sat2) { // TODO: make this
-                                                                                                   // not awful
-                                                                                                   // Counter TODO: Ok
-                                                                                                   // but like how else
-                                                                                                   // can you do this
+    /**
+     * Creates a cylon effect but with two opposite things...
+     * @param hue The hue of the cylon from [0-180]
+     * @param saturation The saturation of the cylon from [0-255]
+     * @param speed_multiplier  The speed multiplier of the cylon. <em>This is how you speed up the light effect.</em>
+     * @param hue2 The hue of the second cylon from [0-180]
+     * @param sat2 The saturation of the second cylon from [0-255]
+     */
+    public void cylon_but_two(int hue, int saturation, int speed_multiplier, int hue2, int sat2) {
         for (var i = 0; i < ledBuffer.getLength(); i++) {
-            int value = 250 - (Math.abs(this.cylon_center - i) * 40);
+            int value = 255 - (Math.abs(this.cylon_center - i) * 40);
+            this.ledBuffer.setHSV(i, hue, saturation, value);
             if (value < 0) {
                 value = 0;
-            }
-            this.ledBuffer.setHSV(i, hue, saturation, value);
-        }
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            if (ledBuffer.getLED(i).equals(new Color(0, 0, 0))) {
-                int value = 250
-                        - (Math.abs((ledBuffer.getLength() - this.cylon_center) % ledBuffer.getLength() - i)
-                                * 40);
-                if (value < 0) {
-                    value = 0;
+                int value2 = 255 - (Math.abs((ledBuffer.getLength() - this.cylon_center) % ledBuffer.getLength() - i) * 40);
+                if (value2 < 0) {
+                    value2 = 0;
                 }
-                this.ledBuffer.setHSV(i, hue2, sat2, value);
-            }
+                this.ledBuffer.setHSV(i, hue2, sat2, value2);
+            } // this is a bit wierd but it should be faster to compute than before (at least double speed)
         }
-
         this.cylon_center += (cylon_velocity * speed_multiplier);
         if (this.cylon_center >= this.ledBuffer.getLength() || this.cylon_center < 0) {
             this.cylon_velocity *= -1;
@@ -177,6 +174,7 @@ public class Lights extends SubsystemBase {
     }
 
     long teleop_start_time = Long.MAX_VALUE;
+    long auto_start_time = Long.MAX_VALUE;
 
     /**
      * Sets the current period of the game. This is used to set the default light
@@ -189,6 +187,9 @@ public class Lights extends SubsystemBase {
         scheduler.setDefaultLightEffect();
         if (p == period.TELEOP) {
             teleop_start_time = System.currentTimeMillis();
+        }
+        if (p == period.AUTO) {
+            auto_start_time = System.currentTimeMillis();
         }
         this.teamColor = DriverStation.getAlliance().equals(Alliance.Red) ? new Color(255, 0, 0) : new Color(0, 0, 255);
     }
@@ -213,8 +214,6 @@ public class Lights extends SubsystemBase {
         LightEffect default_disabled, defualt_teleop, defualt_auto, default_endgame;
 
         LightEffect[] tests = new LightEffect[] {
-                // () -> {Lights.this.setSolidRGB(0, 0, 0);},
-                // () -> {Lights.this.setSolidRGB(255, 255, 255);}
                 () -> {
                     Lights.this.flashingRGB(255, 0, 0);
                 },
@@ -250,13 +249,13 @@ public class Lights extends SubsystemBase {
          * Sets the light effect to the specified effect for the specified duration.
          * 
          * @param effect         The light effect to be applied. see the default effects
-         *                       in
-         *                       {@link #Light_Scheduler} for an example of how to do
+         *                       in {@link #Light_Scheduler} for an example of how to do
          *                       this.
          * @param duration       The duration of the light effect in seconds.
          * @param ticks_per_call How ofted the light effect should be applied. A value
-         *                       of 1 is every .02 seconds. <strong>This is how you slow
-         *                       down the light effect.</strong>
+         *                       of 1 is every .02 seconds. <em>This is how you slow
+         *                       down the light effect.</em>
+         * @param fade_duration  The duration of the fade to this effect in seconds.
          */
         public void setLightEffect(LightEffect effect, double duration, int ticks_per_call, double fade_duration) {
             this.current_effect = effect;
@@ -364,7 +363,11 @@ public class Lights extends SubsystemBase {
         this.led.setData(ledBuffer);
 
         // After 1:45 (105000ms) of teleop, set the period to endgame
-        if (System.currentTimeMillis() - teleop_start_time >= 105000 && this.currentPeriod == period.TELEOP) {
+        if (this.currentPeriod == period.TELEOP && System.currentTimeMillis() - teleop_start_time >= 105000) {
+            setPeriod(period.ENDGAME);
+            // After 15 seconds of auto, set the period to endgame (the transition for 3
+            // seconds)
+        } else if (this.currentPeriod == period.AUTO && System.currentTimeMillis() - auto_start_time >= 15000) {
             setPeriod(period.ENDGAME);
         }
     }

@@ -25,28 +25,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.OuttakeConeMaxHeightAuto;
-import frc.robot.commands.OuttakeCubeAuto;
 import frc.robot.Constants.WristConstants;
-import frc.robot.commands.AutoBalance;
-import frc.robot.commands.ClawConeIntake;
-import frc.robot.commands.ClawConeOuttake;
-import frc.robot.commands.ClawCubeIntake;
-import frc.robot.commands.ClawCubeOuttake;
-import frc.robot.commands.DrivetrainCommand;
-import frc.robot.commands.TestAuto;
-import frc.robot.commands.SlideCommand;
-import frc.robot.commands.WristCommand;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Lights;
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.SlideSubsystem;
-import frc.robot.subsystems.WristSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.util.FlatSurfaceFinder;
 import frc.robot.util.PoleFinder;
-import frc.robot.subsystems.LimelightSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -99,9 +82,7 @@ public class RobotContainer {
         turnMultiplier = 0.7;
 
         limelight = new LimelightSubsystem(); // instantiate commands
-
         poseEstimate = new PoseEstimator(drive, limelight);
-
         wrist = new WristSubsystem(this);
         intake = new IntakeSubsystem();
         slide = new SlideSubsystem();
@@ -137,8 +118,8 @@ public class RobotContainer {
         eventMap.put("OuttakeCubeMid", new OuttakeCubeAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeCubeBottom", new OuttakeCubeAuto(this, wrist, intake, slide, 0));
         eventMap.put("balance", new AutoBalance(this, drive));
-        eventMap.put("IntakeCone", new ClawConeIntake(intake, wrist, intakeFinish, this));
-        eventMap.put("IntakeCube", new ClawCubeIntake(intake, wrist, intakeFinish, this));
+        eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, wrist, intakeFinish, this));
+        eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, wrist, intakeFinish, this));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
         eventMap.put("OuttakeConeMid", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeConeBottom", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 0));
@@ -306,16 +287,16 @@ public class RobotContainer {
         // makes all triggers
 
         aButton.and(xButton).whileTrue( // intake cone
-                new ClawConeIntake(intake, wrist, true, this)
+                new ClawIntake(GamePiece.CONE,intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
-                new ClawConeOuttake(intake, this)
+                new ClawOuttake(GamePiece.CONE, intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         bButton.and(bSecondButton).whileTrue( // outtake cube
-                new ClawCubeOuttake(intake, this)
+                new ClawOuttake(GamePiece.CUBE, intake, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
-                new ClawCubeIntake(intake, wrist, true, this)
+                new ClawIntake(GamePiece.CUBE, intake, wrist, true, this)
                         .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
     }
 
@@ -327,12 +308,12 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         switch (autoChooser.getSelected()) {
             case "default":
-                return new ClawCubeOuttake(intake, this).finallyDo((boolean interrupt) -> {
+                return new ClawOuttake(GamePiece.CUBE, intake, this).finallyDo((boolean interrupt) -> {
                     ++intakeToggle;
                 });
             case "BSC":
                 drive.pose = new Pose2d(1.66, .43, drive.getInitGyro()); // BSC
-                return new ClawCubeOuttake(intake, this)
+                return new ClawOuttake(GamePiece.CUBE, intake, this)
                         .withTimeout(2)
                         .andThen(autoBuilder.fullAuto(BSC))
                         .finallyDo((boolean interrupt) -> {
@@ -348,14 +329,14 @@ public class RobotContainer {
                 return new TestAuto(drive, intake);
             case "HSC":
                 drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());
-                return new ClawCubeOuttake(intake, this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
+                return new ClawOuttake(GamePiece.CUBE, intake, this).withTimeout(2).andThen(autoBuilder.fullAuto(HSC))
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
                         });
             // return autoBuilder.fullAuto(HSC);
         }
 
-        return new ClawCubeOuttake(intake, this).finallyDo((boolean interrupt) -> {
+        return new ClawOuttake(GamePiece.CUBE, intake, this).finallyDo((boolean interrupt) -> {
             ++intakeToggle;
         });
     }
