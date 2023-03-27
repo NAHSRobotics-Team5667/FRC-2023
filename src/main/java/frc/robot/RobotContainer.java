@@ -105,7 +105,7 @@ public class RobotContainer {
 
         wrist = new WristSubsystem(this);
         intake = new IntakeSubsystem();
-        slide = new SlideSubsystem(this);
+        slide = new SlideSubsystem();
         lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
         intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to subsystems
