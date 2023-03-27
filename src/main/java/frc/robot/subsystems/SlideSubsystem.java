@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.SlideConstants;
 
 public class SlideSubsystem extends SubsystemBase {
@@ -173,7 +172,6 @@ public class SlideSubsystem extends SubsystemBase {
         } else if (getTopLimitSwitch() || rightSlide.getSelectedSensorPosition() >= SlideConstants.maxEncoderTicks) {
             percentOutput = Math.min(percentOutput, 0);
         }
-
         leftSlide.set(ControlMode.PercentOutput, percentOutput);
         rightSlide.set(ControlMode.PercentOutput, percentOutput);
     }
@@ -193,17 +191,11 @@ public class SlideSubsystem extends SubsystemBase {
                 controller.calculate(getSlideHeightInches(),
                         inchesSetpoint),
                 -0.4, 0.4);
-
-        // double output = controller.calculate(
-        // getSlideHeightInches(),
-        // inchesSetpoint);
-
         return output;
     }
 
     public void setSlidePIDInches(double inchesSetpoint) {
         double output = getPIDOutput(inchesSetpoint);
-
         setSlide(output);
     }
 
@@ -220,7 +212,6 @@ public class SlideSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Slide Encoder", getRightRawEncoder());
         SmartDashboard.putNumber("Right Slide Inches", getSlideHeightInches());
         SmartDashboard.putNumber("Slide Error", getPositionError());
-
         SmartDashboard.putNumber("Slide Stator", rightSlide.getStatorCurrent());
         // SmartDashboard.putNumber("Slide Setpoint",
         // controller.getSetpoint().position); // Profiled PID Controller
@@ -236,19 +227,15 @@ public class SlideSubsystem extends SubsystemBase {
         // if (getSlideHeightInches() < 15) {
         // robotContainer.setSpeedMultiplier(0.7);
         // robotContainer.setTurnMultiplier(0.7);
-
         // } else if (getSlideHeightInches() >= 15 && getSlideHeightInches() < 30) {
         // robotContainer.setSpeedMultiplier(0.7);
         // robotContainer.setTurnMultiplier(0.5);
-
         // } else if (getSlideHeightInches() >= 30 && getSlideHeightInches() < 45) {
         // robotContainer.setSpeedMultiplier(0.5);
         // robotContainer.setSpeedMultiplier(0.4);
-
         // } else { // getSlideHeightInches() >= 45
         // robotContainer.setSpeedMultiplier(0.3);
         // robotContainer.setSpeedMultiplier(0.3);
-
         // }
     }
 }

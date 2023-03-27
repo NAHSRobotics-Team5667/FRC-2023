@@ -120,7 +120,6 @@ public final class Constants {
                 new Pose2d(0, 0, BLUE_ROTATION2D),
                 new Pose2d(0, 0, BLUE_ROTATION2D),
                 new Pose2d(0, 0, BLUE_ROTATION2D) };
-
     }
 
     public static final class IntakeConstants {
@@ -174,7 +173,7 @@ public final class Constants {
 
         public static final int kLSlideID = 2;
         public static final int kRSlideID = 4;
-        public static final double kSlideConstant = 1 / 16384; // TODO: do somethin
+        public static final double kSlideConstant = 1 / 16384; 
 
         public static final int EncoderId = -1;
         public static final int EncoderOffset = -1;
@@ -316,5 +315,4 @@ public final class Constants {
         public static final int lightstrip1Port = 9;
         public static final int lightstrip1Length = 150;
     }
-
 }

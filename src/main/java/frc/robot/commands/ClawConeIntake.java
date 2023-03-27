@@ -17,7 +17,6 @@ public class ClawConeIntake extends CommandBase {
     public IntakeSubsystem clawSubsystem;
 
     public WristSubsystem wrist;
-    public boolean isCube;
 
     public RobotContainer robotContainer;
     // these will be the heights of the slide at different points. The height will
@@ -30,7 +29,6 @@ public class ClawConeIntake extends CommandBase {
         this.wrist = wrist;
         this.robotContainer = robotContainer;
 
-        // addRequirements(clawSubsystem, wrist);
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
@@ -55,7 +53,7 @@ public class ClawConeIntake extends CommandBase {
         if (clawSubsystem.intake.getStatorCurrent() < 70) {
             clawSubsystem.setIntake(.45);
         } else {
-            robotContainer.setCurrentElement(GamePiece.CUBE);
+            robotContainer.setCurrentElement(GamePiece.CONE);
             robotContainer.setTargetElement(GamePiece.NONE);
             robotContainer.intakeFinish = true;
         }
@@ -67,9 +65,7 @@ public class ClawConeIntake extends CommandBase {
     public void end(boolean interrupted) {
         robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
-
         robotContainer.setPositionLevel(0);
-
         robotContainer.setCurrentElement(GamePiece.CONE);
         robotContainer.setTargetElement(GamePiece.NONE);
     }

@@ -17,7 +17,6 @@ public class ClawCubeIntake extends CommandBase {
     public IntakeSubsystem clawSubsystem;
 
     public WristSubsystem wrist;
-    public boolean isCube;
 
     public RobotContainer robotContainer;
     // these will be the heights of the slide at different points. The height will

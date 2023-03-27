@@ -26,28 +26,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.OuttakeConeMaxHeightAuto;
-import frc.robot.commands.OuttakeCubeAuto;
 import frc.robot.Constants.WristConstants;
-import frc.robot.commands.AutoBalance;
-import frc.robot.commands.ClawConeIntake;
-import frc.robot.commands.ClawConeOuttake;
-import frc.robot.commands.ClawCubeIntake;
-import frc.robot.commands.ClawCubeOuttake;
-import frc.robot.commands.DrivetrainCommand;
-import frc.robot.commands.TestAuto;
-import frc.robot.commands.SlideCommand;
-import frc.robot.commands.WristCommand;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Lights;
-import frc.robot.subsystems.PoseEstimator;
-import frc.robot.subsystems.SlideSubsystem;
-import frc.robot.subsystems.WristSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.util.FlatSurfaceFinder;
 import frc.robot.util.PoleFinder;
-import frc.robot.subsystems.LimelightSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -100,9 +83,7 @@ public class RobotContainer {
         turnMultiplier = 0.7;
 
         limelight = new LimelightSubsystem(); // instantiate commands
-
         poseEstimate = new PoseEstimator(drive, limelight);
-
         wrist = new WristSubsystem(this);
         intake = new IntakeSubsystem();
         slide = new SlideSubsystem();
