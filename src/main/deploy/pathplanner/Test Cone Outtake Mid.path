@@ -16,8 +16,10 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "sequential",
+        "names": [
+          "OuttakeConeMid"
+        ],
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -45,18 +47,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.0,
-      "names": [
-        "OuttakeConeMax"
-      ]
-    },
-    {
-      "position": 0.0,
-      "names": [
-        "event"
-      ]
-    }
-  ]
+  "markers": []
 }

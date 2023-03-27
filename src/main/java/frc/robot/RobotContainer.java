@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.IntakeCommand;
@@ -135,11 +134,14 @@ public class RobotContainer {
         HashMap<String, Command> eventMap = new HashMap();
 
         eventMap.put("OuttakeCubeTop", new OuttakeCubeAuto(this, wrist, intake, slide, 2));
-        eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+        eventMap.put("OuttakeCubeMid", new OuttakeCubeAuto(this, wrist, intake, slide, 1));
+        eventMap.put("OuttakeCubeBottom", new OuttakeCubeAuto(this, wrist, intake, slide, 0));
         eventMap.put("balance", new AutoBalance(this, drive));
         eventMap.put("IntakeCone", new ClawConeIntake(intake, wrist, intakeFinish, this));
         eventMap.put("IntakeCube", new ClawCubeIntake(intake, wrist, intakeFinish, this));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
+        eventMap.put("OuttakeConeMid", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 1));
+        eventMap.put("OuttakeConeBottom", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 0));
         // add Outtake top height for cone and cube
         // add intake for cone and cube
         // add auto-balance
@@ -187,7 +189,12 @@ public class RobotContainer {
         autoChooser.addOption("CSC", "CSC");
         autoChooser.addOption("BSC", "BSC");
         autoChooser.addOption("HSC", "HSC");
-        autoChooser.addOption("test", "Test Cone Outtake");
+        autoChooser.addOption("ConeTop", "Test Cone Outtake Top");
+        autoChooser.addOption("ConeMid", "Test Cone Outtake Mid");
+        autoChooser.addOption("ConeBottom", "Test Cone Outtake Bottom");
+        autoChooser.addOption("CubeTop", "Test Cube Outtake Top");
+        autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
+        autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
         autoChooser.setDefaultOption("default", "default");
 
         SmartDashboard.putData(autoChooser);
