@@ -20,8 +20,7 @@ public class ClawIntake extends CommandBase {
     public IntakeSubsystem clawSubsystem;
     public WristSubsystem wrist;
     public RobotContainer robotContainer;
-    // these will be the heights of the slide at different points. The height will
-    // be set as ClawConstants.ClawSetpoints[bumperPos]
+    public Lights lightstrip;
 
     /** Creates a new SlideIntakeAndOuttakeCommand. */
     public ClawIntake(GamePiece gamePiece, IntakeSubsystem clawSubsystem, WristSubsystem wrist, boolean isCube,
@@ -39,14 +38,13 @@ public class ClawIntake extends CommandBase {
     public void initialize() {
         robotContainer.setCurrentElement(GamePiece.NONE);
         robotContainer.setTargetElement(gamePiece);
-
-        Lights lightstrip = robotContainer.lightstrip;
+        lightstrip = robotContainer.lightstrip;
         lightstrip.scheduler.setLightEffect(
                 (gamePiece == CUBE) ? () -> {
                     lightstrip.flashingRGB(194, 3, 252);
                 } : () -> {
                     lightstrip.flashingRGB(252, 211, 3);
-                }, 2, 15, .1);
+                }, 14, 15, .1, "intake");
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -64,18 +62,21 @@ public class ClawIntake extends CommandBase {
             // robotContainer.intakeFinish = true;
         }
 
-        if (gamePiece.equals(CONE)) {
-            if (!(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {
-                robotContainer.setCurrentElement(gamePiece);
-                robotContainer.setTargetElement(GamePiece.NONE);
-                robotContainer.intakeFinish = true;
-            }
-        } else if (gamePiece.equals(CUBE)) {
-            if (!(RobotContainer.slideController.getBButton() && RobotContainer.slideController.getYButton())) {
-                robotContainer.setCurrentElement(gamePiece);
-                robotContainer.setTargetElement(GamePiece.NONE);
-                robotContainer.intakeFinish = true;
-            }
+        if (gamePiece.equals(CONE) &&
+                !(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {
+            finish();
+        } else if (gamePiece.equals(CUBE) &&
+                !(RobotContainer.slideController.getBButton() && RobotContainer.slideController.getYButton())) {
+            finish();
+        }
+    }
+
+    public void finish() {
+        robotContainer.setCurrentElement(gamePiece);
+        robotContainer.setTargetElement(GamePiece.NONE);
+        robotContainer.intakeFinish = true;
+        if (lightstrip.scheduler.getCurrentEffectName().equals("intake")) {
+            lightstrip.scheduler.setTimer(0);
         }
     }
 

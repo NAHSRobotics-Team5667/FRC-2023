@@ -115,11 +115,13 @@ public class Lights extends SubsystemBase {
 
     /**
      * Creates a cylon effect but with two opposite things...
-     * @param hue The hue of the cylon from [0-180]
-     * @param saturation The saturation of the cylon from [0-255]
-     * @param speed_multiplier  The speed multiplier of the cylon. <em>This is how you speed up the light effect.</em>
-     * @param hue2 The hue of the second cylon from [0-180]
-     * @param sat2 The saturation of the second cylon from [0-255]
+     * 
+     * @param hue              The hue of the cylon from [0-180]
+     * @param saturation       The saturation of the cylon from [0-255]
+     * @param speed_multiplier The speed multiplier of the cylon. <em>This is how
+     *                         you speed up the light effect.</em>
+     * @param hue2             The hue of the second cylon from [0-180]
+     * @param sat2             The saturation of the second cylon from [0-255]
      */
     public void cylon_but_two(int hue, int saturation, int speed_multiplier, int hue2, int sat2) {
         for (var i = 0; i < ledBuffer.getLength(); i++) {
@@ -127,12 +129,14 @@ public class Lights extends SubsystemBase {
             this.ledBuffer.setHSV(i, hue, saturation, value);
             if (value < 0) {
                 value = 0;
-                int value2 = 255 - (Math.abs((ledBuffer.getLength() - this.cylon_center) % ledBuffer.getLength() - i) * 40);
+                int value2 = 255
+                        - (Math.abs((ledBuffer.getLength() - this.cylon_center) % ledBuffer.getLength() - i) * 40);
                 if (value2 < 0) {
                     value2 = 0;
                 }
                 this.ledBuffer.setHSV(i, hue2, sat2, value2);
-            } // this is a bit wierd but it should be faster to compute than before (at least double speed)
+            } // this is a bit wierd but it should be faster to compute than before (at least
+              // double speed)
         }
         this.cylon_center += (cylon_velocity * speed_multiplier);
         if (this.cylon_center >= this.ledBuffer.getLength() || this.cylon_center < 0) {
@@ -207,6 +211,8 @@ public class Lights extends SubsystemBase {
 
     public class Light_Scheduler {
         private LightEffect current_effect;
+        /* metadata that is useful for certain events (see the default effects) */
+        private String current_effect_name = "None";
         private long tick_counter = 0;
         private int ticks_per_call = 1, test_index = 0;
         private double time_left = 0, fade_time_left = 0; // in seconds
@@ -266,6 +272,27 @@ public class Lights extends SubsystemBase {
             if (fade_duration > 0) {
                 this.fadeLightEffectInit();
             }
+            this.current_effect_name = "Undefined";
+        }
+
+        /**
+         * Sets the light effect to the specified effect for the specified duration.
+         * 
+         * @param effect         The light effect to be applied. see the default effects
+         *                       in {@link #Light_Scheduler} for an example of how to do
+         *                       this.
+         * @param duration       The duration of the light effect in seconds.
+         * @param ticks_per_call How ofted the light effect should be applied. A value
+         *                       of 1 is every .02 seconds. <em>This is how you slow
+         *                       down the light effect.</em>
+         * @param fade_duration  The duration of the fade to this effect in seconds.
+         * @param name           The name of the effect. This is used for conditional
+         *                       things
+         */
+        public void setLightEffect(LightEffect effect, double duration, int ticks_per_call, double fade_duration,
+                String name) {
+            this.setLightEffect(effect, duration, ticks_per_call, fade_duration);
+            this.current_effect_name = name;
         }
 
         private void fadeLightEffectInit() {
@@ -305,30 +332,30 @@ public class Lights extends SubsystemBase {
             period period = Lights.this.getPeriod();
             switch (period) {
                 case DISABLED:
-                    if (this.current_effect != default_disabled) {
-                        this.setLightEffect(default_disabled, 0, 1, .25);
+                    if (!this.current_effect_name.equals("Default Disabled")) {
+                        this.setLightEffect(default_disabled, 0, 1, .25, "Default Disabled");
                     }
                     break;
                 case AUTO:
-                    if (this.current_effect != defualt_auto) {
-                        this.setLightEffect(defualt_auto, 0, 1, .25);
+                    if (!this.current_effect_name.equals("Default Auto")) {
+                        this.setLightEffect(defualt_auto, 0, 1, .25, "Default Auto");
                     }
                     break;
                 case TELEOP:
-                    if (this.current_effect != defualt_teleop) {
-                        this.setLightEffect(defualt_teleop, 0, 1, .25);
+                    if (!this.current_effect_name.equals("Default Teleop")) {
+                        this.setLightEffect(defualt_teleop, 0, 1, .25, "Default Teleop");
                     }
                     break;
                 case TEST:
-                    if (this.current_effect != tests[test_index]) {
-                        this.setLightEffect(tests[test_index], 7, 1, 1);
+                    if (!this.current_effect_name.equals("Default Test")) {
+                        this.setLightEffect(tests[test_index], 7, 1, 1, "Default Test");
                     }
                     test_index++;
                     test_index %= tests.length;
                     break;
                 case ENDGAME:
-                    if (this.current_effect != default_endgame) {
-                        this.setLightEffect(default_endgame, 0, 25, .25);
+                    if (!this.current_effect_name.equals("Default Endgame")) {
+                        this.setLightEffect(default_endgame, 0, 25, .25, "Default Endgame");
                     }
                     break;
             }
@@ -354,6 +381,30 @@ public class Lights extends SubsystemBase {
             if (this.tick_counter == Long.MAX_VALUE) { // reset the tick counter to prevent overflow
                 this.tick_counter = 0;
             }
+        }
+
+        /**
+         * @return The time left in the current effect in seconds.
+         */
+        public double getTimer() {
+            return this.time_left;
+        }
+
+        /**
+         * Sets the time left in an effect to a specific value. This is useful when you
+         * want the effect to stop after a certain event
+         * 
+         * @param time The time left in the effect in seconds.
+         */
+        public void setTimer(double time) {
+            this.time_left = time;
+        }
+
+        /**
+         * @return The name of the current effect.
+         */
+        public String getCurrentEffectName() {
+            return this.current_effect_name;
         }
     }
 
