@@ -242,7 +242,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         /** Returns the rotation relative to the last resetGyro() called */
         public Rotation2d getInitGyro() {
-                Rotation2d gyro = new Rotation2d((this.gyro.getAngle() - gyroOffset - 90) * (Math.PI) / 180);
+                Rotation2d gyro = new Rotation2d((this.gyro.getAngle() - gyroOffset) * (Math.PI) / 180);
                 return gyro;
         }
 

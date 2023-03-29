@@ -67,8 +67,9 @@ public class RobotContainer {
     private double turnMultiplier;
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
-    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB; // autonomous trajectories, needs inital pose
-                                                                          // set to path initial pose
+    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB, Balance; // autonomous trajectories, needs
+                                                                                   // inital pose
+    // set to path initial pose
 
     private int positionLevel;
 
@@ -106,6 +107,7 @@ public class RobotContainer {
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
+        Balance = PathPlanner.loadPath("move balance", new PathConstraints(5, 5));
         CSC = PathPlanner.loadPath("CSC", new PathConstraints(5, 5));
         BSC = PathPlanner.loadPath("BSC", new PathConstraints(5, 5));
         HSC = PathPlanner.loadPath("HSC", new PathConstraints(5, 5));
@@ -121,7 +123,9 @@ public class RobotContainer {
         // in your code that will be used by all path following commands.
         @SuppressWarnings({ "unchecked", "rawtypes" })
         HashMap<String, Command> eventMap = new HashMap();
-
+        eventMap.put("Competition Auto", new SlideCommand(slide, this, true, 3, true, 5.5)
+                .alongWith(new WristCommand(wrist, this, true, 3, true, 5.5)
+                        .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 3.5))));
         eventMap.put("OuttakeCubeTop", new OuttakeCubeAuto(this, wrist, intake, slide, 2));
         eventMap.put("OuttakeCubeMid", new OuttakeCubeAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeCubeBottom", new OuttakeCubeAuto(this, wrist, intake, slide, 0));
@@ -175,7 +179,7 @@ public class RobotContainer {
                       // commands
         );
         configureButtonBindings();
-
+        autoChooser.addOption("competition", "competition");
         autoChooser.addOption("ClawTest", "ClawTest");
         autoChooser.addOption("CSC", "CSC");
         autoChooser.addOption("BSC", "BSC");
@@ -327,6 +331,9 @@ public class RobotContainer {
             // autoChooser.addOption("CubeTop", "Test Cube Outtake Top");
             // autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
             // autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
+            case "competition":
+                drive.pose = new Pose2d(1.90, 3.01, drive.getInitGyro());
+                return autoBuilder.fullAuto(Balance);
             case "AutoBalance":
                 return new AutoBalance(this, drive);
             case "clawtest":
