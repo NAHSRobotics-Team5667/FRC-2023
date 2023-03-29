@@ -19,6 +19,7 @@ public class DrivetrainCommand extends CommandBase {
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // haha changing slewratelimiters go brrrrr
+    @SuppressWarnings("unused")
     private final SlewRateLimiter xspeedLimiter = new SlewRateLimiter(2),
             yspeedLimiter = new SlewRateLimiter(2),
             rotLimiter = new SlewRateLimiter(3);

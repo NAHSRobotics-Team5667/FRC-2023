@@ -23,7 +23,7 @@ public class ClawIntake extends CommandBase {
     public Lights lightstrip;
 
     /** Creates a new SlideIntakeAndOuttakeCommand. */
-    public ClawIntake(GamePiece gamePiece, IntakeSubsystem clawSubsystem, WristSubsystem wrist, boolean isCube,
+    public ClawIntake(GamePiece gamePiece, IntakeSubsystem clawSubsystem, WristSubsystem wrist,
             RobotContainer robotContainer) {
         this.gamePiece = gamePiece;
         this.clawSubsystem = clawSubsystem;
@@ -58,11 +58,8 @@ public class ClawIntake extends CommandBase {
         if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
             clawSubsystem.setIntake(intakeSpeed);
         } else {
-            // robotContainer.setCurrentElement(gamePiece);
-            // robotContainer.setTargetElement(GamePiece.NONE);
-            // robotContainer.intakeFinish = true;
+            // finish();
         }
-
         if (gamePiece.equals(CONE) &&
                 !(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {
             finish();
@@ -84,10 +81,10 @@ public class ClawIntake extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        finish();
+        // TODO:I have a feeling the currentelement might need to be NONE if interrupted
         robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
-        robotContainer.setCurrentElement(gamePiece);
-        robotContainer.setTargetElement(GamePiece.NONE);
         robotContainer.setPositionLevel(0);
     }
 

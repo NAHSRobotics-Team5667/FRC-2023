@@ -126,8 +126,8 @@ public class RobotContainer {
         eventMap.put("OuttakeCubeMid", new OuttakeCubeAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeCubeBottom", new OuttakeCubeAuto(this, wrist, intake, slide, 0));
         eventMap.put("balance", new AutoBalance(this, drive));
-        eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, wrist, intakeFinish, this));
-        eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, wrist, intakeFinish, this));
+        eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, wrist, this));
+        eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, wrist, this));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
         eventMap.put("OuttakeConeMid", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeConeBottom", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 0));
@@ -299,7 +299,7 @@ public class RobotContainer {
         // makes all triggers
 
         aButton.and(xButton).whileTrue( // intake cone
-                new ClawIntake(GamePiece.CONE, intake, wrist, true, this));
+                new ClawIntake(GamePiece.CONE, intake, wrist, this));
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
                 new ClawOuttake(GamePiece.CONE, intake, this, 0.1));
@@ -310,7 +310,7 @@ public class RobotContainer {
 
         // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
-                new ClawIntake(GamePiece.CUBE, intake, wrist, true, this));
+                new ClawIntake(GamePiece.CUBE, intake, wrist, this));
         // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
     }
 

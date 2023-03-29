@@ -14,16 +14,11 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Lights;
 
 public class ClawOuttake extends CommandBase {
-    double stopClock;
     IntakeSubsystem claw;
     RobotContainer robotContainer;
     Lights lightstrip;
     GamePiece gamePiece;
-    double delay = 0;
-    double clock = 0;
-
-    double intakeSpeed;
-
+    double delay = 0, clock = 0, intakeSpeed, stopClock;
     String welp;
 
     /** Creates a new IntakeOuttakeProcessClaw. */
@@ -42,20 +37,19 @@ public class ClawOuttake extends CommandBase {
     @Override
     public void initialize() {
         stopClock = 0;
+        intakeSpeed = 0;
+        clock = 0;
+        welp = "huh";
+
         lightstrip.scheduler.setLightEffect(() -> {
             lightstrip.setSolidRGB(0, 255, 0);
         }, .6, 25, .14);
-
-        welp = "huh";
-        intakeSpeed = 0;
-        clock = 0;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         // runs for set time
-
         if (delay > clock && delay != 0) {
             clock += .02;
             welp = "stalled";
@@ -66,7 +60,6 @@ public class ClawOuttake extends CommandBase {
             } else if (gamePiece == CONE) {
                 intakeSpeed = -0.45;
                 welp = "cone going";
-
             } else if (delay + 1 > clock && delay != 0) {
                 intakeSpeed = 0;
                 welp = "welp";
@@ -76,7 +69,6 @@ public class ClawOuttake extends CommandBase {
 
         SmartDashboard.putNumber("Clock", clock);
         SmartDashboard.putString("welp", welp);
-
         SmartDashboard.putBoolean("B Slide", RobotContainer.slideController.getBButton());
         SmartDashboard.putBoolean("A Slide", RobotContainer.slideController.getAButton());
         SmartDashboard.putBoolean("B Drive", RobotContainer.driveController.getBButton());

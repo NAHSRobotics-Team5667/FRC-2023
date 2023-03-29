@@ -8,10 +8,7 @@ import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -193,7 +190,7 @@ public class SlideSubsystem extends SubsystemBase {
                         inchesSetpoint),
                 -0.6, 0.6);
 
-        output = (output < 0) ? MathUtil.clamp(output, -0.3, 0.3) : output;
+        output = (output < 0) ? MathUtil.clamp(output, -0.3, 0.3) : output; // interesting if statement but ok
 
         return output;
     }

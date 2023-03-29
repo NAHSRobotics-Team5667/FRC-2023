@@ -11,11 +11,8 @@ public class AutoBalance extends CommandBase {
     RobotContainer robotContainer;
     DrivetrainSubsystem drive;
     boolean done = false;
-    double multiplierPitch = 2;
-    double multiplierRoll = 2;
-    boolean slowTheHeckDownRoll = false;
-    boolean slowTheHeckDownPitch = false;
-
+    double multiplierPitch = 2, multiplierRoll = 2;
+    boolean slowTheHeckDownRoll = false, slowTheHeckDownPitch = false;
     AHRS gyro;
 
     public AutoBalance(RobotContainer robotContainer, DrivetrainSubsystem drive) {
@@ -29,7 +26,6 @@ public class AutoBalance extends CommandBase {
     // move forward back
     @Override
     public void initialize() {
-
     }
 
     @Override
@@ -43,18 +39,16 @@ public class AutoBalance extends CommandBase {
         SmartDashboard.putNumber("pitch", pitch);
         if (Math.abs(roll) > 10 && !slowTheHeckDownRoll) {
             multiplierRoll = 2;
-
         } else {
             multiplierRoll = 1.4;
             slowTheHeckDownRoll = true;
         }
+
         if (Math.abs(pitch) > 10 && !slowTheHeckDownPitch) {
             multiplierPitch = 2;
-
         } else {
             slowTheHeckDownPitch = true;
             multiplierPitch = 1.4;
-
         }
 
         if (roll > 10) {
@@ -72,7 +66,7 @@ public class AutoBalance extends CommandBase {
         // done = true;
         // }
         drive.drive(x, y, 0, false);
-        SmartDashboard.putNumber("unknown", 222);
+        SmartDashboard.putNumber("unknown", 222); // what
     }
 
     public boolean isFinished() {

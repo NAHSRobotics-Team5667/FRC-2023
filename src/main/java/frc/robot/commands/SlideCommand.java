@@ -8,19 +8,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.SlideConstants;
+import static frc.robot.RobotContainer.GamePiece.*;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.SlideSubsystem;
 
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
-    RobotContainer robotContainer;
-    boolean autoOverride = false;
-    boolean isCubeAuto = false;
-    int positionAuto = 0;
-    int positionLevel = 0;
-    double delay = 0;
-    double clock = 0;
-    private boolean hasTension, hasZeroed;
+    private RobotContainer robotContainer;
+    private boolean autoOverride = false, isCubeAuto = false, hasTension, hasZeroed;
+    private int positionAuto = 0, positionLevel = 0;
+    private double delay = 0, clock = 0;
 
     /** Creates a new SlideCommand. */
     public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer, boolean autoOverride, int positionAuto,
@@ -45,11 +42,7 @@ public class SlideCommand extends CommandBase {
         hasZeroed = false;
         slide.setSlide(0);
         if (autoOverride) {
-            if (isCubeAuto) {
-                robotContainer.setCurrentElement(GamePiece.CUBE);
-            } else {
-                robotContainer.setCurrentElement(GamePiece.CONE);
-            }
+            robotContainer.setCurrentElement(isCubeAuto ? CUBE : CONE);
         }
     }
 
@@ -62,6 +55,7 @@ public class SlideCommand extends CommandBase {
         double position = 0; // initialize variable to hold position of slide
         boolean bottomLimitSwitch = slide.getBottomLimitSwitch();
 
+        // this is what nightmares are made of
         if (!hasZeroed) { // slide has not zeroed
             if (!hasTension) { // string may not have tension
                 if (bottomLimitSwitch) { // bottom limit switch is hit
@@ -78,7 +72,6 @@ public class SlideCommand extends CommandBase {
                 }
             }
         } else {
-
             if (autoOverride) {
                 if (delay > clock) {
                     this.positionLevel = positionAuto;
@@ -86,7 +79,6 @@ public class SlideCommand extends CommandBase {
                 } else {
                     this.positionLevel = 0;
                 }
-
             } else {
                 this.positionLevel = robotContainer.getPositionLevel();
             }
@@ -94,23 +86,23 @@ public class SlideCommand extends CommandBase {
             if (positionLevel == 0) {
                 position = -1; // set slide to go to -1 inches - eliminates any error
             } else { // position level is not equal to 0
-                if (robotContainer.getTargetElement().equals(GamePiece.CONE)) {
+                GamePiece targetElement = robotContainer.getTargetElement(),
+                        currentElement = robotContainer.getCurrentElement();
+
+                if (targetElement.equals(CONE)) {
                     position = SlideConstants.coneIntakeSetpoints[positionLevel - 1]; // length =
                     // 3
-
-                } else if (robotContainer.getTargetElement().equals(GamePiece.CUBE)) {
+                } else if (targetElement.equals(CUBE)) {
                     position = SlideConstants.cubeIntakeSetpoints[positionLevel - 1]; // length =
                     // 1
-
-                } else if (robotContainer.getCurrentElement().equals(GamePiece.CONE)) {
+                } else if (currentElement.equals(CONE)) {
                     position = SlideConstants.coneOuttakeSetpoints[positionLevel - 1]; // length
                     // = 3
-
-                } else if (robotContainer.getCurrentElement().equals(GamePiece.CUBE)) {
+                } else if (currentElement.equals(CUBE)) {
                     position = SlideConstants.cubeOuttakeSetpoints[positionLevel - 1]; // length
                     // = 3
-
                 }
+
                 // else { // current element is NONE and target element is NONE
                 // position = -1; // reset position
                 // }
