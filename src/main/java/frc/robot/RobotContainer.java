@@ -332,7 +332,7 @@ public class RobotContainer {
             // autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
             // autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
             case "competition":
-                drive.pose = new Pose2d(1.90, 3.01, drive.getInitGyro());
+                drive.pose = new Pose2d(1.86, 4.27, drive.getInitGyro());
                 return autoBuilder.fullAuto(Balance);
             case "AutoBalance":
                 return new AutoBalance(this, drive);
