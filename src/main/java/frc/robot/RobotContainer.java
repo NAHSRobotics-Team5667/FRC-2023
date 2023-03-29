@@ -342,8 +342,9 @@ public class RobotContainer {
                 drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
                 return new SlideCommand(slide, this, true, 3, true, 4.5)
                         .alongWith(new WristCommand(wrist, this, true, 3, true, 4.5)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2)))
-                        .alongWith(autoBuilder.fullAuto(Balance)).alongWith(new AutoBalance(this, drive, 10));
+                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.75)))
+                        .alongWith(autoBuilder.fullAuto(Balance)).withTimeout(10)
+                        .andThen(new AutoBalance(this, drive, 10));
             case "ConeMid":
                 return autoBuilder.fullAuto(COM);
             case "ConeBottom":
