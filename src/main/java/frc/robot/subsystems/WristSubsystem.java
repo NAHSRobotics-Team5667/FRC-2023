@@ -200,12 +200,13 @@ public class WristSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (++counter % 50 == 0) { // updates the encoder offset after a second of being enabled
-            angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+        if (counter <= 50) {
+            counter++;
         }
 
-        if (counter == Integer.MAX_VALUE) {
-            counter = 50;
+        if (counter % 50 == 0) { // updates the encoder offset after a second of being enabled
+            angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+            counter++;
         }
 
         if (RobotContainer.slideController.getRightStickButtonPressed()) {
