@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
@@ -409,6 +410,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                  * SmartDashboard.putNumber("BRD-Setpoint", backRight.getDriveSetpoint());
                  * SmartDashboard.putNumber("BLD-Setpoint", backLeft.getDriveSetpoint());
                  */
+
+                SmartDashboard.putNumber("Yaw", gyro.getYaw());
+                SmartDashboard.putNumber("Pitch", gyro.getPitch());
+                SmartDashboard.putNumber("Roll", gyro.getRoll());
 
         }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.WristConstants;
 import frc.robot.RobotContainer;
@@ -16,12 +17,19 @@ public class WristCommand extends CommandBase {
     boolean autoOverride;
     int positionAuto = 0;
     int index = 0;
+    boolean isCubeAuto = false;
+    double delay = 0;
+    double clock = 0;
 
     /** Creates a new WristCommand. */
-    public WristCommand(WristSubsystem wrist, RobotContainer robotContainer, boolean autoOverride, int positionAuto) {
+    public WristCommand(WristSubsystem wrist, RobotContainer robotContainer, boolean autoOverride, int positionAuto,
+            boolean isCubeAuto, double delay) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.wrist = wrist;
+        this.delay = delay;
+        this.isCubeAuto = isCubeAuto;
         this.positionAuto = positionAuto;
+        this.autoOverride = autoOverride;
         this.robotContainer = robotContainer;
         addRequirements(wrist);
     }
@@ -30,6 +38,11 @@ public class WristCommand extends CommandBase {
     @Override
     public void initialize() {
         wrist.setWrist(0);
+        if (autoOverride && isCubeAuto) {
+            robotContainer.setCurrentElement(GamePiece.CUBE);
+        } else if (autoOverride && !isCubeAuto) {
+            robotContainer.setCurrentElement(GamePiece.CONE);
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +51,9 @@ public class WristCommand extends CommandBase {
 
         // Uncomment below if controlling wrist with controller
         // wrist.setWrist(RobotContainer.slideController.getRightX() / 3);
+
         double position = WristConstants.kWristSafePosition;
+        String output = "nah";
 
         // default position is stowaway
 
@@ -46,32 +61,40 @@ public class WristCommand extends CommandBase {
                 targetElement = robotContainer.getTargetElement();
 
         if (autoOverride) {
-            index = positionAuto;
+            if (delay > clock) {
+                clock += .02;
+                index = positionAuto;
+            } else {
+                index = 0;
+            }
 
         } else {
-            index = robotContainer.getPositionLevel() - 1;
+            index = robotContainer.getPositionLevel();
         }
 
-        if (robotContainer.getPositionLevel() == 0) {
+        if (index == 0) {
             if (currentElement.equals(GamePiece.CONE)) {
                 position = WristConstants.kConeSafePosition; // go back to cone stowaway
             }
-        } else { // position level > 0
+        } else if (robotContainer.getPositionLevel() != 0 || autoOverride) { //
+            // position level > 0
+            output = "ya did it sport";
             if (targetElement.equals(GamePiece.CONE)) {
-                position = WristConstants.coneIntakeSetpoints[index];
+                position = WristConstants.coneIntakeSetpoints[index - 1];
                 // length = 3
             } else if (targetElement.equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeIntakeSetpoints[index];
+                position = WristConstants.cubeIntakeSetpoints[index - 1];
                 // length = 1
             } else if (currentElement.equals(GamePiece.CONE)) {
-                position = WristConstants.coneOuttakeSetpoints[index];
+                position = WristConstants.coneOuttakeSetpoints[index - 1];
                 // length = 3
             } else if (currentElement.equals(GamePiece.CUBE)) {
-                position = WristConstants.cubeOuttakeSetpoints[index];
+                position = WristConstants.cubeOuttakeSetpoints[index - 1];
                 // length = 3
             }
         }
         wrist.setPosition(position);
+        SmartDashboard.putString("WOO", output);
     }
 
     // Called once the command ends or is interrupted.

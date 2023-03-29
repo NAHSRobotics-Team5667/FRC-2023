@@ -89,9 +89,10 @@ public class RobotContainer {
         slide = new SlideSubsystem();
         lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
-        intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to subsystems
-        wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0));
-        slide.setDefaultCommand(new SlideCommand(slide, this, false, 0, false));
+        intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to
+        // subsystems
+        wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0, false, 0));
+        slide.setDefaultCommand(new SlideCommand(slide, this, false, 0, false, 0));
 
         currentElement = GamePiece.NONE;
         targetElement = GamePiece.NONE;
@@ -175,10 +176,12 @@ public class RobotContainer {
         );
         configureButtonBindings();
 
+        autoChooser.addOption("ClawTest", "ClawTest");
         autoChooser.addOption("CSC", "CSC");
         autoChooser.addOption("BSC", "BSC");
         autoChooser.addOption("HSC", "HSC");
         autoChooser.addOption("test", "test");
+        autoChooser.addOption("AutoBalance", "AutoBalance");
         autoChooser.addOption("ConeTop", "Test Cone Outtake Top");
         autoChooser.addOption("ConeMid", "Test Cone Outtake Mid");
         autoChooser.addOption("ConeBottom", "Test Cone Outtake Bottom");
@@ -299,11 +302,11 @@ public class RobotContainer {
                 new ClawIntake(GamePiece.CONE, intake, wrist, true, this));
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
-                new ClawOuttake(GamePiece.CONE, intake, this, 0));
+                new ClawOuttake(GamePiece.CONE, intake, this, 0.1));
 
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         bButton.and(bSecondButton).whileTrue( // outtake cube
-                new ClawOuttake(GamePiece.CUBE, intake, this, 0));
+                new ClawOuttake(GamePiece.CUBE, intake, this, 0.1));
 
         // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
@@ -324,9 +327,14 @@ public class RobotContainer {
             // autoChooser.addOption("CubeTop", "Test Cube Outtake Top");
             // autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
             // autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
+            case "AutoBalance":
+                return new AutoBalance(this, drive);
+            case "clawtest":
+                return new ClawOuttake(GamePiece.CUBE, intake, this, 1.5);
             case "test":
-                return new SlideCommand(slide, this, true, 2, true).alongWith(new WristCommand(wrist, this, true, 1)
-                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 5)));
+                return new SlideCommand(slide, this, true, 3, true, 5.5)
+                        .alongWith(new WristCommand(wrist, this, true, 3, true, 5.5)
+                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 3.5)));
             case "ConeMid":
                 return autoBuilder.fullAuto(COM);
             case "ConeBottom":

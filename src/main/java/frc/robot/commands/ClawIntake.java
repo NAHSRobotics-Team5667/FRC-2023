@@ -30,6 +30,7 @@ public class ClawIntake extends CommandBase {
         this.wrist = wrist;
         this.robotContainer = robotContainer;
 
+        addRequirements(clawSubsystem);
         // Use addRequirements() here to declare subsystem dependencies.
     }
 

@@ -8,7 +8,10 @@ import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -68,12 +71,10 @@ public class SlideSubsystem extends SubsystemBase {
         leftSlide.setNeutralMode(NeutralMode.Brake);
         leftSlide.setSelectedSensorPosition(0);
         leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
-        // Current limits
         // leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
-        // 40, 175, 0.75));
+        // 20, 20, 0));
         // leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
-        // 40, 175, 0.75));
+        // 20, 20, 0));
 
         // ====================================================================
         // Right Slide Motor
@@ -82,12 +83,12 @@ public class SlideSubsystem extends SubsystemBase {
         rightSlide = new WPI_TalonFX(Constants.SlideConstants.kRSlideID);
         rightSlide.setNeutralMode(NeutralMode.Brake);
         rightSlide.setSelectedSensorPosition(0);
-
-        // Right slide current limits
         // rightSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
-        // 40, 175, 0.75));
+        // 20, 20, 0));
         // rightSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
-        // 40, 175, 0.75));
+        // 20, 20, 0));
+
+        // rightSlide.follow(leftSlide, FollowerType.PercentOutput);
 
         rightSlide.setInverted(true);
 
@@ -191,6 +192,9 @@ public class SlideSubsystem extends SubsystemBase {
                 controller.calculate(getSlideHeightInches(),
                         inchesSetpoint),
                 -0.6, 0.6);
+
+        output = (output < 0) ? MathUtil.clamp(output, -0.3, 0.3) : output;
+
         return output;
     }
 

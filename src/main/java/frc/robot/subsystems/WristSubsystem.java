@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -102,9 +104,13 @@ public class WristSubsystem extends SubsystemBase {
         wristMotorFirst.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
         wristMotorFirst.setSelectedSensorPosition(0);
         wristMotorFirst.setInverted(true);
+        wristMotorFirst.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 20, 20, 0));
+        wristMotorFirst.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 20, 0));
 
         wristMotorSecond.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
         wristMotorSecond.setSelectedSensorPosition(0);
+        wristMotorSecond.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 20, 20, 0));
+        wristMotorSecond.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 20, 0));
 
         // ====================================================================
     }
@@ -198,9 +204,18 @@ public class WristSubsystem extends SubsystemBase {
             counter++;
         }
 
-        if (counter % 50 == 0) { // updates the encoder offset every second
+        if (counter % 50 == 0) { // updates the encoder offset after a second of being enabled
             angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+            counter++;
         }
+
+        if (RobotContainer.slideController.getRightStickButtonPressed()) {
+            angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
+            wristMotorFirst.setSelectedSensorPosition(0);
+            wristMotorSecond.setSelectedSensorPosition(0);
+        }
+
+        SmartDashboard.putNumber("Wrist Stator", wristMotorFirst.getStatorCurrent());
 
         // UNCOMMENT ABOVE IF ENCODER STILL FLUCTUATES TOO MUCH
 

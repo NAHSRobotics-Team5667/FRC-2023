@@ -18,16 +18,20 @@ public class SlideCommand extends CommandBase {
     boolean isCubeAuto = false;
     int positionAuto = 0;
     int positionLevel = 0;
+    double delay = 0;
+    double clock = 0;
     private boolean hasTension, hasZeroed;
 
     /** Creates a new SlideCommand. */
     public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer, boolean autoOverride, int positionAuto,
-            boolean isCubeAuto) {
+            boolean isCubeAuto, double delay) {
         this.robotContainer = robotContainer;
+        this.isCubeAuto = isCubeAuto;
         // Use addRequirements() here to declare subsystem dependencies.
         this.slide = slide;
         this.autoOverride = autoOverride;
         this.positionAuto = positionAuto;
+        this.delay = delay;
         hasTension = false;
         hasZeroed = false;
 
@@ -76,7 +80,12 @@ public class SlideCommand extends CommandBase {
         } else {
 
             if (autoOverride) {
-                this.positionLevel = positionAuto;
+                if (delay > clock) {
+                    this.positionLevel = positionAuto;
+                    clock += .02;
+                } else {
+                    this.positionLevel = 0;
+                }
 
             } else {
                 this.positionLevel = robotContainer.getPositionLevel();

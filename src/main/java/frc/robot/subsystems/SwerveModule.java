@@ -5,6 +5,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -102,6 +104,10 @@ public class SwerveModule {
         this.driveMotor = new WPI_TalonFX(driveMotorChannel);
         this.turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.turningMotor.setNeutralMode(NeutralMode.Brake);
+        this.driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35,
+                70, 0.1));
+        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35,
+                70, 0.1));
         this.driveMotor.setNeutralMode(NeutralMode.Brake);
         this.turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);

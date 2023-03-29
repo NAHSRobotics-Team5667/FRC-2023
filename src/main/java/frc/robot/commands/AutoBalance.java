@@ -11,6 +11,10 @@ public class AutoBalance extends CommandBase {
     RobotContainer robotContainer;
     DrivetrainSubsystem drive;
     boolean done = false;
+    double multiplierPitch = 2;
+    double multiplierRoll = 2;
+    boolean slowTheHeckDownRoll = false;
+    boolean slowTheHeckDownPitch = false;
 
     AHRS gyro;
 
@@ -18,6 +22,7 @@ public class AutoBalance extends CommandBase {
         this.robotContainer = robotContainer;
         this.drive = drive;
         this.gyro = drive.gyro;
+        addRequirements(drive);
     }
 
     // we want pitch and roll... if roll is off move side to side, if pitch is off
@@ -36,21 +41,38 @@ public class AutoBalance extends CommandBase {
         float pitch = gyro.getPitch();
         SmartDashboard.putNumber("roll", roll);
         SmartDashboard.putNumber("pitch", pitch);
+        if (Math.abs(roll) > 10 && !slowTheHeckDownRoll) {
+            multiplierRoll = 2;
 
-        if (roll > 5) {
-            x = -.5;
-        } else if (roll < -5) {
-            x = .5;
+        } else {
+            multiplierRoll = 1.4;
+            slowTheHeckDownRoll = true;
         }
-        if (pitch > 5) {
-            y = -.5;
-        } else if (pitch < -5) {
-            y = .5;
+        if (Math.abs(pitch) > 10 && !slowTheHeckDownPitch) {
+            multiplierPitch = 2;
+
+        } else {
+            slowTheHeckDownPitch = true;
+            multiplierPitch = 1.4;
+
         }
-        if (Math.abs(pitch) < 5 && Math.abs(roll) < 5) {
-            done = true;
+
+        if (roll > 10) {
+            x = .45 * multiplierRoll;
+        } else if (roll < -10) {
+            x = -.45 * multiplierRoll;
         }
+
+        if (pitch > 10) {
+            y = -.45 * multiplierPitch;
+        } else if (pitch < -10) {
+            y = .45 * multiplierPitch;
+        }
+        // // if (Math.abs(pitch) < 5 && Math.abs(roll) < 5) {
+        // done = true;
+        // }
         drive.drive(x, y, 0, false);
+        SmartDashboard.putNumber("unknown", 222);
     }
 
     public boolean isFinished() {

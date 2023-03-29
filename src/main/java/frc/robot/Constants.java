@@ -131,7 +131,7 @@ public final class Constants {
         // ===============================================================
 
         public static final double[] coneIntakeSetpoints = {
-                5.9572, // 0 - human player intake
+                3.3913, // 0 - human player intake
                 3.7496, // 1 - floor intake (flipped)
                 20.039 // 2 - floor intake (upright)
 
@@ -139,8 +139,8 @@ public final class Constants {
 
         public static final double[] cubeIntakeSetpoints = {
                 0, // 0 - floor intake
-                0,
-                0
+                1.8917, // 1 - human player
+                1.8917
         };
 
         // ===============================================================
@@ -207,15 +207,15 @@ public final class Constants {
         // ===============================================================
 
         public static final double[] coneIntakeSetpoints = {
-                -52.2751, // 0 - human player intake
+                -41.9187, // 0 - human player intake
                 38.7582, // 1 - floor intake (flipped)
                 61.9327 // 2 - floor intake (upright)
         };
 
         public static final double[] cubeIntakeSetpoints = {
                 -12.1624, // 0 - floor intake
-                -12.1624, // 0 - floor intake
-                -12.1624 // 0 - floor intake
+                -118.5223, // 1 - human player
+                -118.5223 // 2 - human player
         };
 
         // ===============================================================
