@@ -14,10 +14,14 @@ public class AutoBalance extends CommandBase {
     double multiplierPitch = 2, multiplierRoll = 2;
     boolean slowTheHeckDownRoll = false, slowTheHeckDownPitch = false;
     AHRS gyro;
+    double clock = 0;
+    double delay;
 
-    public AutoBalance(RobotContainer robotContainer, DrivetrainSubsystem drive) {
+    public AutoBalance(RobotContainer robotContainer, DrivetrainSubsystem drive, double delay) {
         this.robotContainer = robotContainer;
         this.drive = drive;
+        this.delay = delay;
+
         this.gyro = drive.gyro;
         addRequirements(drive);
     }
@@ -32,41 +36,45 @@ public class AutoBalance extends CommandBase {
     public void execute() {
         double x = 0;
         double y = 0;
-        // gyro values may be but
-        float roll = gyro.getRoll();
-        float pitch = gyro.getPitch();
-        SmartDashboard.putNumber("roll", roll);
-        SmartDashboard.putNumber("pitch", pitch);
-        if (Math.abs(roll) > 10 && !slowTheHeckDownRoll) {
-            multiplierRoll = 2;
+        if (delay > clock) {
+            clock += .02;
         } else {
-            multiplierRoll = 1.4;
-            slowTheHeckDownRoll = true;
-        }
+            // gyro values may be but
+            float roll = gyro.getRoll();
+            float pitch = gyro.getPitch();
+            SmartDashboard.putNumber("roll", roll);
+            SmartDashboard.putNumber("pitch", pitch);
+            if (Math.abs(roll) > 10 && !slowTheHeckDownRoll) {
+                multiplierRoll = 2;
+            } else {
+                multiplierRoll = 1.4;
+                slowTheHeckDownRoll = true;
+            }
 
-        if (Math.abs(pitch) > 10 && !slowTheHeckDownPitch) {
-            multiplierPitch = 2;
-        } else {
-            slowTheHeckDownPitch = true;
-            multiplierPitch = 1.4;
-        }
+            if (Math.abs(pitch) > 10 && !slowTheHeckDownPitch) {
+                multiplierPitch = 2;
+            } else {
+                slowTheHeckDownPitch = true;
+                multiplierPitch = 1.4;
+            }
 
-        if (roll > 10) {
-            x = .45 * multiplierRoll;
-        } else if (roll < -10) {
-            x = -.45 * multiplierRoll;
-        }
+            if (roll > 10) {
+                x = .45 * multiplierRoll;
+            } else if (roll < -10) {
+                x = -.45 * multiplierRoll;
+            }
 
-        if (pitch > 10) {
-            y = -.45 * multiplierPitch;
-        } else if (pitch < -10) {
-            y = .45 * multiplierPitch;
-        }
-        // // if (Math.abs(pitch) < 5 && Math.abs(roll) < 5) {
-        // done = true;
-        // }
-        drive.drive(x, y, 0, false);
-        SmartDashboard.putNumber("unknown", 222); // what
+            if (pitch > 10) {
+                y = -.45 * multiplierPitch;
+            } else if (pitch < -10) {
+                y = .45 * multiplierPitch;
+            }
+            // // if (Math.abs(pitch) < 5 && Math.abs(roll) < 5) {
+            // done = true;
+            // }
+            drive.drive(x, y, 0, false);
+            SmartDashboard.putNumber("unknown", 222);
+        } // what
     }
 
     public boolean isFinished() {

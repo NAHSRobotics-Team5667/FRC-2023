@@ -129,7 +129,7 @@ public class RobotContainer {
         eventMap.put("OuttakeCubeTop", new OuttakeCubeAuto(this, wrist, intake, slide, 2));
         eventMap.put("OuttakeCubeMid", new OuttakeCubeAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeCubeBottom", new OuttakeCubeAuto(this, wrist, intake, slide, 0));
-        eventMap.put("balance", new AutoBalance(this, drive));
+        eventMap.put("balance", new AutoBalance(this, drive, 10));
         eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, wrist, this));
         eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, wrist, this));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
@@ -335,13 +335,15 @@ public class RobotContainer {
                 drive.pose = new Pose2d(1.86, 4.27, drive.getInitGyro());
                 return autoBuilder.fullAuto(Balance);
             case "AutoBalance":
-                return new AutoBalance(this, drive);
+                return new AutoBalance(this, drive, 10);
             case "clawtest":
                 return new ClawOuttake(GamePiece.CUBE, intake, this, 1.5);
             case "test":
-                return new SlideCommand(slide, this, true, 3, true, 5.5)
-                        .alongWith(new WristCommand(wrist, this, true, 3, true, 5.5)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 3.5)));
+                drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
+                return new SlideCommand(slide, this, true, 3, true, 4.5)
+                        .alongWith(new WristCommand(wrist, this, true, 3, true, 4.5)
+                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2)))
+                        .alongWith(autoBuilder.fullAuto(Balance)).alongWith(new AutoBalance(this, drive, 10));
             case "ConeMid":
                 return autoBuilder.fullAuto(COM);
             case "ConeBottom":
