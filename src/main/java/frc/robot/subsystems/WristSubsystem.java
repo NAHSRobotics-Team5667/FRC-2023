@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -104,13 +106,19 @@ public class WristSubsystem extends SubsystemBase {
         wristMotorFirst.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
         wristMotorFirst.setSelectedSensorPosition(0);
         wristMotorFirst.setInverted(true);
-        wristMotorFirst.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 20, 20, 0));
-        wristMotorFirst.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 20, 0));
+
+        wristMotorFirst.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 20, 60, 0.1));
+        // wristMotorFirst.configSupplyCurrentLimit(new
+        // SupplyCurrentLimitConfiguration(true, 20, 60, 0.1));
 
         wristMotorSecond.setNeutralMode(NeutralMode.Brake); // DO NOT CHANGE FROM BRAKE
         wristMotorSecond.setSelectedSensorPosition(0);
-        wristMotorSecond.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 20, 20, 0));
-        wristMotorSecond.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 20, 0));
+
+        wristMotorSecond.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 20, 20, 0.1));
+        // wristMotorSecond.configSupplyCurrentLimit(new
+        // SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+
+        wristMotorSecond.follow(wristMotorFirst, FollowerType.PercentOutput);
 
         // ====================================================================
     }
@@ -215,7 +223,8 @@ public class WristSubsystem extends SubsystemBase {
             wristMotorSecond.setSelectedSensorPosition(0);
         }
 
-        SmartDashboard.putNumber("Wrist Stator", wristMotorFirst.getStatorCurrent());
+        SmartDashboard.putNumber("First Wrist Stator", wristMotorFirst.getStatorCurrent());
+        SmartDashboard.putNumber("Second Wrist Stator", wristMotorSecond.getStatorCurrent());
 
         // UNCOMMENT ABOVE IF ENCODER STILL FLUCTUATES TOO MUCH
 

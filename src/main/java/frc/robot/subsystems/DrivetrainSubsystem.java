@@ -404,16 +404,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 // SmartDashboard.putNumber("BLD-Actual", backLeft.getDriveEncoderDistance() -
                 // backLeft.getDriveSetpoint());
 
-                /*
-                 * SmartDashboard.putNumber("FRD-Setpoint", frontRight.getDriveSetpoint());
-                 * SmartDashboard.putNumber("FLD-Setpoint", frontLeft.getDriveSetpoint());
-                 * SmartDashboard.putNumber("BRD-Setpoint", backRight.getDriveSetpoint());
-                 * SmartDashboard.putNumber("BLD-Setpoint", backLeft.getDriveSetpoint());
-                 */
+                // SmartDashboard.putNumber("FRD-Setpoint", frontRight.getDriveSetpoint());
+                // SmartDashboard.putNumber("FLD-Setpoint", frontLeft.getDriveSetpoint());
+                // SmartDashboard.putNumber("BRD-Setpoint", backRight.getDriveSetpoint());
+                // SmartDashboard.putNumber("BLD-Setpoint", backLeft.getDriveSetpoint());
 
-                SmartDashboard.putNumber("Yaw", gyro.getYaw());
-                SmartDashboard.putNumber("Pitch", gyro.getPitch());
-                SmartDashboard.putNumber("Roll", gyro.getRoll());
+                // SmartDashboard.putNumber("Yaw", gyro.getYaw());
+                // SmartDashboard.putNumber("Pitch", gyro.getPitch());
+                // SmartDashboard.putNumber("Roll", gyro.getRoll());
 
+                // SmartDashboard.putNumber("FL Turn Current", frontLeft.getTurnStator());
+                // SmartDashboard.putNumber("FL Drive Current", frontLeft.getDriveStator());
+
+                // SmartDashboard.putNumber("FR Turn Current", frontRight.getTurnStator());
+                // SmartDashboard.putNumber("FR Drive Current", frontRight.getDriveStator());
+
+                // SmartDashboard.putNumber("BL Turn Current", backLeft.getTurnStator());
+                // SmartDashboard.putNumber("BL Drive Current", backLeft.getDriveStator());
+
+                // SmartDashboard.putNumber("BR Turn Current", backRight.getTurnStator());
+                // SmartDashboard.putNumber("BR Drive Current", backRight.getDriveStator());
         }
 }

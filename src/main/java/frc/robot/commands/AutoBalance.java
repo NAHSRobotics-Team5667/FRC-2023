@@ -16,6 +16,8 @@ public class AutoBalance extends CommandBase {
     AHRS gyro;
     double clock = 0;
     double delay;
+    double x = 0;
+    double y = 0;
 
     public AutoBalance(RobotContainer robotContainer, DrivetrainSubsystem drive, double delay) {
         this.robotContainer = robotContainer;
@@ -30,14 +32,28 @@ public class AutoBalance extends CommandBase {
     // move forward back
     @Override
     public void initialize() {
+
     }
 
     @Override
     public void execute() {
-        double x = 0;
-        double y = 0;
-        if (delay > clock) {
+        x = 0;
+        y = 0;
+
+        if (delay > clock && delay != 0) {
+            // if (delay - 4 > clock) {
+            // if (delay - 1 > clock) {
+            // x = -.5;
+            // SmartDashboard.putNumber("testAuto", 100000);
+
+            // } else {
+            // x = .5;
+            // SmartDashboard.putNumber("testAuto", 9999999);
+            // }
+
+            // }
             clock += .02;
+
         } else {
             // gyro values may be but
             float roll = gyro.getRoll();
@@ -72,9 +88,10 @@ public class AutoBalance extends CommandBase {
             // // if (Math.abs(pitch) < 5 && Math.abs(roll) < 5) {
             // done = true;
             // }
-            drive.drive(x, y, 0, false);
+
             SmartDashboard.putNumber("unknown", 222);
-        } // what
+        }
+        drive.drive(x, y, 0, false); // what
     }
 
     public boolean isFinished() {

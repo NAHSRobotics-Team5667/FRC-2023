@@ -90,7 +90,7 @@ public class RobotContainer {
         slide = new SlideSubsystem();
         lightstrip = new Lights(Constants.LightConstants.lightstrip1Port, Constants.LightConstants.lightstrip1Length);
 
-        intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to
+        // intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to
         // subsystems
         wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0, false, 0));
         slide.setDefaultCommand(new SlideCommand(slide, this, false, 0, false, 0));
@@ -129,7 +129,7 @@ public class RobotContainer {
         eventMap.put("OuttakeCubeTop", new OuttakeCubeAuto(this, wrist, intake, slide, 2));
         eventMap.put("OuttakeCubeMid", new OuttakeCubeAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeCubeBottom", new OuttakeCubeAuto(this, wrist, intake, slide, 0));
-        eventMap.put("balance", new AutoBalance(this, drive, 10));
+        eventMap.put("balance", new AutoBalance(this, drive, 0));
         eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, wrist, this));
         eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, wrist, this));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
@@ -306,11 +306,11 @@ public class RobotContainer {
                 new ClawIntake(GamePiece.CONE, intake, wrist, this));
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
-                new ClawOuttake(GamePiece.CONE, intake, this, 0.1));
+                new ClawOuttake(GamePiece.CONE, intake, this, 0.15));
 
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         bButton.and(bSecondButton).whileTrue( // outtake cube
-                new ClawOuttake(GamePiece.CUBE, intake, this, 0.1));
+                new ClawOuttake(GamePiece.CUBE, intake, this, 0.15));
 
         // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
@@ -340,11 +340,11 @@ public class RobotContainer {
                 return new ClawOuttake(GamePiece.CUBE, intake, this, 1.5);
             case "test":
                 drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
-                return new SlideCommand(slide, this, true, 3, true, 4.5)
-                        .alongWith(new WristCommand(wrist, this, true, 3, true, 4.5)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.75)))
-                        .alongWith(autoBuilder.fullAuto(Balance)).withTimeout(10)
-                        .andThen(new AutoBalance(this, drive, 10));
+                return new SlideCommand(slide, this, true, 3, true, 3)
+                        .alongWith(new WristCommand(wrist, this, true, 3, true, 3)
+                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)))
+                        .alongWith(autoBuilder.fullAuto(Balance));
+            // .andThen(new AutoBalance(this, drive, 10));
             case "ConeMid":
                 return autoBuilder.fullAuto(COM);
             case "ConeBottom":

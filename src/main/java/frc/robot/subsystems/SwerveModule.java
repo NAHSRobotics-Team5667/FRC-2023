@@ -104,10 +104,12 @@ public class SwerveModule {
         this.driveMotor = new WPI_TalonFX(driveMotorChannel);
         this.turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.turningMotor.setNeutralMode(NeutralMode.Brake);
-        this.driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35,
+
+        this.driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40,
                 70, 0.1));
-        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35,
+        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40,
                 70, 0.1));
+
         this.driveMotor.setNeutralMode(NeutralMode.Brake);
         this.turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -151,6 +153,14 @@ public class SwerveModule {
 
     public PIDController getDrivePID() {
         return this.drivePIDController;
+    }
+
+    public double getTurnStator() {
+        return turningMotor.getStatorCurrent();
+    }
+
+    public double getDriveStator() {
+        return driveMotor.getStatorCurrent();
     }
 
     /**

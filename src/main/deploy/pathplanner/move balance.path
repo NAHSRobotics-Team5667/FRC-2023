@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.8629640109636525,
-        "y": 4.26518135696604
+        "x": 1.7963205522610584,
+        "y": 3.2369679941260117
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.872484505064023,
-        "y": 5.540927566415703
+        "x": 1.805841046361429,
+        "y": 4.512714203575675
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -19,25 +19,25 @@
         "names": [],
         "executionBehavior": "parallelDeadline",
         "waitBehavior": "deadline",
-        "waitTime": 6.0
+        "waitTime": 4.5
       }
     },
     {
       "anchorPoint": {
-        "x": 1.8344025286625407,
-        "y": 2.0945087020815367
+        "x": 1.8,
+        "y": 11.0
       },
       "prevControl": {
-        "x": 1.501185235149569,
-        "y": 1.2567052212489216
+        "x": 1.4667827064870282,
+        "y": 10.162196519167384
       },
       "nextControl": {
-        "x": 2.1676198221755127,
-        "y": 2.9323121829141514
+        "x": 2.133217293512975,
+        "y": 11.837803480832616
       },
       "holonomicAngle": 0,
       "isReversal": false,
-      "velOverride": null,
+      "velOverride": 3.0,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -49,24 +49,26 @@
     },
     {
       "anchorPoint": {
-        "x": 1.8248820345621697,
-        "y": 3.398816393832313
+        "x": 1.7487180817592052,
+        "y": 5.25
       },
       "prevControl": {
-        "x": 2.3961116805844074,
-        "y": 3.4083368879326854
+        "x": 2.319947727781443,
+        "y": 5.259520494100372
       },
       "nextControl": null,
       "holonomicAngle": 0,
       "isReversal": false,
-      "velOverride": null,
+      "velOverride": 3.0,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "deadline",
-        "waitTime": 15.0
+        "names": [
+          "balance"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "after",
+        "waitTime": 0.5
       }
     }
   ],

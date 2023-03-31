@@ -84,7 +84,7 @@ public class SlideCommand extends CommandBase {
             }
 
             if (positionLevel == 0) {
-                position = -1; // set slide to go to -1 inches - eliminates any error
+                position = -0.5; // set slide to go to -1 inches - eliminates any error
             } else { // position level is not equal to 0
                 GamePiece targetElement = robotContainer.getTargetElement(),
                         currentElement = robotContainer.getCurrentElement();

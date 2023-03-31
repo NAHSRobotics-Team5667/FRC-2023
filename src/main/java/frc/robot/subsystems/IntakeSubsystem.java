@@ -28,8 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem() {
         intake = new WPI_TalonFX(Constants.IntakeConstants.kIntakeID);
         intake.setNeutralMode(NeutralMode.Brake);
-        // intake.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 15, 40, .3));
-        // intake.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15, 40, .3));
+        // intake.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 15,
+        // 40, .3));
+        // intake.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15,
+        // 40, .3));
 
         // m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
         // m_distanceSensor.setAutomaticMode(true);
@@ -78,6 +80,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setIntake(double percentOutput) {
         this.intake.set(ControlMode.PercentOutput, percentOutput);
 
+    }
+
+    public void setIntakeVoltage(double voltage) {
+        this.intake.setVoltage(voltage);
     }
 
     // ===========================================================================

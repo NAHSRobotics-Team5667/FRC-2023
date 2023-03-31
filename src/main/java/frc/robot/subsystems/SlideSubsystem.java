@@ -8,7 +8,11 @@ import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -68,10 +72,11 @@ public class SlideSubsystem extends SubsystemBase {
         leftSlide.setNeutralMode(NeutralMode.Brake);
         leftSlide.setSelectedSensorPosition(0);
         leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        // leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
-        // 20, 20, 0));
+
+        leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
+                20, 60, 0.1));
         // leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
-        // 20, 20, 0));
+        // 20, 60, 0.1));
 
         // ====================================================================
         // Right Slide Motor
@@ -80,12 +85,13 @@ public class SlideSubsystem extends SubsystemBase {
         rightSlide = new WPI_TalonFX(Constants.SlideConstants.kRSlideID);
         rightSlide.setNeutralMode(NeutralMode.Brake);
         rightSlide.setSelectedSensorPosition(0);
-        // rightSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
-        // 20, 20, 0));
-        // rightSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
-        // 20, 20, 0));
 
-        // rightSlide.follow(leftSlide, FollowerType.PercentOutput);
+        rightSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
+                20, 60, 0.1));
+        // rightSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
+        // 20, 60, 0.1));
+
+        rightSlide.follow(leftSlide, FollowerType.PercentOutput);
 
         rightSlide.setInverted(true);
 
@@ -188,9 +194,9 @@ public class SlideSubsystem extends SubsystemBase {
         double output = MathUtil.clamp(
                 controller.calculate(getSlideHeightInches(),
                         inchesSetpoint),
-                -0.6, 0.6);
+                -0.7, 0.7);
 
-        output = (output < 0) ? MathUtil.clamp(output, -0.3, 0.3) : output; // interesting if statement but ok
+        output = (output < 0) ? MathUtil.clamp(output, -0.4, 0.4) : output; // interesting if statement but ok
 
         return output;
     }
@@ -213,7 +219,9 @@ public class SlideSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Slide Encoder", getRightRawEncoder());
         SmartDashboard.putNumber("Right Slide Inches", getSlideHeightInches());
         SmartDashboard.putNumber("Slide Error", getPositionError());
-        SmartDashboard.putNumber("Slide Stator", rightSlide.getStatorCurrent());
+
+        SmartDashboard.putNumber("RSlide Stator", rightSlide.getStatorCurrent());
+        SmartDashboard.putNumber("LSlide Stator", leftSlide.getStatorCurrent());
         // SmartDashboard.putNumber("Slide Setpoint",
         // controller.getSetpoint().position); // Profiled PID Controller
         SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint()); // PID
