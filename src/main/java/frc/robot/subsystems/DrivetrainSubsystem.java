@@ -302,7 +302,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 // backLeft.collectEncoderSample();
                 // backRight.collectEncoderSample();
 
-                // SmartDashboard.putNumber("FL Raw Encoder", frontLeft.getTurnEncoderRaw());
+                SmartDashboard.putNumber("FL Raw Encoder", frontLeft.getDriveEncoderRaw());
                 // SmartDashboard.putNumber("FR Raw Encoder", frontRight.getTurnEncoderRaw());
                 // SmartDashboard.putNumber("BL Raw Encoder", backLeft.getTurnEncoderRaw());
                 // SmartDashboard.putNumber("BR Raw Encoder", backRight.getTurnEncoderRaw());

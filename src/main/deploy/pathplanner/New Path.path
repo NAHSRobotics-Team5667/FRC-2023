@@ -2,38 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7963205522610584,
-        "y": 3.2369679941260117
+        "x": 1.6896040522850297,
+        "y": 2.929016627264025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7963205522610584,
-        "y": 4.512749727312806
-      },
-      "holonomicAngle": 0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallelDeadline",
-        "waitBehavior": "deadline",
-        "waitTime": 4.5
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 1.8,
-        "y": -1.25
-      },
-      "prevControl": {
-        "x": 1.8,
-        "y": -2.1516365327510627
-      },
-      "nextControl": {
-        "x": 1.8,
-        "y": -0.3483634672489373
+        "x": 2.6896040522850293,
+        "y": 2.929016627264025
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -49,12 +24,37 @@
     },
     {
       "anchorPoint": {
-        "x": 1.8549646229107004,
-        "y": 1.24
+        "x": 3.597318829253045,
+        "y": 2.8230324729880234
       },
       "prevControl": {
-        "x": 1.8549646229107004,
-        "y": 0.6686910220357059
+        "x": 3.597318829253045,
+        "y": 1.8230324729880234
+      },
+      "nextControl": {
+        "x": 3.597318829253045,
+        "y": 1.8230324729880234
+      },
+      "holonomicAngle": 0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.362541763545067,
+        "y": 3.468572321760029
+      },
+      "prevControl": {
+        "x": 5.362541763545067,
+        "y": 3.468572321760029
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -63,17 +63,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "balance"
-        ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "after",
-        "waitTime": 4.0
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     }
   ],
-  "maxVelocity": 5.0,
-  "maxAcceleration": 4.0,
-  "isReversed": null,
   "markers": []
 }

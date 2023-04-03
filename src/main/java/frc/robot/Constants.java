@@ -82,10 +82,10 @@ public final class Constants {
                 public static final double kBRTurnKd = 0;
 
                 // next lines are for the Swerve Module object
-                public static final double BLEncoderOffset = 0.4330 - .25;
-                public static final double FLEncoderOffset = 0.40145 - .25;
-                public static final double BREncoderOffset = 0.66424 - .25;
-                public static final double FREncoderOffset = 0.909868 - .25;
+                public static final double BLEncoderOffset = 0.4330;
+                public static final double FLEncoderOffset = 0.40145;
+                public static final double BREncoderOffset = 0.66424;
+                public static final double FREncoderOffset = 0.909868;
                 public static final double kWheelRadius = 0.0508; // meters
                 public static final double kEncoderResolution = 2048;
 
@@ -131,9 +131,9 @@ public final class Constants {
                 // ===============================================================
 
                 public static final double[] coneIntakeSetpoints = {
-                                3.3913, // 0 - human player intake
-                                3.7496, // 1 - floor intake (flipped)
-                                20.039 // 2 - floor intake (upright)
+                                20.539, // 2 - floor intake (upright),
+                                47.0014, // 0 - human player intake
+                                3.7496 // 1 - floor intake (flipped)
 
                 };
 
@@ -207,9 +207,9 @@ public final class Constants {
                 // ===============================================================
 
                 public static final double[] coneIntakeSetpoints = {
-                                -41.9187, // 0 - human player intake
-                                38.7582, // 1 - floor intake (flipped)
-                                61.9327 // 2 - floor intake (upright)
+                                61.9327, // 2 - floor intake (upright)
+                                19.7517, // 0 - human player intake
+                                38.7582 // 1 - floor intake (flipped)
                 };
 
                 public static final double[] cubeIntakeSetpoints = {

@@ -58,7 +58,7 @@ public class ClawOuttake extends CommandBase {
                 intakeSpeed = 1;
                 welp = "cube going";
             } else if (gamePiece == CONE) {
-                intakeSpeed = -.45;
+                intakeSpeed = -1;
                 welp = "cone going";
             } else if (delay + 1 > clock && delay != 0) {
                 intakeSpeed = 0;
