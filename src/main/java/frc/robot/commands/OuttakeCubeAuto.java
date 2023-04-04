@@ -45,12 +45,13 @@ public class OuttakeCubeAuto extends CommandBase {
     public void execute() {
         positionSlide = SlideConstants.cubeOuttakeSetpoints[height];
         positionWrist = WristConstants.cubeOuttakeSetpoints[height];
-        timer += .02;
         if (timer < 3) {
             wrist.setPosition(positionWrist);
             slide.setSlidePIDInches(positionSlide);
+            timer += .02;
         } else if (timer < 5) {
             intake.setIntake(.45);
+            timer += .02;
         }
     }
 

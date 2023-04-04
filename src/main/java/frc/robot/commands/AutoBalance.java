@@ -10,20 +10,14 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class AutoBalance extends CommandBase {
     RobotContainer robotContainer;
     DrivetrainSubsystem drive;
-    boolean done = false;
-    double multiplierPitch = 2, multiplierRoll = 2;
-    boolean slowTheHeckDownRoll = false, slowTheHeckDownPitch = false;
+    double multiplierPitch = 2, multiplierRoll = 2, clock = 0, delay, x = 0, y = 0;
+    boolean done = false, slowTheHeckDownRoll = false, slowTheHeckDownPitch = false;
     AHRS gyro;
-    double clock = 0;
-    double delay;
-    double x = 0;
-    double y = 0;
 
     public AutoBalance(RobotContainer robotContainer, DrivetrainSubsystem drive, double delay) {
         this.robotContainer = robotContainer;
         this.drive = drive;
         this.delay = delay;
-
         this.gyro = drive.gyro;
         addRequirements(drive);
     }
@@ -32,7 +26,6 @@ public class AutoBalance extends CommandBase {
     // move forward back
     @Override
     public void initialize() {
-
     }
 
     @Override
@@ -41,23 +34,10 @@ public class AutoBalance extends CommandBase {
         y = 0;
 
         if (delay > clock && delay != 0) {
-            // if (delay - 4 > clock) {
-            // if (delay - 1 > clock) {
-            // x = -.5;
-            // SmartDashboard.putNumber("testAuto", 100000);
-
-            // } else {
-            // x = .5;
-            // SmartDashboard.putNumber("testAuto", 9999999);
-            // }
-
-            // }
             clock += .02;
-
         } else {
             // gyro values may be but
-            float roll = gyro.getRoll();
-            float pitch = gyro.getPitch();
+            float roll = gyro.getRoll(), pitch = gyro.getPitch();
             SmartDashboard.putNumber("roll", roll);
             SmartDashboard.putNumber("pitch", pitch);
             if (Math.abs(roll) > 10 && !slowTheHeckDownRoll) {

@@ -18,9 +18,8 @@ public class OuttakeConeMaxHeightAuto extends CommandBase {
     WristSubsystem wrist;
     IntakeSubsystem intake;
     SlideSubsystem slide;
-    double positionSlide = 0, positionWrist = 0;
+    double positionSlide = 0, positionWrist = 0, timer = 0;
     int height;
-    double timer = 0;
 
     /** Creates a new OuttakeConeMaxHeightAuto. */
     public OuttakeConeMaxHeightAuto(RobotContainer robotContainer, WristSubsystem wrist, IntakeSubsystem intake,
@@ -45,12 +44,13 @@ public class OuttakeConeMaxHeightAuto extends CommandBase {
     public void execute() {
         positionSlide = SlideConstants.coneOuttakeSetpoints[height];
         positionWrist = WristConstants.coneOuttakeSetpoints[height];
-        timer += .02;
         if (timer < 3) {
             wrist.setPosition(positionWrist);
             slide.setSlidePIDInches(positionSlide);
+            timer += .02;
         } else if (timer < 5) {
             intake.setIntake(-.45);
+            timer += .02;
         }
     }
 
