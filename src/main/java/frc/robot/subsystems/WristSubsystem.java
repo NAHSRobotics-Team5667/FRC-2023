@@ -5,12 +5,13 @@
 package frc.robot.subsystems;
 
 import java.util.Map;
-import java.util.Objects;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -35,7 +36,9 @@ public class WristSubsystem extends SubsystemBase {
     private DutyCycleEncoder encoder;
     private double angleOffset = 0;
 
-    private Long startTime; // use if absolute encoder still fluctuates too much
+    @SuppressWarnings("unused")
+    private int counter = 0; // use if absolute encoder still fluctuates too much
+    @SuppressWarnings("unused")
     private LinearFilter encoderFilter; // TODO: use only if encoder values are still not stable enough
 
     private RobotContainer robotContainer;
@@ -71,8 +74,9 @@ public class WristSubsystem extends SubsystemBase {
     public WristSubsystem(RobotContainer robotContainer) {
         encoder = new DutyCycleEncoder(WristConstants.kEncoderID);
         encoderFilter = LinearFilter.movingAverage(5); // takes moving average over last 5 samples
+
         this.robotContainer = robotContainer;
-        this.startTime = System.currentTimeMillis();
+
         // ====================================================================
         // PID
         // ====================================================================
@@ -85,8 +89,11 @@ public class WristSubsystem extends SubsystemBase {
 
         // Profiled PID
         // wristPID = new ProfiledPIDController(
-        // WristConstants.kP, WristConstants.kI, WristConstants.kD,
-        // new TrapezoidProfile.Constraints(WristConstants.maxVelocity,
+        // WristConstants.kP,
+        // WristConstants.kI,
+        // WristConstants.kD,
+        // new TrapezoidProfile.Constraints(
+        // WristConstants.maxVelocity,
         // WristConstants.maxAcceleration));
 
         // ====================================================================
@@ -112,6 +119,8 @@ public class WristSubsystem extends SubsystemBase {
         // SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
 
         wristMotorSecond.follow(wristMotorFirst, FollowerType.PercentOutput);
+
+        // ====================================================================
     }
 
     // ====================================================================
@@ -132,6 +141,7 @@ public class WristSubsystem extends SubsystemBase {
         } else if (getAngleDegreesAbs() >= 90) {
             percentOutput = Math.min(percentOutput, 0);
         }
+
         wristMotorFirst.set(ControlMode.PercentOutput, percentOutput);
         wristMotorSecond.set(ControlMode.PercentOutput, percentOutput);
     }
@@ -140,6 +150,9 @@ public class WristSubsystem extends SubsystemBase {
         // Uses motor for measurement
         double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesMotor(),
                 position), -0.6, 0.6);
+
+        // double output = MathUtil.clamp(wristPID.calculate(getAngleDegreesAbs(),
+        // position), -0.4, 0.4);
 
         // Uses abs encoder for measurement
         // double output = wristPID.calculate(getAngleDegreesAbs(), position);
@@ -166,8 +179,12 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public double getEncoder() {
-        return encoderFilter.calculate((double) Math.round(encoder.getAbsolutePosition() * 1000d) / 1000d);
-        // copied from stack overflow - rounds to 3 decimal places
+        return encoderFilter.calculate((double) Math.round(encoder.getAbsolutePosition() * 1000d) / 1000d); // copied
+                                                                                                            // from
+                                                                                                            // stack
+                                                                                                            // overflow
+                                                                                                            // -
+        // rounds to 3 decimal places
         // return encoder.getAbsolutePosition();
     }
 
@@ -191,10 +208,13 @@ public class WristSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // updates the encoder offset after a second of being enabled
-        if (Objects.nonNull(startTime) && System.currentTimeMillis() - startTime > 1000) {
+        if (counter <= 50) {
+            counter++;
+        }
+
+        if (counter % 50 == 0) { // updates the encoder offset after a second of being enabled
             angleOffset = (getEncoder() - WristConstants.kEncoderOffset) * 360;
-            startTime = null;
+            counter++;
         }
 
         if (RobotContainer.slideController.getRightStickButtonPressed()) {

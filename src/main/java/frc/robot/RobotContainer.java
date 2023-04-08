@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -332,6 +333,12 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         switch (autoChooser.getSelected()) {
+            // autoChooser.addOption("ConeTop", "Test Cone Outtake Top");
+            // autoChooser.addOption("ConeMid", "Test Cone Outtake Mid");
+            // autoChooser.addOption("ConeBottom", "Test Cone Outtake Bottom");
+            // autoChooser.addOption("CubeTop", "Test Cube Outtake Top");
+            // autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
+            // autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
             case "competition":
                 drive.resetGyro();
                 drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
@@ -381,7 +388,7 @@ public class RobotContainer {
                     ++intakeToggle;
                 });
             case "BSC":
-                drive.pose = new Pose2d(1.66, .43, drive.getGyro()); // BSC
+                drive.pose = new Pose2d(1.66, .43, drive.getInitGyro()); // BSC
                 return new ClawOuttake(GamePiece.CUBE, intake, this, 0)
                         .withTimeout(2)
                         .andThen(autoBuilder.fullAuto(BSC))
@@ -397,7 +404,7 @@ public class RobotContainer {
                 // });
                 return new TestAuto(drive, intake);
             case "HSC":
-                drive.pose = new Pose2d(1.73, 4.67, drive.getGyro());
+                drive.pose = new Pose2d(1.73, 4.67, drive.getInitGyro());
                 return new ClawOuttake(GamePiece.CUBE, intake, this, 0).withTimeout(2)
                         .andThen(autoBuilder.fullAuto(HSC))
                         .finallyDo((boolean interrupt) -> {
@@ -451,10 +458,11 @@ public class RobotContainer {
                         extra = Math.pow((Math.pow(FlatSurfaceFinder.getNearestPole().getX(), 2)
                                 + Math.pow(FlatSurfaceFinder.getNearestPole().getY(), 2)), .5) < .08;
                         break;
-                    default:
+                    case NONE:
                         extra = false;
                         break;
                 }
+
                 return (Math.abs((MathUtil.applyDeadband(RobotContainer.driveController.getLeftX(), 0.1))) > 0) ||
                         (Math.abs((MathUtil.applyDeadband(RobotContainer.driveController.getLeftY(), 0.1))) > 0) ||
                         extra; // extra returns true if distance to goal is small enough

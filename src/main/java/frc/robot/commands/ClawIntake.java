@@ -53,7 +53,7 @@ public class ClawIntake extends CommandBase {
     public void execute() {
         // runs until current spikes
         // NOTE: Change this to use time of flight sensor
-        // int statorThreshold = (gamePiece == CUBE) ? 30 : 70;
+        int statorThreshold = (gamePiece == CUBE) ? 30 : 70;
 
         double intakeSpeed = (gamePiece == CUBE) ? -.7 : .7;
         // if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
@@ -69,6 +69,7 @@ public class ClawIntake extends CommandBase {
                 !(RobotContainer.slideController.getBButton() && RobotContainer.slideController.getYButton())) {
             finish();
         }
+
     }
 
     public void finish() {
