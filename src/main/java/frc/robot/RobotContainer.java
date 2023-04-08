@@ -17,7 +17,6 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -68,10 +67,8 @@ public class RobotContainer {
     private double turnMultiplier;
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
-    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB, Balance, Taxi, BalanceBlue, TaxiReverse; // autonomous
-                                                                                                                   // trajectories,
-    // needs
-    // inital pose
+    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB, Balance; // autonomous trajectories, needs
+                                                                                   // inital pose
     // set to path initial pose
 
     private int positionLevel;
@@ -110,10 +107,7 @@ public class RobotContainer {
         // This will load the file "FullAuto.path" and generate it with a max velocity
         // of 4 m/s and a max acceleration of 3 m/s^2
         // for every path in the group
-        Balance = PathPlanner.loadPath("move balance", new PathConstraints(3.5, 3));
-        Taxi = PathPlanner.loadPath("taxi", new PathConstraints(5, 5));
-        BalanceBlue = PathPlanner.loadPath("move balance blue", new PathConstraints(3.5, 3));
-        TaxiReverse = PathPlanner.loadPath("taxi", new PathConstraints(5, 5), true);
+        Balance = PathPlanner.loadPath("move balance", new PathConstraints(5, 5));
         CSC = PathPlanner.loadPath("CSC", new PathConstraints(5, 5));
         BSC = PathPlanner.loadPath("BSC", new PathConstraints(5, 5));
         HSC = PathPlanner.loadPath("HSC", new PathConstraints(5, 5));
@@ -187,8 +181,6 @@ public class RobotContainer {
         configureButtonBindings();
         autoChooser.addOption("competition", "competition");
         autoChooser.addOption("ClawTest", "ClawTest");
-        autoChooser.addOption("testReverse", "testReverse");
-        autoChooser.addOption("competitionReverse", "competitionReverse");
         autoChooser.addOption("CSC", "CSC");
         autoChooser.addOption("BSC", "BSC");
         autoChooser.addOption("HSC", "HSC");
@@ -340,19 +332,8 @@ public class RobotContainer {
             // autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
             // autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
             case "competition":
-                drive.resetGyro();
-                drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
-                return new SlideCommand(slide, this, true, 3, true, 3)
-                        .alongWith(new WristCommand(wrist, this, true, 3, true, 3)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)));
-            // .alongWith(autoBuilder.fullAuto(Taxi));
-            case "competitionReverse":
-                drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
-                return new SlideCommand(slide, this, true, 3, true, 3)
-                        .alongWith(new WristCommand(wrist, this, true, 3, true, 3)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)))
-                        .alongWith(autoBuilder.fullAuto(TaxiReverse));
-
+                drive.pose = new Pose2d(1.86, 4.27, drive.getInitGyro());
+                return autoBuilder.fullAuto(Balance);
             case "AutoBalance":
                 return new AutoBalance(this, drive, 10);
             case "clawtest":
@@ -361,15 +342,8 @@ public class RobotContainer {
                 drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
                 return new SlideCommand(slide, this, true, 3, true, 3)
                         .alongWith(new WristCommand(wrist, this, true, 3, true, 3)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)));
-            // .alongWith(autoBuilder.fullAuto(Balance));
-            case "testReverse":
-                drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
-                return new SlideCommand(slide, this, true, 3, true, 3)
-                        .alongWith(new WristCommand(wrist, this, true, 3, true, 3)
                                 .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)))
-                        .alongWith(autoBuilder.fullAuto(BalanceBlue));
-
+                        .alongWith(autoBuilder.fullAuto(Balance));
             // .andThen(new AutoBalance(this, drive, 10));
             case "ConeMid":
                 return autoBuilder.fullAuto(COM);

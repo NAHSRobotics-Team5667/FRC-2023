@@ -105,10 +105,10 @@ public class SwerveModule {
         this.turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.turningMotor.setNeutralMode(NeutralMode.Brake);
 
-        this.driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80,
-                90, 0.1));
-        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80,
-                90, 0.1));
+        this.driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40,
+                70, 0.1));
+        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40,
+                70, 0.1));
 
         this.driveMotor.setNeutralMode(NeutralMode.Brake);
         this.turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
