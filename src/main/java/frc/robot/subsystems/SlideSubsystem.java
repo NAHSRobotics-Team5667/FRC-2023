@@ -74,7 +74,7 @@ public class SlideSubsystem extends SubsystemBase {
         leftSlide.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
         leftSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
-                20, 60, 0.1));
+                100, 105, 0.1));
         // leftSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
         // 20, 60, 0.1));
 
@@ -87,7 +87,7 @@ public class SlideSubsystem extends SubsystemBase {
         rightSlide.setSelectedSensorPosition(0);
 
         rightSlide.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,
-                20, 60, 0.1));
+                100, 105, 0.1));
         // rightSlide.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
         // 20, 60, 0.1));
 
@@ -194,9 +194,10 @@ public class SlideSubsystem extends SubsystemBase {
         double output = MathUtil.clamp(
                 controller.calculate(getSlideHeightInches(),
                         inchesSetpoint),
-                -0.7, 0.7);
+                -0.5, 0.95);
 
-        output = (output < 0) ? MathUtil.clamp(output, -0.4, 0.4) : output; // interesting if statement but ok
+        // output = (output < 0) ? MathUtil.clamp(output, -0.4, 0.4) : output; //
+        // interesting if statement but ok
 
         return output;
     }

@@ -39,7 +39,7 @@ public final class Constants {
                 public static final int kBackLeftTurningID = 11;
                 public static final int kBackRightTurningID = 10;
 
-                public static final double kMaxSpeed = 5; // should be 5 meters per second, 2 rn so ian keeps his ankles
+                public static final double kMaxSpeed = 2; // should be 5 meters per second, 2 rn so ian keeps his ankles
 
                 public static final double kMaxAngularSpeed = 2 * Math.PI; // is currently 1, will be 1/2 eventually
                 // (don't change)
@@ -121,7 +121,7 @@ public final class Constants {
         }
 
         public static final class IntakeConstants {
-                public static final int kIntakeID = 3;
+                public static final int kIntakeID = 5;
                 public static final int kVoltageLimit = -1;
         }
 
@@ -241,7 +241,7 @@ public final class Constants {
                 public static final double kD = 0;
 
                 public static final double maxVelocity = 40; // degrees per second
-                public static final double maxAcceleration = 10; // degrees per second squared
+                public static final double maxAcceleration = 80; // degrees per second squared
 
                 public static final double kGearRatio = 128;
 

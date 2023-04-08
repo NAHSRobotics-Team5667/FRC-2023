@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 // import com.revrobotics.Rev2mDistanceSensor;
 // import com.revrobotics.Rev2mDistanceSensor.Port;
@@ -28,10 +30,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem() {
         intake = new WPI_TalonFX(Constants.IntakeConstants.kIntakeID);
         intake.setNeutralMode(NeutralMode.Brake);
-        // intake.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 15,
-        // 40, .3));
-        // intake.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15,
-        // 40, .3));
+        intake.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 100,
+                105, .1));
+        intake.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 100,
+                105, .9090));
 
         // m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
         // m_distanceSensor.setAutomaticMode(true);
