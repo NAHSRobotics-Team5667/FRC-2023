@@ -32,8 +32,8 @@ import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
     public WPI_TalonFX wristMotorFirst, wristMotorSecond;
-    // private PIDController wristPID;
-    private ProfiledPIDController wristPID;
+    private PIDController wristPID;
+    // private ProfiledPIDController wristPID;
 
     private DutyCycleEncoder encoder;
     private double angleOffset = 0;
@@ -84,19 +84,19 @@ public class WristSubsystem extends SubsystemBase {
         // ====================================================================
 
         // reg PID
-        // wristPID = new PIDController(
-        // WristConstants.kP,
-        // WristConstants.kI,
-        // WristConstants.kD);
-
-        // Profiled PID
-        wristPID = new ProfiledPIDController(
+        wristPID = new PIDController(
                 WristConstants.kP,
                 WristConstants.kI,
-                WristConstants.kD,
-                new TrapezoidProfile.Constraints(
-                        WristConstants.maxVelocity,
-                        WristConstants.maxAcceleration));
+                WristConstants.kD);
+
+        // Profiled PID
+        // wristPID = new ProfiledPIDController(
+        // WristConstants.kP,
+        // WristConstants.kI,
+        // WristConstants.kD,
+        // new TrapezoidProfile.Constraints(
+        // WristConstants.maxVelocity,
+        // WristConstants.maxAcceleration));
 
         // ====================================================================
         // MOTOR SETUP
@@ -230,10 +230,11 @@ public class WristSubsystem extends SubsystemBase {
 
         // UNCOMMENT ABOVE IF ENCODER STILL FLUCTUATES TOO MUCH
 
-        // SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint()); // reg PID
+        SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint()); // reg
+        // PID
 
         // Profiled PID
-        SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint().position);
+        // SmartDashboard.putNumber("Wrist Setpoint", wristPID.getSetpoint().position);
 
         SmartDashboard.putNumber("Position Level", robotContainer.getPositionLevel());
         SmartDashboard.putNumber("Wrist Encoder", getEncoder());

@@ -161,12 +161,12 @@ public final class Constants {
 
                 // ===============================================================
 
-                public static final double kP = 0.25;
-                public static final double kI = 0.0;
-                public static final double kD = 0.015;
+                public static final double kP = 0.17;
+                public static final double kI = 0.01;
+                public static final double kD = 0.003;
 
-                public static final double maxVelocity = 50; // inches per second
-                public static final double maxAcceleration = 10; // inches per second squared
+                public static final double maxVelocity = 120; // inches per second
+                public static final double maxAcceleration = 180; // inches per second squared
 
                 public static final double maxEncoderTicks = 207000;
 

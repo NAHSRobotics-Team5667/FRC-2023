@@ -18,6 +18,7 @@ public class SlideCommand extends CommandBase {
     private boolean autoOverride = false, isCubeAuto = false, hasTension, hasZeroed;
     private int positionAuto = 0, positionLevel = 0;
     private double delay = 0, clock = 0;
+    private double prevPosition = 0;
 
     /** Creates a new SlideCommand. */
     public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer, boolean autoOverride, int positionAuto,
@@ -107,6 +108,11 @@ public class SlideCommand extends CommandBase {
                 // position = -1; // reset position
                 // }
             }
+
+            if (prevPosition != position) {
+                slide.resetPID();
+            }
+
             slide.setSlidePIDInches(position); // set slide to go to position
         }
 
@@ -117,6 +123,8 @@ public class SlideCommand extends CommandBase {
 
         SmartDashboard.putBoolean("Has Zeroed", hasZeroed);
         SmartDashboard.putBoolean("Has Spool", hasTension);
+
+        prevPosition = position;
     }
 
     // Called once the command ends or is interrupted.

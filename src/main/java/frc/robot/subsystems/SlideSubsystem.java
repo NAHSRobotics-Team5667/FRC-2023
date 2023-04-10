@@ -17,6 +17,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -31,9 +33,9 @@ public class SlideSubsystem extends SubsystemBase {
     private WPI_TalonFX rightSlide, leftSlide;
     private DigitalInput bottomLimitSwitch;
     private DigitalInput topLimitSwitch;
-    public PIDController controller;
+    // public PIDController controller;
 
-    // public ProfiledPIDController controller;
+    public ProfiledPIDController controller;
 
     // ====================================================================
     // PID EDITING
@@ -107,17 +109,17 @@ public class SlideSubsystem extends SubsystemBase {
         // ====================================================================
 
         // PID Controller
-        controller = new PIDController(
-                SlideConstants.kP, SlideConstants.kI, SlideConstants.kD);
+        // controller = new PIDController(
+        // SlideConstants.kP, SlideConstants.kI, SlideConstants.kD);
 
         // Profiled PID Controller
-        // controller = new ProfiledPIDController(
-        // SlideConstants.kP,
-        // SlideConstants.kI,
-        // SlideConstants.kD,
-        // new TrapezoidProfile.Constraints(
-        // SlideConstants.maxVelocity,
-        // SlideConstants.maxAcceleration));
+        controller = new ProfiledPIDController(
+                SlideConstants.kP,
+                SlideConstants.kI,
+                SlideConstants.kD,
+                new TrapezoidProfile.Constraints(
+                        SlideConstants.maxVelocity,
+                        SlideConstants.maxAcceleration));
 
         // ====================================================================
     }
@@ -202,6 +204,10 @@ public class SlideSubsystem extends SubsystemBase {
         return output;
     }
 
+    public void resetPID() {
+        controller.reset(getSlideHeightInches());
+    }
+
     public void setSlidePIDInches(double inchesSetpoint) {
         double output = getPIDOutput(inchesSetpoint);
         setSlide(output);
@@ -223,9 +229,9 @@ public class SlideSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("RSlide Stator", rightSlide.getStatorCurrent());
         SmartDashboard.putNumber("LSlide Stator", leftSlide.getStatorCurrent());
-        // SmartDashboard.putNumber("Slide Setpoint",
-        // controller.getSetpoint().position); // Profiled PID Controller
-        SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint()); // PID
+        SmartDashboard.putNumber("Slide Setpoint",
+                controller.getSetpoint().position); // Profiled PID Controller
+        // SmartDashboard.putNumber("Slide Setpoint", controller.getSetpoint()); // PID
         // Controller
 
         updatePID(
