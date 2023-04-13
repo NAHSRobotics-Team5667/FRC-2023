@@ -193,10 +193,11 @@ public class SlideSubsystem extends SubsystemBase {
     }
 
     public double getPIDOutput(double inchesSetpoint) {
+        // DO NOT SWITCH THIS TO JUST GETTING THE RAW .calculate()
         double output = MathUtil.clamp(
                 controller.calculate(getSlideHeightInches(),
                         inchesSetpoint),
-                -0.5, 0.95);
+                -1, 1);
 
         // output = (output < 0) ? MathUtil.clamp(output, -0.4, 0.4) : output; //
         // interesting if statement but ok

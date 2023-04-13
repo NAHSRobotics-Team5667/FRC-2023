@@ -276,6 +276,10 @@ public class RobotContainer {
 
     // ===================================================================
 
+    public SlideSubsystem getSlide() {
+        return slide;
+    }
+
     /**
      * Use this method to define your button->command mappings. Buttons can be
      * created by

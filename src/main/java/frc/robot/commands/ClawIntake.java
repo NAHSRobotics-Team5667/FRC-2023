@@ -56,12 +56,12 @@ public class ClawIntake extends CommandBase {
         int statorThreshold = (gamePiece == CUBE) ? 30 : 70;
 
         double intakeSpeed = (gamePiece == CUBE) ? -.7 : .7;
-        // if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
+        if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
+            clawSubsystem.setIntake(intakeSpeed);
+        } else {
+            // finish();
+        }
         // clawSubsystem.setIntake(intakeSpeed);
-        // } else {
-        // // finish();
-        // }
-        clawSubsystem.setIntake(intakeSpeed);
         if (gamePiece.equals(CONE) &&
                 !(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {
             finish();
