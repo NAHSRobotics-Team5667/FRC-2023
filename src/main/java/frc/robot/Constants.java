@@ -208,7 +208,7 @@ public final class Constants {
 
                 public static final double[] coneIntakeSetpoints = {
                                 -41.9187, // 0 - human player intake
-                                38.7582, // 1 - floor intake (flipped)
+                                40.7582, // 1 - floor intake (flipped)
                                 61.9327 // 2 - floor intake (upright)
                 };
 
