@@ -12,11 +12,14 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -48,7 +51,7 @@ public class RobotContainer {
 
     // declares all subsystems
     private SlideSubsystem slide;
-    private DrivetrainSubsystem drive;
+    public DrivetrainSubsystem drive;
     public WristSubsystem wrist;
     public IntakeSubsystem intake;
 
@@ -67,8 +70,10 @@ public class RobotContainer {
     private double turnMultiplier;
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
-    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB, Balance; // autonomous trajectories, needs
-                                                                                   // inital pose
+    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB, Balance, Troubleshooting, Smooth; // autonomous
+    // trajectories,
+    // needs
+    // inital pose
     // set to path initial pose
 
     private int positionLevel;
@@ -117,6 +122,12 @@ public class RobotContainer {
         CbOB = PathPlanner.loadPath("Test Cube Outtake Bottom", new PathConstraints(5, 5));
         CbOM = PathPlanner.loadPath("Test Cube Outtake Mid", new PathConstraints(5, 5));
         CbOT = PathPlanner.loadPath("Test Cube Outtake Top", new PathConstraints(5, 5));
+        Troubleshooting = PathPlanner.loadPath("Troubleshooting", new PathConstraints(1, 1));
+        Smooth = PathPlanner.loadPath("Smooth", new PathConstraints(3, 1.5));
+        // Troubleshooting = PathPlanner.generatePath(
+        // new PathConstraints(2, 2),
+        // new PathPoint(new Translation2d(1.8, 5), Rotation2d.fromDegrees(180)),
+        // new PathPoint(new Translation2d(5, 5), Rotation2d.fromDegrees(180)));
 
         // This is just an example event map. It would be better to have a constant,
         // global event map
@@ -193,6 +204,7 @@ public class RobotContainer {
         autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
         autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
         autoChooser.setDefaultOption("default", "default");
+        autoChooser.setDefaultOption("Smooth", "Smooth");
 
         SmartDashboard.putData(autoChooser);
     }
@@ -346,7 +358,7 @@ public class RobotContainer {
                 drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
                 return new SlideCommand(slide, this, true, 3, true, 3)
                         .alongWith(new WristCommand(wrist, this, true, 3, true, 3)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)))
+                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)).withTimeout(3.5))
                         .alongWith(autoBuilder.fullAuto(Balance));
             // .andThen(new AutoBalance(this, drive, 10));
             case "ConeMid":
@@ -388,7 +400,18 @@ public class RobotContainer {
                         .finallyDo((boolean interrupt) -> {
                             ++intakeToggle;
                         });
-            // return autoBuilder.fullAuto(HSC);
+
+            case "Troubleshooting":
+                drive.resetHeading();
+                drive.resetDriveEncoders();
+                drive.resetPose(Troubleshooting.getInitialHolonomicPose());
+                return autoBuilder.fullAuto(Troubleshooting);
+
+            case "Smooth":
+                drive.resetHeading();
+                drive.resetDriveEncoders();
+                drive.resetPose(Smooth.getInitialHolonomicPose());
+                return (autoBuilder.fullAuto(Smooth));
         }
 
         return new ClawOuttake(GamePiece.CUBE, intake, this, 0).finallyDo((boolean interrupt) -> {

@@ -84,7 +84,7 @@ public class DrivetrainCommand extends CommandBase {
                 : RobotContainer.driveController.getLeftY();
 
         double xSpeed = MathUtil.applyDeadband(
-                leftX * robotContainer.getSpeedMultiplier(),
+                leftY * robotContainer.getSpeedMultiplier(),
                 0.1)
                 * DrivetrainSubsystem.kMaxSpeed;
 
@@ -93,7 +93,7 @@ public class DrivetrainCommand extends CommandBase {
         // return positive values when you pull to the right by default.
 
         double ySpeed = MathUtil.applyDeadband(
-                leftY * robotContainer.getSpeedMultiplier(),
+                -leftX * robotContainer.getSpeedMultiplier(),
                 0.15)
                 * DrivetrainSubsystem.kMaxSpeed;
 

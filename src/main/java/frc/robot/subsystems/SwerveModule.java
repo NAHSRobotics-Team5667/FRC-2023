@@ -26,7 +26,7 @@ public class SwerveModule {
             kModuleMaxAngularAcceleration = DriveConstants.kMaxAngularAcceleration; // radians per second squared
 
     private final WPI_TalonFX driveMotor, turningMotor;
-    private final PIDController drivePIDController = new PIDController(.031576, 0, 0);
+    private final PIDController drivePIDController = new PIDController(.041576, 0, 0);
 
     // Gains are for example purposes only - must be determined for your own robot!
     // public final ProfiledPIDController turningPIDController;
@@ -105,10 +105,10 @@ public class SwerveModule {
         this.turningMotor = new WPI_TalonFX(turningMotorChannel);
         this.turningMotor.setNeutralMode(NeutralMode.Brake);
 
-        this.driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40,
-                70, 0.1));
-        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40,
-                70, 0.1));
+        this.driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60,
+                80, 0.1));
+        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60,
+                80, 0.1));
 
         this.driveMotor.setNeutralMode(NeutralMode.Brake);
         this.turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -120,6 +120,10 @@ public class SwerveModule {
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
         this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    }
+
+    public void resetDriveEncoder() {
+        driveMotor.setSelectedSensorPosition(0);
     }
 
     /**

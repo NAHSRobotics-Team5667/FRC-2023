@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
@@ -151,12 +153,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // 0.306
     // 0.257
     private Translation2d // Create the locations of the wheels
-    frontRightLocation = new Translation2d(0.257, -0.306),
+    frontRightLocation = new Translation2d(0.257, 0.306),
             // 0.306
             // 0.257
-            backRightLocation = new Translation2d(0.257, 0.306),
-            frontLeftLocation = new Translation2d(-0.257, -0.306),
-            backLeftLocation = new Translation2d(-0.257, 0.306);
+            backRightLocation = new Translation2d(-0.257, 0.306),
+            frontLeftLocation = new Translation2d(0.257, -0.306),
+            backLeftLocation = new Translation2d(-0.257, -0.306);
 
     public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
@@ -222,7 +224,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public void resetPose(SwerveModulePosition[] positions, Pose2d pose) {
         // odometry.resetPosition(null, swerveModuleFakeStates, pose);
-        odometry.resetPosition(this.getGyro(), positions, pose);
+        // odometry.resetPosition(Rotation2d.fromDegrees(getHeading()), positions,
+        // pose);
+        odometry.resetPosition(getGyro(), positions, pose);
+    }
+
+    public void resetPose(Pose2d pose) {
+        odometry.resetPosition(Rotation2d.fromDegrees(getHeading()), positions, pose);
     }
 
     public void pleaseGodLetThisWork(SwerveModuleState Wheel1, SwerveModuleState Wheel2, SwerveModuleState Wheel3,
@@ -238,6 +246,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         frontRight.driveVoltage(voltage);
         backLeft.driveVoltage(voltage);
         backRight.driveVoltage(voltage);
+    }
+
+    public void resetDriveEncoders() {
+        frontLeft.resetDriveEncoder();
+        frontRight.resetDriveEncoder();
+        backLeft.resetDriveEncoder();
+        backRight.resetDriveEncoder();
     }
 
     /** Returns the rotation relative to the last resetGyro() called */
@@ -261,6 +276,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public void resetGyro() {
         gyroOffset = gyro.getAngle();
+    }
+
+    public void resetHeading() {
+        gyro.reset();
     }
 
     public SwerveModulePosition[] getPosition() {
@@ -345,10 +364,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // backRight.getTurningPID().getPositionError());
         // SmartDashboard.putNumber("FR Abs Position Error",
         // frontRight.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("BL Abs Position Error",
-        // backLeft.getTurningPID().getPositionError());
-        // SmartDashboard.putNumber("FL Abs Position Error",
-        // frontLeft.getTurningPID().getPositionError());
+        SmartDashboard.putNumber("BL Abs Position Error",
+                backLeft.getTurningPID().getPositionError());
+        SmartDashboard.putNumber("FL Abs Position Error",
+                frontLeft.getTurningPID().getPositionError());
 
         // SmartDashboard.putNumber("FL Error + Encoder",
         // frontLeft.getTurnEncoderDistance() +
