@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -70,7 +71,8 @@ public class RobotContainer {
     private double turnMultiplier;
 
     private GamePiece currentElement, targetElement; // keeps track of piece elements
-    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB, Balance, Troubleshooting, Smooth; // autonomous
+    PathPlannerTrajectory HSC, CSC, BSC, COM, COT, COB, CbOM, CbOT, CbOB, Balance, Troubleshooting, Smooth,
+            OnePiece_Balance, Bump; // autonomous
     // trajectories,
     // needs
     // inital pose
@@ -97,8 +99,8 @@ public class RobotContainer {
 
         // intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to
         // subsystems
-        wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0, false, 0));
-        slide.setDefaultCommand(new SlideCommand(slide, this, false, 0, false, 0));
+        wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0, false, false, 0, 0));
+        slide.setDefaultCommand(new SlideCommand(slide, this, false, 0, false, false, 0, 0));
 
         currentElement = GamePiece.NONE;
         targetElement = GamePiece.NONE;
@@ -124,6 +126,8 @@ public class RobotContainer {
         CbOT = PathPlanner.loadPath("Test Cube Outtake Top", new PathConstraints(5, 5));
         Troubleshooting = PathPlanner.loadPath("Troubleshooting", new PathConstraints(1, 1));
         Smooth = PathPlanner.loadPath("Smooth", new PathConstraints(3, 1.5));
+        OnePiece_Balance = PathPlanner.loadPath("OnePiece_Balance", new PathConstraints(3, 1.5));
+        Bump = PathPlanner.loadPath("Bump", new PathConstraints(3, 1.5));
         // Troubleshooting = PathPlanner.generatePath(
         // new PathConstraints(2, 2),
         // new PathPoint(new Translation2d(1.8, 5), Rotation2d.fromDegrees(180)),
@@ -134,15 +138,15 @@ public class RobotContainer {
         // in your code that will be used by all path following commands.
         @SuppressWarnings({ "unchecked", "rawtypes" })
         HashMap<String, Command> eventMap = new HashMap();
-        eventMap.put("Competition Auto", new SlideCommand(slide, this, true, 3, true, 5.5)
-                .alongWith(new WristCommand(wrist, this, true, 3, true, 5.5)
+        eventMap.put("Competition Auto", new SlideCommand(slide, this, true, 3, true, false, 0, 5.5)
+                .alongWith(new WristCommand(wrist, this, true, 3, true, false, 0, 5.5)
                         .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 3.5))));
         eventMap.put("OuttakeCubeTop", new OuttakeCubeAuto(this, wrist, intake, slide, 2));
         eventMap.put("OuttakeCubeMid", new OuttakeCubeAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeCubeBottom", new OuttakeCubeAuto(this, wrist, intake, slide, 0));
         eventMap.put("balance", new AutoBalance(this, drive, 0));
-        eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, wrist, this));
-        eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, wrist, this));
+        eventMap.put("IntakeCone", new ClawIntake(GamePiece.CONE, intake, this, false, 0, 0));
+        eventMap.put("IntakeCube", new ClawIntake(GamePiece.CUBE, intake, this, false, 0, 0));
         eventMap.put("OuttakeConeTop", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 2));
         eventMap.put("OuttakeConeMid", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 1));
         eventMap.put("OuttakeConeBottom", new OuttakeConeMaxHeightAuto(this, wrist, intake, slide, 0));
@@ -203,6 +207,8 @@ public class RobotContainer {
         autoChooser.addOption("CubeTop", "Test Cube Outtake Top");
         autoChooser.addOption("CubeMid", "Test Cube Outtake Mid");
         autoChooser.addOption("CubeBottom", "Test Cube Outtake Bottom");
+        autoChooser.addOption("OnePiece_Balance", "OnePiece_Balance");
+        autoChooser.addOption("Bump", "Bump");
         autoChooser.setDefaultOption("default", "default");
         autoChooser.setDefaultOption("Smooth", "Smooth");
 
@@ -319,7 +325,7 @@ public class RobotContainer {
         // makes all triggers
 
         aButton.and(xButton).whileTrue( // intake cone
-                new ClawIntake(GamePiece.CONE, intake, wrist, this));
+                new ClawIntake(GamePiece.CONE, intake, this, false, 0, 0));
         // .until(checkIntakeFinish(IntakeOrOuttake.OUTTAKE)));
         aButton.and(bSecondButton).whileTrue( // outtake cone
                 new ClawOuttake(GamePiece.CONE, intake, this, 0.15));
@@ -330,7 +336,7 @@ public class RobotContainer {
 
         // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
         bButton.and(yButton).whileTrue( // intake cube
-                new ClawIntake(GamePiece.CUBE, intake, wrist, this));
+                new ClawIntake(GamePiece.CUBE, intake, this, false, 0, 0));
         // .until(checkIntakeFinish(IntakeOrOuttake.INTAKE)));
     }
 
@@ -356,9 +362,9 @@ public class RobotContainer {
                 return new ClawOuttake(GamePiece.CUBE, intake, this, 1.5);
             case "test":
                 drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
-                return new SlideCommand(slide, this, true, 3, true, 3)
-                        .alongWith(new WristCommand(wrist, this, true, 3, true, 3)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)).withTimeout(3.5))
+                return new SlideCommand(slide, this, true, 3, true, false, 0, 3)
+                        .alongWith(new WristCommand(wrist, this, true, 3, true, false, 0, 3)
+                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)))
                         .alongWith(autoBuilder.fullAuto(Balance));
             // .andThen(new AutoBalance(this, drive, 10));
             case "ConeMid":
@@ -407,11 +413,54 @@ public class RobotContainer {
                 drive.resetPose(Troubleshooting.getInitialHolonomicPose());
                 return autoBuilder.fullAuto(Troubleshooting);
 
-            case "Smooth":
+            case "Smooth": // NEW AUTOS
                 drive.resetHeading();
                 drive.resetDriveEncoders();
+                Smooth = PathPlannerTrajectory.transformTrajectoryForAlliance(Smooth, DriverStation.getAlliance());
                 drive.resetPose(Smooth.getInitialHolonomicPose());
-                return (autoBuilder.fullAuto(Smooth));
+
+                return (((new SlideCommand(slide, this, true, 3, false, false, 0, 2))
+                        .alongWith(new WristCommand(wrist, this, true, 3, false, false, 1, 2))
+                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5))).withTimeout(3.5))
+                        .andThen(autoBuilder.fullAuto(Smooth)
+                                .alongWith(new ClawIntake(GamePiece.CUBE, intake, this, true, 2, 1.75))
+                                .alongWith(new WristCommand(wrist, this, true, 3, true, true, 2, 2)
+                                        .withTimeout(5)))
+                        .andThen(
+                                new SlideCommand(slide, this, true, 3, true, false, 0, 2)
+                                        .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 2))
+                                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5)));
+            // return (autoBuilder.fullAuto(Smooth));
+            case "OnePiece_Balance":
+                drive.resetHeading();
+                drive.resetDriveEncoders();
+                OnePiece_Balance = PathPlannerTrajectory.transformTrajectoryForAlliance(OnePiece_Balance,
+                        DriverStation.getAlliance());
+                drive.resetPose(OnePiece_Balance.getInitialHolonomicPose());
+
+                return ((new SlideCommand(slide, this, true, 3, true, false, 0, 2))
+                        .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 2))
+                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5))).withTimeout(3.5)
+                        .andThen(autoBuilder.fullAuto(OnePiece_Balance))
+                        .andThen(new AutoBalance(this, drive, 10));
+
+            case "Bump":
+                drive.resetHeading();
+                drive.resetDriveEncoders();
+                Bump = PathPlannerTrajectory.transformTrajectoryForAlliance(Bump, DriverStation.getAlliance());
+                drive.resetPose(Bump.getInitialHolonomicPose());
+
+                return (((new SlideCommand(slide, this, true, 3, false, false, 0, 2))
+                        .alongWith(new WristCommand(wrist, this, true, 3, false, false, 1, 2))
+                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5))).withTimeout(3.5))
+                        .andThen(autoBuilder.fullAuto(Bump)
+                                .alongWith(new ClawIntake(GamePiece.CUBE, intake, this, true, 4, 1.1))
+                                .alongWith(new WristCommand(wrist, this, true, 3, true, true, 3.5, 2)
+                                        .withTimeout(6)))
+                        .andThen(
+                                new SlideCommand(slide, this, true, 3, true, false, 0, 2)
+                                        .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 2))
+                                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5)));
         }
 
         return new ClawOuttake(GamePiece.CUBE, intake, this, 0).finallyDo((boolean interrupt) -> {

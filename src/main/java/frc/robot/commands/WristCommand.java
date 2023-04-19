@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.WristConstants;
@@ -15,17 +16,33 @@ import frc.robot.subsystems.WristSubsystem;
 public class WristCommand extends CommandBase {
     private WristSubsystem wrist;
     private RobotContainer robotContainer;
-    private boolean autoOverride, isCubeAuto = false;
+    private boolean autoOverride, isCubeAuto = false, isIntake;
     private int positionAuto = 0, index = 0;
-    private double delay = 0, clock = 0;
+    private double timeout = 0, clock = 0;
+    private double startTime;
+    private double delay;
 
-    /** Creates a new WristCommand. */
+    /**
+     * Create a wrist command. Use .withTimeout to end command in auto.
+     * 
+     * @param wrist          wrist object.
+     * @param robotContainer robot container
+     * @param autoOverride   whether auto is running
+     * @param positionAuto   scoring level
+     * @param isCubeAuto     cube or cone
+     * @param isIntake       intaking or outtaking
+     * @param delay          delay before command starts
+     * @param timeout        time wrist runs after delay before going back to
+     *                       position level 0
+     */
     public WristCommand(WristSubsystem wrist, RobotContainer robotContainer, boolean autoOverride, int positionAuto,
-            boolean isCubeAuto, double delay) {
+            boolean isCubeAuto, boolean isIntake, double delay, double timeout) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.wrist = wrist;
+        this.timeout = timeout;
         this.delay = delay;
         this.isCubeAuto = isCubeAuto;
+        this.isIntake = isIntake;
         this.positionAuto = positionAuto;
         this.autoOverride = autoOverride;
         this.robotContainer = robotContainer;
@@ -35,9 +52,16 @@ public class WristCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        startTime = Timer.getFPGATimestamp();
         wrist.setWrist(0);
         if (autoOverride) {
-            robotContainer.setCurrentElement(isCubeAuto ? CUBE : CONE);
+            if (!isIntake) {
+                robotContainer.setCurrentElement(isCubeAuto ? CUBE : CONE);
+                robotContainer.setTargetElement(NONE);
+            } else {
+                robotContainer.setCurrentElement(NONE);
+                robotContainer.setTargetElement(isCubeAuto ? CUBE : CONE);
+            }
         }
     }
 
@@ -47,6 +71,8 @@ public class WristCommand extends CommandBase {
         // Uncomment below if controlling wrist with controller
         // wrist.setWrist(RobotContainer.slideController.getRightX() / 3);
 
+        clock = Timer.getFPGATimestamp() - startTime;
+
         double position = WristConstants.kWristSafePosition;
         isCubeAuto = false;
         String output = "nah";
@@ -54,8 +80,7 @@ public class WristCommand extends CommandBase {
                 targetElement = robotContainer.getTargetElement();
 
         if (autoOverride) {
-            if (delay > clock) {
-                clock += .02;
+            if (clock > delay && (clock - delay) < timeout) {
                 index = positionAuto;
             } else {
                 index = 0;

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import static frc.robot.RobotContainer.GamePiece.*;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
@@ -18,17 +19,33 @@ public class ClawIntake extends CommandBase {
     // refactored to a single command with a piece type parameter.
     private GamePiece gamePiece;
     public IntakeSubsystem clawSubsystem;
-    public WristSubsystem wrist;
     public RobotContainer robotContainer;
     public Lights lightstrip;
 
-    /** Creates a new SlideIntakeAndOuttakeCommand. */
-    public ClawIntake(GamePiece gamePiece, IntakeSubsystem clawSubsystem, WristSubsystem wrist,
-            RobotContainer robotContainer) {
+    private boolean autoOverride;
+    private double delay;
+    private double timeout;
+
+    private double startTime;
+
+    /**
+     * Creates a ClawIntake command.
+     * 
+     * @param gamePiece      game piece to intake.
+     * @param clawSubsystem  intake subsystem.
+     * @param robotContainer robot container.
+     * @param autoOverride   whether the command is running in auto.
+     * @param delay          delay to begin running the intake.
+     * @param timeout        amount of time after the delay to run the robot for.
+     */
+    public ClawIntake(GamePiece gamePiece, IntakeSubsystem clawSubsystem, RobotContainer robotContainer,
+            boolean autoOverride, double delay, double timeout) {
         this.gamePiece = gamePiece;
         this.clawSubsystem = clawSubsystem;
-        this.wrist = wrist;
         this.robotContainer = robotContainer;
+        this.autoOverride = autoOverride;
+        this.delay = delay;
+        this.timeout = timeout;
 
         addRequirements(clawSubsystem);
         // Use addRequirements() here to declare subsystem dependencies.
@@ -37,6 +54,8 @@ public class ClawIntake extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        startTime = Timer.getFPGATimestamp();
+
         robotContainer.setCurrentElement(GamePiece.NONE);
         robotContainer.setTargetElement(gamePiece);
         lightstrip = robotContainer.lightstrip;
@@ -56,11 +75,21 @@ public class ClawIntake extends CommandBase {
         int statorThreshold = (gamePiece == CUBE) ? 30 : 70;
 
         double intakeSpeed = (gamePiece == CUBE) ? -.7 : .7;
-        if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
-            clawSubsystem.setIntake(intakeSpeed);
-        } else {
-            // finish();
+
+        double runningTime = Timer.getFPGATimestamp() - startTime;
+
+        if ((autoOverride && runningTime > delay) || !autoOverride) {
+            if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
+                clawSubsystem.setIntake(intakeSpeed);
+            } else {
+                // finish();
+            }
         }
+
+        if (autoOverride && (runningTime - delay) >= timeout) {
+            finish();
+        }
+
         // clawSubsystem.setIntake(intakeSpeed);
         if (gamePiece.equals(CONE) &&
                 !(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {

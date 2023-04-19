@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -15,20 +16,34 @@ import frc.robot.subsystems.SlideSubsystem;
 public class SlideCommand extends CommandBase {
     private SlideSubsystem slide;
     private RobotContainer robotContainer;
-    private boolean autoOverride = false, isCubeAuto = false, hasTension, hasZeroed;
+    private boolean autoOverride = false, isCubeAuto = false, isIntake, hasTension, hasZeroed;
     private int positionAuto = 0, positionLevel = 0;
-    private double delay = 0, clock = 0;
+    private double timeout = 0, clock = 0, startTime;
     private double prevPosition = 0;
+    private double delay;
 
-    /** Creates a new SlideCommand. */
+    /**
+     * Create a slide command. Use .withTimeout to end command in auto.
+     * 
+     * @param slide          slide object.
+     * @param robotContainer robot container
+     * @param autoOverride   whether auto is running
+     * @param positionAuto   scoring level
+     * @param isCubeAuto     cube or cone
+     * @param isIntake       intaking or outtaking
+     * @param delay          delay before command starts
+     * @param timeout        time wrist runs after delay before going back to
+     *                       position level 0
+     */
     public SlideCommand(SlideSubsystem slide, RobotContainer robotContainer, boolean autoOverride, int positionAuto,
-            boolean isCubeAuto, double delay) {
+            boolean isCubeAuto, boolean isIntake, double delay, double timeout) {
         this.robotContainer = robotContainer;
         this.isCubeAuto = isCubeAuto;
-        // Use addRequirements() here to declare subsystem dependencies.
+        this.isIntake = isIntake;
         this.slide = slide;
         this.autoOverride = autoOverride;
         this.positionAuto = positionAuto;
+        this.timeout = timeout;
         this.delay = delay;
         hasTension = false;
         hasZeroed = false;
@@ -39,11 +54,20 @@ public class SlideCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        startTime = Timer.getFPGATimestamp();
+
         hasTension = false; // initialize boolean checkers just in case
         hasZeroed = false;
         slide.setSlide(0);
+
         if (autoOverride) {
-            robotContainer.setCurrentElement(isCubeAuto ? CUBE : CONE);
+            if (!isIntake) {
+                robotContainer.setCurrentElement(isCubeAuto ? CUBE : CONE);
+                robotContainer.setTargetElement(NONE);
+            } else {
+                robotContainer.setCurrentElement(NONE);
+                robotContainer.setTargetElement(isCubeAuto ? CUBE : CONE);
+            }
         }
     }
 
@@ -73,15 +97,16 @@ public class SlideCommand extends CommandBase {
                 }
             }
         } else {
+            clock = Timer.getFPGATimestamp() - startTime;
+
             if (autoOverride) {
-                if (delay > clock) {
-                    this.positionLevel = positionAuto;
-                    clock += .02;
+                if (clock > delay && (clock - delay) < timeout) {
+                    positionLevel = positionAuto;
                 } else {
-                    this.positionLevel = 0;
+                    positionLevel = 0;
                 }
             } else {
-                this.positionLevel = robotContainer.getPositionLevel();
+                positionLevel = robotContainer.getPositionLevel();
             }
 
             if (positionLevel == 0) {
