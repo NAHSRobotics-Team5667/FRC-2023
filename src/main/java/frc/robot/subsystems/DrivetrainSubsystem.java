@@ -350,10 +350,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("BR Pose", backRight.getTurnEncoderDistance());
         // SmartDashboard.putNumber("FL Pose", frontLeft.getTurnEncoderDistance());
         // SmartDashboard.putNumber("BL Pose", backLeft.getTurnEncoderDistance());
-        // SmartDashboard.putNumber("FR ABS", frontRight.getAbsTurnEncoder());
-        // SmartDashboard.putNumber("FL ABS", frontLeft.getAbsTurnEncoder());
-        // SmartDashboard.putNumber("BR ABS", backRight.getAbsTurnEncoder());
-        // SmartDashboard.putNumber("BL ABS", backLeft.getAbsTurnEncoder());
+        SmartDashboard.putNumber("FR ABS", frontRight.getAbsTurnEncoder());
+        SmartDashboard.putNumber("FL ABS", frontLeft.getAbsTurnEncoder());
+        SmartDashboard.putNumber("BR ABS", backRight.getAbsTurnEncoder());
+        SmartDashboard.putNumber("BL ABS", backLeft.getAbsTurnEncoder());
 
         // SmartDashboard.putNumber("FR Offset", frontRight.getOffset());
         // SmartDashboard.putNumber("FL Offset", frontLeft.getOffset());

@@ -87,8 +87,8 @@ public final class Constants {
         // public static final double BREncoderOffset = 0.66424 - .25;
         // public static final double FREncoderOffset = 0.909868 - .25;
 
-        public static final double BLEncoderOffset = 0.4330;
-        public static final double FLEncoderOffset = 0.40145;
+        public static final double BLEncoderOffset = 0.434;
+        public static final double FLEncoderOffset = 0.397;
         public static final double BREncoderOffset = 0.66424;
         public static final double FREncoderOffset = 0.909868;
 

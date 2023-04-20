@@ -77,11 +77,11 @@ public class DrivetrainCommand extends CommandBase {
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
 
-        double leftX = (fieldOriented) ? -RobotContainer.driveController.getLeftX()
-                : RobotContainer.driveController.getLeftX();
+        double leftX = (fieldOriented) ? RobotContainer.driveController.getLeftX()
+                : -RobotContainer.driveController.getLeftX();
 
-        double leftY = (fieldOriented) ? -RobotContainer.driveController.getLeftY()
-                : RobotContainer.driveController.getLeftY();
+        double leftY = (fieldOriented) ? RobotContainer.driveController.getLeftY()
+                : -RobotContainer.driveController.getLeftY();
 
         double xSpeed = MathUtil.applyDeadband(
                 leftY * robotContainer.getSpeedMultiplier(),

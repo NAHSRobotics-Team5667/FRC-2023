@@ -54,6 +54,7 @@ public class WristCommand extends CommandBase {
     public void initialize() {
         startTime = Timer.getFPGATimestamp();
         wrist.setWrist(0);
+
         if (autoOverride) {
             if (!isIntake) {
                 robotContainer.setCurrentElement(isCubeAuto ? CUBE : CONE);
@@ -74,7 +75,6 @@ public class WristCommand extends CommandBase {
         clock = Timer.getFPGATimestamp() - startTime;
 
         double position = WristConstants.kWristSafePosition;
-        isCubeAuto = false;
         String output = "nah";
         GamePiece currentElement = robotContainer.getCurrentElement(),
                 targetElement = robotContainer.getTargetElement();
@@ -112,6 +112,8 @@ public class WristCommand extends CommandBase {
         }
         wrist.setPosition(position);
         SmartDashboard.putString("WOO", output);
+        SmartDashboard.putString("Wrist Current Game Piece", robotContainer.getCurrentElement().toString());
+        SmartDashboard.putString("Wrist Target Game Piece", robotContainer.getTargetElement().toString());
     }
 
     // Called once the command ends or is interrupted.

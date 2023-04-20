@@ -72,33 +72,40 @@ public class ClawIntake extends CommandBase {
     public void execute() {
         // runs until current spikes
         // NOTE: Change this to use time of flight sensor
-        int statorThreshold = (gamePiece == CUBE) ? 30 : 70;
+        int statorThreshold = (gamePiece == CUBE) ? 40 : 80;
 
         double intakeSpeed = (gamePiece == CUBE) ? -.7 : .7;
 
         double runningTime = Timer.getFPGATimestamp() - startTime;
 
-        if ((autoOverride && runningTime > delay) || !autoOverride) {
-            if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
-                clawSubsystem.setIntake(intakeSpeed);
+        if (runningTime > delay && autoOverride) {
+            if (gamePiece == CUBE) {
+                intakeSpeed = -0.7;
+            } else if (gamePiece == CONE) {
+                intakeSpeed = 0.7;
             } else {
-                // finish();
+                intakeSpeed = 0;
             }
+            clawSubsystem.setIntake(intakeSpeed);
         }
 
-        if (autoOverride && (runningTime - delay) >= timeout) {
-            finish();
+        if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
+            clawSubsystem.setIntake(intakeSpeed);
+        } else {
+            clawSubsystem.setIntake(0);
+            // finish();
         }
 
         // clawSubsystem.setIntake(intakeSpeed);
-        if (gamePiece.equals(CONE) &&
-                !(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {
-            finish();
-        } else if (gamePiece.equals(CUBE) &&
-                !(RobotContainer.slideController.getBButton() && RobotContainer.slideController.getYButton())) {
-            finish();
+        if (!autoOverride) {
+            if (gamePiece.equals(CONE) &&
+                    !(RobotContainer.slideController.getAButton() && RobotContainer.slideController.getXButton())) {
+                finish();
+            } else if (gamePiece.equals(CUBE) &&
+                    !(RobotContainer.slideController.getBButton() && RobotContainer.slideController.getYButton())) {
+                finish();
+            }
         }
-
     }
 
     public void finish() {

@@ -420,12 +420,11 @@ public class RobotContainer {
                 drive.resetPose(Smooth.getInitialHolonomicPose());
 
                 return (((new SlideCommand(slide, this, true, 3, false, false, 0, 2))
-                        .alongWith(new WristCommand(wrist, this, true, 3, false, false, 1, 2))
+                        .alongWith(new WristCommand(wrist, this, true, 3, false, false, 1, 1.5))
                         .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5))).withTimeout(3.5))
                         .andThen(autoBuilder.fullAuto(Smooth)
                                 .alongWith(new ClawIntake(GamePiece.CUBE, intake, this, true, 2, 1.75))
-                                .alongWith(new WristCommand(wrist, this, true, 3, true, true, 2, 2)
-                                        .withTimeout(5)))
+                                .alongWith(new WristCommand(wrist, this, true, 1, true, true, 2, 2)))
                         .andThen(
                                 new SlideCommand(slide, this, true, 3, true, false, 0, 2)
                                         .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 2))
@@ -439,10 +438,10 @@ public class RobotContainer {
                 drive.resetPose(OnePiece_Balance.getInitialHolonomicPose());
 
                 return ((new SlideCommand(slide, this, true, 3, true, false, 0, 2))
-                        .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 2))
-                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5))).withTimeout(3.5)
-                        .andThen(autoBuilder.fullAuto(OnePiece_Balance))
-                        .andThen(new AutoBalance(this, drive, 10));
+                        .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 1.5))
+                        .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 1.5))).withTimeout(3.5)
+                        .andThen(autoBuilder.fullAuto(OnePiece_Balance));
+            // .andThen(new AutoBalance(this, drive, 10));
 
             case "Bump":
                 drive.resetHeading();
@@ -451,12 +450,11 @@ public class RobotContainer {
                 drive.resetPose(Bump.getInitialHolonomicPose());
 
                 return (((new SlideCommand(slide, this, true, 3, false, false, 0, 2))
-                        .alongWith(new WristCommand(wrist, this, true, 3, false, false, 1, 2))
+                        .alongWith(new WristCommand(wrist, this, true, 3, false, false, 1, 1.5))
                         .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5))).withTimeout(3.5))
                         .andThen(autoBuilder.fullAuto(Bump)
-                                .alongWith(new ClawIntake(GamePiece.CUBE, intake, this, true, 4, 1.1))
-                                .alongWith(new WristCommand(wrist, this, true, 3, true, true, 3.5, 2)
-                                        .withTimeout(6)))
+                                .alongWith(new ClawIntake(GamePiece.CUBE, intake, this, true, 4, 1.1)).withTimeout(5.1)
+                                .alongWith(new WristCommand(wrist, this, true, 1, true, true, 3.5, 2)))
                         .andThen(
                                 new SlideCommand(slide, this, true, 3, true, false, 0, 2)
                                         .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 2))
