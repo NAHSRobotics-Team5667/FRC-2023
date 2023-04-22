@@ -20,28 +20,29 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+@Deprecated
 public class AlignFlatSurface extends ParallelRaceGroup {
-    PathPlannerTrajectory FlatSurfaceLocation;
-    BooleanSupplier getSticks;
+        PathPlannerTrajectory FlatSurfaceLocation;
+        BooleanSupplier getSticks;
 
-    /** Creates a new AlignFlatSurfaceAgain. */
-    public AlignFlatSurface(RobotContainer robotContainer) {
+        /** Creates a new AlignFlatSurfaceAgain. */
+        public AlignFlatSurface(RobotContainer robotContainer) {
 
-        PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints(5, 5),
-                new PathPoint(
-                        new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(),
-                                RobotContainer.poseEstimate.getCurrentPose().getY()),
-                        RobotContainer.poseEstimate.getCurrentPose().getRotation()),
-                new PathPoint(
-                        new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
-                                FlatSurfaceFinder.getNearestPole().getY()),
-                        FlatSurfaceFinder.getNearestPole().getRotation()));
-        this.FlatSurfaceLocation = FlatSurfaceLocation;
-        BooleanSupplier getSticks = robotContainer.getSticks(GetSticksMode.SURFACE);
+                PathPlannerTrajectory FlatSurfaceLocation = PathPlanner.generatePath(new PathConstraints(5, 5),
+                                new PathPoint(
+                                                new Translation2d(RobotContainer.poseEstimate.getCurrentPose().getX(),
+                                                                RobotContainer.poseEstimate.getCurrentPose().getY()),
+                                                RobotContainer.poseEstimate.getCurrentPose().getRotation()),
+                                new PathPoint(
+                                                new Translation2d(FlatSurfaceFinder.getNearestPole().getX(),
+                                                                FlatSurfaceFinder.getNearestPole().getY()),
+                                                FlatSurfaceFinder.getNearestPole().getRotation()));
+                this.FlatSurfaceLocation = FlatSurfaceLocation;
+                BooleanSupplier getSticks = robotContainer.getSticks(GetSticksMode.SURFACE);
 
-        // Add your commands in the addCommands() call, e.g.
-        // addCommands(new FooCommand(), new BarCommand());
-        addCommands(robotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
-        until(getSticks);
-    }
+                // Add your commands in the addCommands() call, e.g.
+                // addCommands(new FooCommand(), new BarCommand());
+                addCommands(robotContainer.autoBuilder.fullAuto(FlatSurfaceLocation));
+                until(getSticks);
+        }
 }

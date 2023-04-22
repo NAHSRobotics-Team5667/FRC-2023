@@ -7,12 +7,12 @@ package frc.robot.commands;
 import static frc.robot.RobotContainer.GamePiece.*;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.GamePiece;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Lights;
-import frc.robot.subsystems.WristSubsystem;
 
 public class ClawIntake extends CommandBase {
     // this is a copy of ClawConeIntake, with minor adjustments. It should be
@@ -24,7 +24,9 @@ public class ClawIntake extends CommandBase {
 
     private boolean autoOverride;
     private double delay;
-    private double timeout;
+    // private double timeout;
+
+    private boolean currentSpikeDetected = false;
 
     private double startTime;
 
@@ -45,7 +47,9 @@ public class ClawIntake extends CommandBase {
         this.robotContainer = robotContainer;
         this.autoOverride = autoOverride;
         this.delay = delay;
-        this.timeout = timeout;
+        // this.timeout = timeout;
+
+        currentSpikeDetected = false;
 
         addRequirements(clawSubsystem);
         // Use addRequirements() here to declare subsystem dependencies.
@@ -55,6 +59,8 @@ public class ClawIntake extends CommandBase {
     @Override
     public void initialize() {
         startTime = Timer.getFPGATimestamp();
+
+        currentSpikeDetected = false;
 
         robotContainer.setCurrentElement(GamePiece.NONE);
         robotContainer.setTargetElement(gamePiece);
@@ -72,10 +78,8 @@ public class ClawIntake extends CommandBase {
     public void execute() {
         // runs until current spikes
         // NOTE: Change this to use time of flight sensor
-        int statorThreshold = (gamePiece == CUBE) ? 40 : 80;
-
+        int statorThreshold = (gamePiece == CUBE) ? 45 : 80;
         double intakeSpeed = (gamePiece == CUBE) ? -.7 : .7;
-
         double runningTime = Timer.getFPGATimestamp() - startTime;
 
         if (runningTime > delay && autoOverride) {
@@ -86,15 +90,21 @@ public class ClawIntake extends CommandBase {
             } else {
                 intakeSpeed = 0;
             }
-            clawSubsystem.setIntake(intakeSpeed);
+            // clawSubsystem.setIntake(intakeSpeed);
         }
 
         if (clawSubsystem.intake.getStatorCurrent() < statorThreshold) {
-            clawSubsystem.setIntake(intakeSpeed);
+            if (currentSpikeDetected && autoOverride) {
+                intakeSpeed = 0;
+            } else {
+                clawSubsystem.setIntake(intakeSpeed);
+            }
         } else {
-            clawSubsystem.setIntake(0);
-            // finish();
+            intakeSpeed = 0;
+            currentSpikeDetected = true;
         }
+
+        clawSubsystem.setIntake(intakeSpeed);
 
         // clawSubsystem.setIntake(intakeSpeed);
         if (!autoOverride) {
@@ -106,6 +116,17 @@ public class ClawIntake extends CommandBase {
                 finish();
             }
         }
+
+        if (currentSpikeDetected) {
+            if (lightstrip.scheduler.getCurrentEffectName() != "current") {
+                lightstrip.scheduler.setLightEffect(() -> {
+                    lightstrip.setSolidRGB(255, 255, 255);
+                }, .9, 25, .10, "current");
+            } else {
+                lightstrip.scheduler.setTimer(1);
+            }
+        }
+        SmartDashboard.putBoolean("Current Spike Detected", currentSpikeDetected);
     }
 
     public void finish() {
@@ -121,7 +142,6 @@ public class ClawIntake extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         finish();
-        // TODO:I have a feeling the currentelement might need to be NONE if interrupted
         robotContainer.intakeFinish = false;
         clawSubsystem.setIntake(0);
         robotContainer.setPositionLevel(0);

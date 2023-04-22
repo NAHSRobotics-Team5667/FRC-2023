@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.SlideSubsystem;
 
 /** The DriveTrainCommand class */
 public class DrivetrainCommand extends CommandBase {
@@ -71,8 +70,10 @@ public class DrivetrainCommand extends CommandBase {
             this.drive.resetGyro();
         }
 
-        robotContainer.setSpeedMultiplier((120 - robotContainer.getSlide().getSlideHeightInches()) / 120);
-        robotContainer.setTurnMultiplier((120 - robotContainer.getSlide().getSlideHeightInches()) / 120);
+        // double speedMultiplier = (120 -
+        // robotContainer.getSlide().getSlideHeightInches()) / 120;
+        robotContainer.setSpeedMultiplier(1);
+        robotContainer.setTurnMultiplier(1);
 
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.

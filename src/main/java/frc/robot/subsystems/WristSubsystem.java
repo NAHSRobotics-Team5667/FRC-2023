@@ -8,17 +8,13 @@ import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FollowerType;
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -38,9 +34,7 @@ public class WristSubsystem extends SubsystemBase {
     private DutyCycleEncoder encoder;
     private double angleOffset = 0;
 
-    @SuppressWarnings("unused")
     private int counter = 0; // use if absolute encoder still fluctuates too much
-    @SuppressWarnings("unused")
     private LinearFilter encoderFilter; // TODO: use only if encoder values are still not stable enough
 
     private RobotContainer robotContainer;

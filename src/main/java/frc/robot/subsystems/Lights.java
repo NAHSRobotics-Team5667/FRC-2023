@@ -381,6 +381,7 @@ public class Lights extends SubsystemBase {
             if (this.tick_counter == Long.MAX_VALUE) { // reset the tick counter to prevent overflow
                 this.tick_counter = 0;
             }
+
         }
 
         /**

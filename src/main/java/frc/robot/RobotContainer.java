@@ -12,14 +12,11 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -211,6 +208,7 @@ public class RobotContainer {
         autoChooser.addOption("Bump", "Bump");
         autoChooser.setDefaultOption("default", "default");
         autoChooser.setDefaultOption("Smooth", "Smooth");
+        autoChooser.addOption("ConeBalance", "ConeBalance");
 
         SmartDashboard.putData(autoChooser);
     }
@@ -459,6 +457,17 @@ public class RobotContainer {
                                 new SlideCommand(slide, this, true, 3, true, false, 0, 2)
                                         .alongWith(new WristCommand(wrist, this, true, 3, true, false, 1, 2))
                                         .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5)));
+            case "ConeBalance":
+                drive.resetHeading();
+                drive.resetDriveEncoders();
+                OnePiece_Balance = PathPlannerTrajectory.transformTrajectoryForAlliance(OnePiece_Balance,
+                        DriverStation.getAlliance());
+                drive.resetPose(OnePiece_Balance.getInitialHolonomicPose());
+
+                return (((new SlideCommand(slide, this, true, 3, false, false, 0, 2))
+                        .alongWith(new WristCommand(wrist, this, true, 3, false, false, 1, 1.5))
+                        .alongWith(new ClawOuttake(GamePiece.CONE, intake, this, 1.5))).withTimeout(3.5))
+                        .andThen(autoBuilder.fullAuto(OnePiece_Balance));
         }
 
         return new ClawOuttake(GamePiece.CUBE, intake, this, 0).finallyDo((boolean interrupt) -> {

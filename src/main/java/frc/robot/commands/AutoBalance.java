@@ -56,8 +56,7 @@ public class AutoBalance extends CommandBase {
 
         } else {
             // gyro values may be but
-            float roll = gyro.getRoll();
-            float pitch = gyro.getPitch();
+            float roll = gyro.getRoll(), pitch = gyro.getPitch();
             SmartDashboard.putNumber("roll", roll);
             SmartDashboard.putNumber("pitch", pitch);
             if (Math.abs(roll) > 10 && !slowTheHeckDownRoll) {
@@ -91,7 +90,7 @@ public class AutoBalance extends CommandBase {
 
             SmartDashboard.putNumber("unknown", 222);
         }
-        drive.drive(x, y, 0, false); // what
+        drive.drive(-y, x, 0, false); // what
     }
 
     public boolean isFinished() {

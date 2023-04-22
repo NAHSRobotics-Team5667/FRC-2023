@@ -30,7 +30,6 @@ public class ClawOuttake extends CommandBase {
         this.delay = delay;
 
         addRequirements(claw);
-        // Use addRequirements() here to declare subsystem dependencies.
     }
 
     // Called when the command is initially scheduled.
@@ -55,7 +54,7 @@ public class ClawOuttake extends CommandBase {
             welp = "stalled";
         } else {
             if (gamePiece == CUBE) {
-                intakeSpeed = 1;
+                intakeSpeed = 0.4;
                 welp = "cube going";
             } else if (gamePiece == CONE) {
                 intakeSpeed = -.3;

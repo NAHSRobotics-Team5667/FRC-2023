@@ -131,22 +131,23 @@ public final class Constants {
         public static final int kVoltageLimit = -1;
     }
 
+    private static double slideOffset = 1;
+
     public static final class SlideConstants {
         // ===============================================================
         // SLIDE INTAKE SETPOINTS
         // ===============================================================
 
         public static final double[] coneIntakeSetpoints = {
-                3.7496, // 1 - floor intake (flipped)
-                20.039, // 2 - floor intake (upright)
-                47.0014 // 0 - human player intake
-
+                3.7496 + slideOffset, // 1 - floor intake (flipped)
+                20.039 + slideOffset, // 2 - floor intake (upright)
+                46.5014 + slideOffset // 0 - human player intake
         };
 
         public static final double[] cubeIntakeSetpoints = {
                 0, // 0 - floor intake
-                1.8917, // 1 - human player
-                1.8917
+                1.8917 + slideOffset, // 1 - human player
+                1.8917 + slideOffset
         };
 
         // ===============================================================
@@ -155,14 +156,14 @@ public final class Constants {
 
         public static final double[] cubeOuttakeSetpoints = {
                 0, // 0 - ground level (hybrid)
-                25.267, // 1 - first platform
-                46.1483 // 2 - second platform (highest)
+                25.267 + slideOffset, // 1 - first platform
+                46.1483 + slideOffset // 2 - second platform (highest)
         };
 
         public static final double[] coneOuttakeSetpoints = {
-                16.1876, // 0 - ground level (hybrid)
-                53.9773, // 1 - first pole
-                59.3297 // 2 - second pole (highest)
+                16.1876 + slideOffset, // 0 - ground level (hybrid)
+                52.9773 + slideOffset, // 1 - first pole
+                59.3297 + slideOffset // 2 - second pole (highest)
         };
 
         // ===============================================================
