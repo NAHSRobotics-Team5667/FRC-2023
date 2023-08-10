@@ -336,7 +336,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 // SmartDashboard.putString("Gyro", getGyro().toString());
                 // SmartDashboard.putNumber("normal gyro", getHeading());
                 // SmartDashboard.putString("GyroFake", this.getGyro().toString());
-                // SmartDashboard.putNumber("Gyro Angle", this.getHeading());
+                SmartDashboard.putNumber("Gyro Angle", this.getHeading());
                 // SmartDashboard.putString("Gyro Offset", this.gyroOffset.toString());
 
                 // SmartDashboard.putNumber("testy boiFL", (frontLeft.trueEncoderOffset));

@@ -112,8 +112,10 @@ public class WristCommand extends CommandBase {
         }
         wrist.setPosition(position);
         SmartDashboard.putString("WOO", output);
-        SmartDashboard.putString("Wrist Current Game Piece", robotContainer.getCurrentElement().toString());
-        SmartDashboard.putString("Wrist Target Game Piece", robotContainer.getTargetElement().toString());
+        SmartDashboard.putString("Wrist Current Game Piece",
+                robotContainer.getCurrentElement().toString());
+        SmartDashboard.putString("Wrist Target Game Piece",
+                robotContainer.getTargetElement().toString());
     }
 
     // Called once the command ends or is interrupted.

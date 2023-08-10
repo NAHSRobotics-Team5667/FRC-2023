@@ -265,6 +265,14 @@ public class SwerveModule {
         return turningMotor.getSelectedSensorPosition();
     }
 
+    public WPI_TalonFX getTurnMotor() {
+        return turningMotor;
+    }
+
+    public WPI_TalonFX getDriveMotor() {
+        return driveMotor;
+    }
+
     // public boolean turnAtSetpoint() {
     // return Math.abs(m_turningPIDController.getSetpoint().position -
     // getTurnEncoderDistance()) < 0.1;

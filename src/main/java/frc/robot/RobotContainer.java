@@ -84,7 +84,7 @@ public class RobotContainer {
         drive = new DrivetrainSubsystem();
         drive.setDefaultCommand(new DrivetrainCommand(drive, this));
 
-        speedMultiplier = 1;
+        speedMultiplier = .3;
         turnMultiplier = 0.7;
 
         limelight = new LimelightSubsystem(); // instantiate commands
@@ -96,7 +96,8 @@ public class RobotContainer {
 
         // intake.setDefaultCommand(new IntakeCommand(intake)); // assign commands to
         // subsystems
-        wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0, false, false, 0, 0));
+        wrist.setDefaultCommand(new WristCommand(wrist, this, false, 0, false, false,
+                0, 0));
         slide.setDefaultCommand(new SlideCommand(slide, this, false, 0, false, false, 0, 0));
 
         currentElement = GamePiece.NONE;
@@ -362,8 +363,8 @@ public class RobotContainer {
                 drive.pose = new Pose2d(1.86, 4.27, drive.getGyro());
                 return new SlideCommand(slide, this, true, 3, true, false, 0, 3)
                         .alongWith(new WristCommand(wrist, this, true, 3, true, false, 0, 3)
-                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)))
-                        .alongWith(autoBuilder.fullAuto(Balance));
+                                .alongWith(new ClawOuttake(GamePiece.CUBE, intake, this, 2.74)));
+            // .alongWith(autoBuilder.fullAuto(Balance));
             // .andThen(new AutoBalance(this, drive, 10));
             case "ConeMid":
                 return autoBuilder.fullAuto(COM);
