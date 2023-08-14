@@ -73,8 +73,8 @@ public class DrivetrainCommand extends CommandBase {
         // double speedMultiplier = (120 -
         // robotContainer.getSlide().getSlideHeightInches()) / 120;
 
-        robotContainer.setSpeedMultiplier(1);
-        robotContainer.setTurnMultiplier(1);
+        robotContainer.setSpeedMultiplier(0.7);
+        robotContainer.setTurnMultiplier(0.7);
 
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.

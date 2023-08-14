@@ -131,7 +131,7 @@ public final class Constants {
                 public static final int kVoltageLimit = -1;
         }
 
-        private static double slideOffset = 1;
+        private static double slideOffset = 3;
 
         public static final class SlideConstants {
                 // ===============================================================
@@ -163,7 +163,7 @@ public final class Constants {
                 public static final double[] coneOuttakeSetpoints = {
                                 16.1876 + slideOffset, // 0 - ground level (hybrid)
                                 52.9773 + slideOffset, // 1 - first pole
-                                59.3297 + slideOffset // 2 - second pole (highest)
+                                60.3297 + slideOffset // 2 - second pole (highest)
                 };
 
                 // ===============================================================
@@ -215,12 +215,12 @@ public final class Constants {
 
                 public static final double[] coneIntakeSetpoints = {
                                 40.7582, // 1 - floor intake (flipped)
-                                61.9327, // 2 - floor intake (upright)
+                                59.9327, // 2 - floor intake (upright)
                                 19.7517 // 0 - human player intake
                 };
 
                 public static final double[] cubeIntakeSetpoints = {
-                                -12.1624, // 0 - floor intake
+                                -22.1624, // 0 - floor intake
                                 -118.5223, // 1 - human player
                                 -118.5223 // 2 - human player
                 };
@@ -238,7 +238,7 @@ public final class Constants {
                 public static final double[] coneOuttakeSetpoints = {
                                 0, // 0 - ground level (hybrid)
                                 49.9116, // 1 - first pole
-                                20, // 2 - second pole (highest)
+                                10, // 2 - second pole (highest)
                 };
 
                 // ===============================================================
